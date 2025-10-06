@@ -10,7 +10,7 @@
     "vercel-build": "pnpm store prune && pnpm install --frozen-lockfile=false && next build"
   },
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "dependencies": {
     "@tanstack/query-async-storage-persister": "^5.87.4",
