@@ -8,6 +8,9 @@ import { PredictModal, PredictSelection } from "./PredictModal";
 
 const Page = () => {
   const { data, isPending } = useAttendance();
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [selection, setSelection] = React.useState<PredictSelection | null>(null);
+
   if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
   if (!data || data.length === 0)
     return (
@@ -15,11 +18,6 @@ const Page = () => {
         No data found
       </div>
     );
-
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [selection, setSelection] = React.useState<PredictSelection | null>(
-    null
-  );
 
   return (
     <div className="flex flex-col gap-6 py-4 ">

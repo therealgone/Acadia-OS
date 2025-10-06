@@ -1,21 +1,12 @@
 import Icon from "@/../public/favicon.svg";
 import { useScreen } from "@/hooks/zustand";
 import { SidebarToggle } from "@/utils/sidebarToggle";
-import {
-  BookCopy,
-  BookOpenText,
-  Calendar1,
-  CalendarClock,
-  CircleUserRound,
-  Hourglass,
-  Settings2,
-  X,
-} from "lucide-react";
+import { BookCopy, BookOpenText, Calendar1, CalendarClock, CircleUserRound, Hourglass, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { CiShare1 } from "react-icons/ci";
+// import { CiShare1 } from "react-icons/ci";
 
 type MenuType = {
   name: string;

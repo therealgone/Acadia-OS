@@ -1,12 +1,12 @@
 "use client";
 import { QueryClient, QueryClientProvider, useIsFetching, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useRef, useState } from "react";
-import LastUpdated from "./lastUpdated";
+// import LastUpdated from "./lastUpdated";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { useScreen } from "@/hooks/zustand";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Loader, LogOut } from "lucide-react";
 import { useUserInfo } from "@/hooks/query";
 import Loading from "../loading";
@@ -52,7 +52,7 @@ const QueryProvider = ({ children }: { children: React.ReactNode }) => {
         </div>
         <div className="flex-1  flex flex-col w-full h-full mt-12">
           <MenuBar />
-         
+
           <div className="p-4 lg:p-6 overflow-y-auto h-full w-full overflow-x-clip ">
             {children}
           </div>
@@ -66,9 +66,8 @@ const QueryProvider = ({ children }: { children: React.ReactNode }) => {
 export default QueryProvider;
 
 const MenuBar = () => {
-  const isMobile = useScreen().isMobile;
   const path = usePathname().split("/");
-  const router = useRouter();
+  // const router = useRouter();
   const isFetching = useIsFetching();
   const queryClient = useQueryClient();
 
