@@ -87,6 +87,19 @@ acadia-os/
 - start: `pnpm start`
 - lint: `pnpm lint`
 
+## Deployment (Vercel)
+
+1. Push to a GitHub repo named `acadia-os`.
+2. Import in Vercel and select framework: Next.js.
+3. Set environment variables (Project → Settings → Environment Variables).
+4. Leave build settings on Automatic and deploy.
+
+This repo includes `vercel.json` with Next.js + pnpm defaults. Ensure Node 18+ and pnpm are enabled in Vercel Project Settings.
+
+Troubleshooting:
+- If dependency install fails, enable pnpm in Vercel or remove non-pnpm lockfiles.
+- Verify required env vars exist for production.
+
 ## 🌐 API
 
 This application uses the `srm-academia-api` package to interact with SRM University's backend services. The API provides secure access to:
