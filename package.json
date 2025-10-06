@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "pnpm store prune && pnpm install --frozen-lockfile=false && next build"
+    "vercel-build": "next build"
   },
   "engines": {
     "node": "22.x"
