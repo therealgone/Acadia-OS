@@ -14,5 +14,11 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  return <QueryProvider>{children}</QueryProvider>;
+  return (
+    <QueryProvider>
+      <div className="max-w-7xl mx-auto w-full px-2 lg:px-5 py-4">
+        {children}
+      </div>
+    </QueryProvider>
+  );
 }

@@ -32,21 +32,21 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
     (i) => i.category.toLowerCase() === category
   );
   return (
-    <div className="py-5 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-2 lg:px-5">
+    <div className="py-5 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {filteredData.map((item, i) => {
         const courseList = course?.find((i) => i.courseCode === item.course);
         return (
           <div
             key={i}
-            className="flex flex-col items-center gap-3 rounded-2xl panel min-h-50 shadow-2xl hover-glow-white "
+            className="flex flex-col items-center gap-3 rounded-2xl panel min-h-50 shadow-2xl hover-glow "
           >
             <div className="w-full h-full text-white/70  flex flex-col gap-4 ">
-              <div className="flex justify-between w-full px-3 min-h-14 items-center border-b border-dotted border-[color:var(--border-strong)]/40 gap-4 ">
+              <div className="flex justify-between w-full px-3 min-h-14 items-center border-b border-white/20 gap-4 ">
                 <div className="flex gap-1  px-1 py-0.5  text-sm items-center w-[60%]">
                   {courseList?.courseTitle}
                 </div>
 
-                <div className="flex gap-1 px-1 py-0.5 rounded-full text-sm tag tag-info pl-2">
+                <div className="flex gap-1 px-1 py-0.5 rounded-full text-sm tag tag-info pl-2 bg-white/10 apply-border-sm">
                   <h1 className="flex items-center  text-sm  ">Credit</h1>
                   <span className="px-2 py-0.5 rounded-full text-sm  tag tag-success">
                     {courseList?.courseCredit}
@@ -61,7 +61,7 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
                 )}
               </div>
               <div className="flex justify-between w-full px-2 min-h-12 items-center  border-white/10">
-                <div className="flex pl-2 pr-1 py-0.5 rounded-full text-sm tag tag-info items-center gap-2">
+                <div className="flex pl-2 pr-1 py-0.5 rounded-full text-sm tag tag-info items-center gap-2 bg-white/10 apply-border-sm">
                   <h1 className="capitalize">{courseList?.courseCode}</h1>
                   <span
                     className={`px-2 py-0.5 rounded-full text-sm tag tag-info`}
@@ -69,7 +69,7 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
                     {courseList?.courseType.charAt(0)}
                   </span>
                 </div>
-                <div className="flex pl-2 pr-1 py-0.5 rounded-full text-sm tag tag-success items-center gap-2">
+                <div className="flex pl-2 pr-1 py-0.5 rounded-full text-sm tag tag-success items-center gap-2 bg-white/10 apply-border-sm">
                   <h1 className="capitalize">{item.total.obtained}</h1>
                   <span
                     className={`px-2 py-0.5 rounded-full text-sm  tag tag-success`}

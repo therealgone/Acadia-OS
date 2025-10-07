@@ -111,7 +111,7 @@ export const LoginComponent = () => {
                   id="name"
                   name="name"
                   type="text"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-[color:var(--border-weak)] focus:border-[color:var(--accent-primary)] focus:ring-1 focus:ring-[color:var(--ring)] text-[color:var(--text-primary)] placeholder-[color:var(--muted)] outline-none transition-all duration-300"
+                  className="w-full px-4 py-3 rounded-xl bg-white/10 border border-[color:var(--border-weak)] focus:border-white/20 focus:ring-0 text-[color:var(--text-primary)] placeholder-[color:var(--muted)] outline-none transition-all duration-300"
                   placeholder="SRM Mail ID"
                   autoComplete="email"
                   autoFocus
@@ -126,7 +126,7 @@ export const LoginComponent = () => {
                     id="password"
                     name="password"
                     type={eyeOpen ? "text" : "password"}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-[color:var(--border-weak)] focus:border-[color:var(--accent-primary)] focus:ring-1 focus:ring-[color:var(--ring)] text-[color:var(--text-primary)] placeholder-[color:var(--muted)] outline-none transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-[color:var(--border-weak)] focus:border-white/20 focus:ring-0 text-[color:var(--text-primary)] placeholder-[color:var(--muted)] outline-none transition-all duration-300"
                     placeholder="Password"
                     autoComplete="current-password"
                     autoFocus
@@ -150,7 +150,7 @@ export const LoginComponent = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl btn-accent font-semibold hover:scale-105 transition-transform duration-300 flex items-center justify-center"
+              className="w-full py-3 rounded-xl btn-accent font-semibold hover-glow apply-hover-scale transition-all duration-300 flex items-center justify-center"
             >
               {loading ? <Loader className="w-5 h-5" /> : "Authenticate"}
             </button>

@@ -79,7 +79,7 @@ const Data = ({
   }, [month]);
 
   return (
-    <div className="py-4 h-full w-full grid px-2 sm:px-3 md:px-5 lg:px-6 xl:px-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 overflow-y-auto scrollbar-none flex h-[calc(100vh-100px)] gap-4">
+    <div className=" items-center justify-center py-4 h-full w-full grid px-2 sm:px-3 md:px-5 lg:px-6 xl:px-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 overflow-y-auto scrollbar-none flex h-[calc(100vh-100px)] gap-4">
       {data[month].days.map((item, i) => {
         const holiday = item.dayOrder === "-";
         const isCurrent =
@@ -91,23 +91,16 @@ const Data = ({
             className={`w-full h-full flex flex-col shadow-xl p-3 sm:p-4 gap-4 lg:minh-50 min-h-40 panel ${
               holiday ? "panel-red border-dotted text-[color:var(--error)]" : "border-dotted text-[color:var(--text-secondary)]"
             } ${
-              isCurrent ? "panel-yellow border-dashed text-[color:var(--text-primary)] hover-glow-yellow" : "hover-glow-white"
+              isCurrent ? "  scale-[1.07] border-yellow-300 glow-yellow text-[color:var(--text-primary)] hover-glow-yellow" : "hover-glow-white"
             }`}
           >
+            
             <div className="flex justify-between items-center w-full min-h-14 px-1 sm:px-2 ">
               <div className="flex flex-col items-center gap-0.5 text-xl text-white/60 ">
                 <span className="font-semibold ">{item.date}</span>
                 <h1 className=" ">{item.day}</h1>
               </div>
-              {isCurrent && (
-                <span className="background-rounded apply-border-sm flex gap-2 items-center justify-center">
-                  <span className="relative flex h-2 w-2 ">
-                    <span className="absolute animate-ping inset-0 rounded-full bg-blue-400 opacity-75"></span>
-                    <span className="rounded-full h-1.5 w-1.5 bg-blue-500 apply-inner-shadow-sm m-auto"></span>
-                  </span>
-                  <h1>Today</h1>
-                </span>
-              )}
+             
               <span className={`text-3xl ${holiday ? "text-[color:var(--error)]" : "text-green-400/60"}`}>
                 {item.dayOrder}
               </span>
@@ -117,6 +110,7 @@ const Data = ({
                 {item.event}
               </div>
             )}
+            
           </div>
         );
       })}

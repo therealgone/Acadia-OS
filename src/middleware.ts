@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
   if (!cookie.user)
     return NextResponse.redirect(new URL("/auth/logout", request.url));
 
-  // Payment gating removed: proceed to app routes without subscription checks
+  
   return NextResponse.next();
 }
 

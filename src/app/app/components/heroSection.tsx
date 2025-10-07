@@ -43,7 +43,7 @@ const HeroSection = () => {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="panel rounded-2xl p-5 hover:scale-[1.02] transition-transform duration-300"
+                className="panel rounded-2xl p-5 hover:scale-[1.02] transition-transform duration-300 hover-glow"
               >
                 <div className="font-semibold text-lg" style={{color:"var(--text-primary)"}}>{feature.title}</div>
                 <div className="text-sm mt-1" style={{color:"var(--muted)"}}>{feature.desc}</div>
@@ -62,17 +62,17 @@ const HeroSection = () => {
                 <div className="w-3 h-3 rounded-full" style={{background:"var(--accent-secondary)", boxShadow:"0 0 1rem rgba(34,211,238,0.2)"}}></div>
               </div>
 
-              <div className="flex justify-between p-3 rounded-xl apply-border-sm bg-white/5">
+            <div className="flex justify-between p-3 rounded-xl apply-border-sm bg-white/10">
                 <span className="text-sm" style={{color:"var(--text-secondary)"}}>Attendance</span>
                 <span className="font-semibold" style={{color:"var(--success)"}}>85%</span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl apply-border-sm bg-white/5">
+                <div className="p-3 rounded-xl apply-border-sm bg-white/10">
                   <div className="text-xs" style={{color:"var(--muted)"}}>9:00 AM</div>
                   <div className="font-medium text-sm" style={{color:"var(--text-primary)"}}>Data Structures</div>
                 </div>
-                <div className="p-3 rounded-xl apply-border-sm bg-white/5">
+                <div className="p-3 rounded-xl apply-border-sm bg-white/10">
                   <div className="text-xs" style={{color:"var(--muted)"}}>11:00 AM</div>
                   <div className="font-medium text-sm" style={{color:"var(--text-primary)"}}>Web Development</div>
                 </div>

@@ -22,8 +22,8 @@ const Page = () => {
   return (
     <div className="flex flex-col gap-6 py-4 ">
       <div className="flex items-center justify-between px-2 lg:px-5">
-        <h1 className="text-2xl neon-underline" style={{fontWeight:700}}>Attendance</h1>
-        <button className="px-3 py-1.5 rounded btn-modern" onClick={() => setModalOpen(true)}>
+        
+        <button className=" items-end justify-end px-3 py-1.5 rounded btn-modern" onClick={() => setModalOpen(true)}>
           Predict
         </button>
       </div>
