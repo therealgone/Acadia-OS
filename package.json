@@ -19,6 +19,7 @@
     "@tanstack/react-query-devtools": "^5.87.4",
     "@tanstack/react-query-persist-client": "^5.87.4",
     "@types/js-cookie": "^3.0.6",
+    "@vercel/speed-insights": "^1.2.0",
     "babel-plugin-react-compiler": "^19.1.0-rc.3",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.536.0",

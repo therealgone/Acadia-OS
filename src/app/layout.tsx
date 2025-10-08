@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const description =
   "Discover a sleek and modern way to manage your academics - no clutter, just clarity.";
@@ -39,7 +40,9 @@ export default function RootLayout({
       <body
         className={`antialiased ${inter.className} `}
       >
-        <div className="container mx-auto px-4 lg:px-6 ">{children}</div>
+        <div className="container mx-auto px-4 lg:px-6 ">{children}
+           <SpeedInsights />
+        </div>
       </body>
     </html>
   );
