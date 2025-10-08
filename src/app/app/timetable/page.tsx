@@ -61,8 +61,8 @@ const DayChange = ({ data }: { data: DaySchedule[] }) => {
           className="flex bg-white/10 pl-2 pr-1 py-0.5 rounded-full text-sm apply-border-sm items-center justify-center gap-3 cursor-pointer"
         >
           <span className="relative flex h-2 w-2 ">
-            <span className="absolute animate-ping inset-0 rounded-full bg-green-400 opacity-75"></span>
-            <span className="rounded-full h-1.5 w-1.5 bg-green-500 apply-inner-shadow-sm m-auto"></span>
+            <span className="absolute animate-ping inset-0 rounded-full bg-yellow-400 glow-yellow"></span>
+            <span className="rounded-full h-1.5 w-1.5 bg-yellow-400 m-auto glow-yellow"></span>
           </span>
           <h1>Today</h1>
           <span
@@ -164,7 +164,7 @@ const Data = ({
             key={item.time}
             ref={current ? currentRef : undefined}
             className={`flex flex-col items-center gap-3 rounded-2xl panel min-h-50 shadow-2xl hover-glow-white ${
-              current ? "outline outline-2 outline-[var(--accent)]/40" : ""
+              current ? "border-yellow-400 glow-yellow panel-yellow scale-[1.05] " : ""
             }`}
           >
             {item.isClass ? (
@@ -176,24 +176,16 @@ const Data = ({
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {current && (
-                      <span className="tag tag-info flex gap-2 items-center justify-center bg-white/10 apply-border-sm">
-                        <span className="relative flex h-2 w-2">
-                          <span className="absolute animate-ping inset-0 rounded-full bg-blue-400 opacity-75"></span>
-                          <span className="rounded-full h-1.5 w-1.5 bg-blue-500/90 apply-inner-shadow-sm m-auto"></span>
-                        </span>
-                        <h1>Now</h1>
-                      </span>
-                    )}
+                   
                     <span className="tag tag-info">{item.time}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center w-[80%] h-full mx-auto text-green-300 flex-col gap-3">
-                  <h1 className="w-full">{item.courseTitle}</h1>
+                <div className="flex items-center justify-center w-[80%] h-full mx-auto  flex-col gap-3">
+                  <h1 className="w-full text-white font-extrabold">{item.courseTitle}</h1>
                   <h2 className="text-sm text-white/60 flex gap-2 w-full">
                     <span className="text-white/80">Class Room</span> -
-                    <span>{item.courseRoomNo}</span>
+                    <span className="text-yellow-300">{item.courseRoomNo}</span>
                   </h2>
                 </div>
 
@@ -218,7 +210,7 @@ const Data = ({
                 <div className="w-full h-12 flex items-center justify-between px-2">
                   <div>
                     {current && (
-                      <span className="background-rounded apply-border-sm flex gap-2 items-center justify-center">
+                      <span className="background-rounded apply-border-sm  flex gap-2 items-center justify-center">
                         <span className="relative flex h-2 w-2">
                           <span className="absolute animate-ping inset-0 rounded-full bg-blue-400 opacity-75"></span>
                           <span className="rounded-full h-1.5 w-1.5 bg-blue-500 apply-inner-shadow-sm m-auto"></span>
@@ -245,7 +237,8 @@ const Data = ({
 
 const AttendanceData = ({ attendance }: { attendance: AttendanceDetail }) => {
   return (
-    <div className="flex justify-end w-full px-2 min-h-12 items-center overflow-auto scrollbar-none">
+    <div className="justify-between flex">
+    <div className="flex w-full px-2 min-h-12 items-center overflow-auto scrollbar-none ">
       <h1
         className={`px-3 py-1 rounded-full text-sm apply-border-sm bg-black ${
           Number(attendance.courseAttendance) <= 75
@@ -255,8 +248,9 @@ const AttendanceData = ({ attendance }: { attendance: AttendanceDetail }) => {
       >
         {attendance.courseAttendance} %
       </h1>
+      </div>
 
-      <div className="flex gap-1 bg-white/5 pl-2 pr-1 py-0.5 rounded-full text-sm apply-border-sm items-center ml-2">
+      <div className=" px-2 rounded-full text-sm gap-2 flex items-center">
         <h1 className="capitalize">
           {attendance.courseAttendanceStatus?.status}
         </h1>
@@ -270,6 +264,7 @@ const AttendanceData = ({ attendance }: { attendance: AttendanceDetail }) => {
           {attendance.courseAttendanceStatus?.classes}
         </span>
       </div>
+    
     </div>
   );
 };
