@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { useSyncExternalStore } from "react";
-import { persist } from "zustand/middleware";
 
 // Sidebar state
 type SidebarState = {

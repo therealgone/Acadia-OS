@@ -5,14 +5,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
-import { useScreen } from "@/hooks/zustand";
 import { usePathname } from "next/navigation";
-import { Loader, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useUserInfo } from "@/hooks/query";
 import Loading from "../loading";
-import Link from "next/link";
 import { CommandCenter } from "./CommandCenter";
-import path from "path";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,7 +28,6 @@ export type BeforeInstallPromptEvent = Event & {
 };
 
 const QueryProvider = ({ children }: { children: React.ReactNode }) => {
-  const { isMobile } = useScreen();
 
   if (typeof window === "undefined") return <Loading />;
 

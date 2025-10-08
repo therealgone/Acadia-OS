@@ -14,18 +14,18 @@ const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmailState] = useState({ mail: '', digest: '', identifier: '' });
   
-  const setEmail = (payload) => setEmailState(payload);
+  const setEmail = (payload: { mail: string; digest: string; identifier: string }) => setEmailState(payload);
   
   return { error, setError, loading, setLoading, setEmail, email };
 };
 
-const validateUser = async (email) => { 
+const validateUser = async (email: string): Promise<{ res: { data: { status_code?: number; message?: string; digest?: string; identifier?: string } } }> => { 
   await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
   if (email.includes('fail')) return { res: { data: { status_code: 400, message: "User not found." } } };
   return { res: { data: { digest: 'mockDigest123', identifier: 'mockIdentifier456' } } };
 };
 
-const validatePassword = async ({ digest, identifier, password }) => { 
+const validatePassword = async ({ password }: { password: string }): Promise<{ isAuthenticated: boolean; data?: { cookies: string }; errorReason?: string }> => { 
   await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
   if (password === 'password') {
     return { isAuthenticated: true, data: { cookies: 'mock_auth_token_xyz' } };
@@ -33,7 +33,7 @@ const validatePassword = async ({ digest, identifier, password }) => {
   return { isAuthenticated: false, errorReason: "Incorrect password." };
 };
 
-const Loader = ({ className }) => <div className={`animate-spin rounded-full border-2 border-t-2 border-white/50 border-t-white ${className}`}></div>;
+const Loader = ({ className }: { className: string }) => <div className={`animate-spin rounded-full border-2 border-t-2 border-white/50 border-t-white ${className}`}></div>;
 
 
 export const LoginComponent = () => {
@@ -70,8 +70,8 @@ export const LoginComponent = () => {
         const emailInput = hash1.includes("@srmist.edu.in") ? hash1 : `${hash1}@srmist.edu.in`;
         const { res } = await validateUser(emailInput.toLowerCase());
 
-        if (res.data?.status_code === 400 || res.data?.status_code === 500 || res.error) {
-          setError(String(res.data?.message || res.errorReason || "Invalid credentials"));
+        if (res.data?.status_code === 400 || res.data?.status_code === 500) {
+          setError(String(res.data?.message || "Invalid credentials"));
         } else if (res.data?.digest && res.data?.identifier) {
           setEmail({
             mail: emailInput.toLowerCase(),
@@ -97,19 +97,17 @@ export const LoginComponent = () => {
           return;
         }
 
-        const { res } = await validatePassword({
-          digest: email.digest,
-          identifier: email.identifier,
+        const result = await validatePassword({
           password: hash2,
         });
 
-        if (res.isAuthenticated && typeof res.data?.cookies === "string") {
-          Cookies.set("token", res.data.cookies, { expires: 30, path: "/" });
+        if (result.isAuthenticated && typeof result.data?.cookies === "string") {
+          Cookies.set("token", result.data.cookies, { expires: 30, path: "/" });
           Cookies.set("user", email.mail, { expires: 30, path: "/" });
           // Success: redirect
           return (window.location.href = "/app/timetable");
         } else {
-          setError(String(res.data?.message || res.errorReason || "Authentication failed"));
+          setError(String(result.errorReason || "Authentication failed"));
         }
       }
     } catch (error) {

@@ -5,7 +5,6 @@ import { Minus, Plus, RotateCcw } from "lucide-react";
 import { AttendanceDetail, DaySchedule } from "srm-academia-api";
 import { GlobalLoader } from "../components/loader";
 import { isCurrentClass } from "@/utils/currentClass";
-import { useRouter } from "next/navigation";
 
 const Page = () => {
   const { data, isPending } = useTimetable();
@@ -22,7 +21,6 @@ const Page = () => {
 export default Page;
 
 const DayChange = ({ data }: { data: DaySchedule[] }) => {
-  const router = useRouter();
   const day = data?.map((i) => i.dayOrder.split(" ")[1]);
   const [today, setToday] = useState<number>();
   const [dayOrder, setDayOrder] = useState<number>(0);

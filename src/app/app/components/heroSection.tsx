@@ -95,7 +95,7 @@ const HeroSection = () => {
             </div>
 
             {/* Schedule */}
-            <h4 className="font-semibold text-lg mb-3 border-t border-white/10 pt-4" style={{ color: "var(--text-primary)" }}>Today's Schedule</h4>
+            <h4 className="font-semibold text-lg mb-3 border-t border-white/10 pt-4" style={{ color: "var(--text-primary)" }}>Today&apos;s Schedule</h4>
             <div className="space-y-3">
               {[
                 { time: "9:00 AM", course: "Data Structures & Algorithms", type: "Lecture", color: "text-[color:var(--info)]" },
