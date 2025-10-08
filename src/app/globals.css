@@ -1,7 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* Hide scrollbar but keep scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Apply globally */
+html,
+body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
 
 
 @theme inline {
@@ -79,11 +99,12 @@ html,body{ cursor:default }
 .panel:hover{ box-shadow: 0 8px 32px rgba(0,0,0,0.2); transform: translateY(-2px); }
 .panel-yellow{ border-color: var(--warning); }
 .panel-blue{ border-color: var(--info); }
-.panel-red{ border-color: var(--error); }
+.panel-red{  border-color: var(--error); }
+.panel-red-bg{ background:#FF453A ; border-color: #FF3B30; color: #FFFFFF;}
 .border-dotted{ border-style: dotted; }
 .border-dashed{ border-style: dashed; }
 .hover-glow-yellow:hover{ box-shadow:0 0 28px rgba(245,158,11,0.35); }
-.glow-yellow{ box-shadow:0 0 28px rgba(245,158,11,0.35); }
+.glow-yellow{ box-shadow:0 0 28px rgb(245, 159, 11); }
 .hover-glow-blue:hover{ box-shadow:0 0 15px rgba(255,255,255,0.25); }
 .hover-glow-white:hover{ box-shadow:0 0 28px rgba(255,255,255,0.2); }
 .neon-underline{ position:relative; display:inline-block; }

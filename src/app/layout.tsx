@@ -15,39 +15,13 @@ export const metadata: Metadata = {
     description,
     url: "",
     siteName: "Acadia OS",
-    images: [
-      {
-        url: "/Landing/BigScreen.png",
-        width: 1200,
-        height: 630,
-        alt: "Acadia OS",
-        type: "image/png",
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "",
-    title: "Acadia OS",
-    description,
-    creator: "",
-    images: [
-      {
-        url: "/Landing/BigScreen.png",
-        width: 1200,
-        height: 630,
-        alt: "Acadia OS",
-        type: "image/png",
-      },
-    ],
   },
 };
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400","500","600","700","800"],
-  variable: "--font-inter"
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-inter",
 });
 
 export default function RootLayout({
@@ -62,10 +36,10 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className={`antialiased ${inter.className}  overflow-y-auto scrollbar-none`}>
-        <div className="container mx-auto px-4 lg:px-6">
-          {children}
-        </div>
+      <body
+        className={`antialiased ${inter.className} `}
+      >
+        <div className="container mx-auto px-4 lg:px-6 ">{children}</div>
       </body>
     </html>
   );

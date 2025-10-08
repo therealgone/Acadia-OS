@@ -60,18 +60,15 @@ const DayChange = ({ data }: { data: DaySchedule[] }) => {
           }}
           className="flex bg-white/10 pl-2 pr-1 py-0.5 rounded-full text-sm apply-border-sm items-center justify-center gap-3 cursor-pointer"
         >
-          <span className="relative flex h-2 w-2 ">
-            <span className="absolute animate-ping inset-0 rounded-full bg-yellow-400 glow-yellow"></span>
-            <span className="rounded-full h-1.5 w-1.5 bg-yellow-400 m-auto glow-yellow"></span>
-          </span>
-          <h1>Today</h1>
+          
+          <h1>Todays DO</h1>
           <span
-            className={`px-2.5 py-0.5 rounded-full text-sm apply-border-sm backdrop-blur-3xl bg-black items-center flex ${
+            className={`px-2.5 py-0.5 rounded-full text-sm apply-border-sm backdrop-blur-3xl bg-yellow-900 items-center flex ${
               dayOrderLoading
-                ? "text-blue-400"
+                ? "text-yellow-400"
                 : today === 0 || dayOrderError
                 ? "text-red-400"
-                : "text-blue-400"
+                : "text-yellow-400"
             }`}
           >
             {dayOrderLoading || dayOrderIsFetching ? (

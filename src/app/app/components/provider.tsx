@@ -48,15 +48,15 @@ const QueryProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
 <QueryClientProvider client={queryClient}>
-  <div className="">
+  <div className="relative">
     
     {/* Top-right Profile Icon */}
-    <div className="fixed top-6 right-6 z-50">
+    <div className="absolute top-6 right-6 z-[101]">
       <ProfileIcon />
     </div>
 
     {/* Main content fills entire page */}
-    <div className="w-full h-full flex flex-col animate-fadeIn transition-all duration-500 m-0 p-0">
+    <div className="w-full h-full flex flex-col animate-fadeIn transition-all duration-500 m-0 p-0 relative z-0">
       
       {/* Optional Top Menu */}
       <div className="w-full flex  mt-24">
@@ -64,12 +64,12 @@ const QueryProvider = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       {/* Main dynamic content */}
-      <div className="">
+      <div className="flex  overflow-y-auto pb-44 no-scrollbar">
         {children}
       </div>
       
       {/* Floating Command Center */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 right-6 z-50 ">
         <CommandCenter />
       </div>
       
@@ -177,7 +177,7 @@ const ProfileIcon = () => {
   return (
     <div
       ref={iconRef}
-      className={`relative w-10 h-10 shadow-2xl flex items-center justify-center font-semibold cursor-pointer rounded-full border border-white/10 bg-white/5 hover-glow-blue transition-all duration-300 ${
+      className={`relative w-10 h-10 shadow-2xl flex items-center justify-center font-semibold cursor-pointer rounded-full border border-white/10 bg-white/5 hover-glow-blue transition-all duration-300 z-[102] ${
         !toggle && "hover:scale-110"
       }`}
       onClick={() => setToggle((prev) => !prev)}
@@ -197,7 +197,7 @@ const ProfileDrop = ({ dropRef }: { dropRef: React.RefObject<HTMLDivElement> }) 
   return (
     <div
       ref={dropRef}
-      className="absolute top-14 right-0 w-48 bg-white/5 backdrop-blur-lg rounded-lg border border-white/5 z-50 flex flex-col shadow-2xl overflow-hidden animate-slideDown"
+      className="absolute top-14 right-0 z-[101] w-48 bg-white/5 backdrop-blur-lg rounded-lg border border-white/5 flex flex-col shadow-2xl overflow-hidden animate-slideDown"
     >
       <a
         href="/auth/logout"

@@ -20,12 +20,30 @@ const Page = () => {
     );
 
   return (
-    <div className="flex flex-col gap-6 py-4 ">
+    <div className="flex flex-col gap-4 py-3 ">
       <div className="flex items-center justify-between px-2 lg:px-5">
-        
-        <button className=" items-end justify-end px-3 py-1.5 rounded btn-modern" onClick={() => setModalOpen(true)}>
-          Predict
-        </button>
+        <div className="text-sm text-white/60">
+          {selection ? (
+            <span>
+              Scenario: <span className="font-medium">{selection.scenario}</span> • Range count: <span className="font-medium">{selection.count}</span>
+            </span>
+          ) : (
+            <span>Predict attendance based on a date range</span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {selection && (
+            <button
+              className="px-3 py-1.5 rounded bg-white/10 apply-border-sm"
+              onClick={() => setSelection(null)}
+            >
+              Reset
+            </button>
+          )}
+          <button className="px-3 py-1.5 rounded btn-modern" onClick={() => setModalOpen(true)}>
+            Predict
+          </button>
+        </div>
       </div>
       <h2 className="text-lg text-white/60 px-2 lg:px-5" style={{fontWeight:500}}>Theory</h2>
       <Data data={data} category="theory" selection={selection} />
