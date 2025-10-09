@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
+
 import React from "react";
-import Icon from "@/../public/favicon.svg";
+
 import { usePathname } from "next/navigation";
 import {
   Timer,
@@ -29,40 +29,32 @@ export const CommandCenter = () => {
       {/* Mobile bottom nav */}
       <div className="fixed inset-x-0 bottom-0 z-50 md:hidden" role="navigation" aria-label="Bottom Navigation">
         <div
-          className="px-2 pb-2 pt-1"
+          className="px-2 pb-2 pt-2"
           style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.5rem)" }}
         >
-          <nav className="mx-auto max-w-md w-full rounded-t-2xl dock-glass backdrop-blur-md border border-white/10 shadow-[0_-8px_40px_rgba(0,0,0,0.25)]">
+          <nav className="mx-auto rounded-full px-2 max-w-md w-full lg:rounded-t-2xl dock-glass backdrop-blur-md border border-white/10 shadow-[0_-8px_40px_rgba(0,0,0,0.25)]">
             <ul className="flex items-stretch justify-between">
               {items.map((i) => {
                 const IconComp = i.icon;
                 const isActive = pathname?.startsWith(i.href);
                 return (
-                  <li key={i.name} className="flex-1">
+                  
                     <Link
                       href={i.href}
-                      aria-label={i.name}
                       aria-current={isActive ? "page" : undefined}
                       className="flex flex-col items-center justify-center gap-1 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                     >
                       <div
                         className={
                           "rounded-xl p-2 transition-colors " +
-                          (isActive ? "bg-white/20 text-white" : "bg-white/10 text-gray-200")
+                          (isActive ? " panel-red-bg " : "bg-white/10 ")
                         }
                       >
                         <IconComp className="w-6 h-6" />
                       </div>
-                      <span
-                        className={
-                          "text-[11px] leading-none " +
-                          (isActive ? "text-white" : "text-gray-300")
-                        }
-                      >
-                        {i.name}
-                      </span>
+                     
                     </Link>
-                  </li>
+                  
                 );
               })}
             </ul>
@@ -70,7 +62,7 @@ export const CommandCenter = () => {
         </div>
       </div>
 
-      {/* Desktop dock (restored) */}
+      {/* Desktop dock  */}
       <div className="hidden md:flex fixed inset-x-0 bottom-6 justify-center items-end z-40">
         <div className="flex rounded-3xl dock-glass px-6 py-4 transition-all duration-300 hover:shadow-[0_8px_40px_rgba(0,0,0,0.25)]">
           {items.map((i) => {
@@ -81,12 +73,14 @@ export const CommandCenter = () => {
                 <div
                   className="group flex flex-col items-center justify-center mx-4 transition-all duration-200 ease-out hover:scale-110"
                 >
-                  <div className={`bg-white/10 rounded-2xl p-3 backdrop-blur-sm transition-all duration-300 shadow-md hover:shadow-lg hover-glow ${isActive ? "bg-white/20" : ""}`}>
+                  <div className={`bg-white/10 rounded-2xl p-3 backdrop-blur-sm transition-all duration-300 shadow-md hover:shadow-lg hover-glow ${isActive ? "panel-red-bg -translate-y-1 transition-transform" : ""}`}>
                     <IconComp className="w-6 h-6 icon-default group-hover:text-white" />
                   </div>
+                  
                   <span className="text-xs text-gray-200 mt-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                     {i.name}
                   </span>
+                  
                 </div>
               </Link>
             );
@@ -95,16 +89,7 @@ export const CommandCenter = () => {
       </div>
 
       {/* Floating header/logo for desktop */}
-      <div className="hidden md:flex fixed top-6 inset-x-0 items-center justify-center gap-3 text-white z-40">
-        <Image
-          loading="lazy"
-          src={Icon}
-          width={25}
-          height={25}
-          alt="Acadia OS Logo"
-        />
-        <span className="leading-none text-lg font-medium">Acadia OS</span>
-      </div>
+      
     </>
   );
 };

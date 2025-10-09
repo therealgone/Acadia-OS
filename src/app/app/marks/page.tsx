@@ -7,17 +7,22 @@ import { GlobalLoader } from "../components/loader";
 const Page = () => {
   const { data, isPending } = useMarks();
 
-  if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
+  if (isPending)
+    return (
+      <div className="flex h-screen w-full justify-center items-center">
+        <GlobalLoader className="h-10 w-10 text-yellow-400" />
+      </div>
+    );
 
   if (!data || data.length === 0)
     return (
-      <div className="flex h-full w-full justify-center items-center text-gray-400">
+      <div className="flex h-screen w-full justify-center items-center text-gray-400">
         No data found
       </div>
     );
 
   return (
-    <div className="flex flex-col gap-8 py-6 px-2">
+    <div className="flex flex-col gap-8 py-6 px-4 lg:px-8">
       <h1 className="text-2xl font-semibold text-white">Theory</h1>
       <Data data={data} category="theory" />
 
@@ -30,91 +35,67 @@ const Page = () => {
 export default Page;
 
 const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
-  const course = useCourse().data;
-  const filteredData = data.filter(
-    (i) => i.category.toLowerCase() === category
-  );
+  const courseList = useCourse().data;
+  const filteredData = data.filter((i) => i.category.toLowerCase() === category);
 
   return (
-    <div className="py-4 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {filteredData.map((item, i) => {
-        const courseList = course?.find((c) => c.courseCode === item.course);
+    <div className="w-full flex flex-col gap-4">
+      {filteredData.map((item, idx) => {
+        const course = courseList?.find((c) => c.courseCode === item.course);
 
         return (
           <div
-            key={i}
-            className="flex flex-col items-center gap-4 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4 shadow-lg transition-transform hover:scale-[1.02]"
+            key={idx}
+            className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 rounded-3xl bg-white/5 backdrop-blur-lg border border-yellow-400/20 shadow-2xl hover:shadow-yellow-400/40 hover:scale-[1.02] transition-all duration-200"
           >
-            <div className="w-full text-white/80 flex flex-col gap-5">
-              {/* Header Section */}
-              <div className="flex justify-between w-full items-center border-b border-white/10 pb-2">
-                <div className="truncate text-white font-semibold w-[65%]" title={courseList?.courseTitle}>
-                  {courseList?.courseTitle || "Unknown Course"}
-                </div>
-                <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1 text-xs">
-                  <span className="text-gray-300">Credit</span>
-                  <span className="text-green-300 font-semibold">
-                    {courseList?.courseCredit || "-"}
-                  </span>
-                </div>
+            {/* Left: Course Info */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1 ">
+              <div
+                className={`px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-3xl ${
+                  category === "theory"
+                    ? "bg-blue-400 text-blue-900"
+                    : "bg-orange-400 text-orange-900"
+                }`}
+              >
+                {course?.courseCode} - {course?.courseType?.charAt(0)}
               </div>
 
-              {/* Marks Section */}
-              <div className="flex items-center justify-center w-[95%] mx-auto">
-                {item.marks.length === 0 ? (
-                  <div className="text-red-400">No Marks</div>
-                ) : (
-                  <MarkData data={item} />
-                )}
+              <div className="flex flex-col gap-1">
+                <span className="text-white font-bold text-lg ">{course?.courseTitle}</span>
+                <span className="text-white/60 text-sm ">{course?.courseFaculty.split("(")[0]}</span>
               </div>
+            </div>
 
-              {/* Footer Section */}
-              <div className="flex justify-between w-full items-center text-sm">
-                <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1">
-                  <h1 className="text-sky-300 font-medium">
-                    {courseList?.courseCode}
-                  </h1>
-                  <span className="text-gray-400">
-                    {courseList?.courseType?.charAt(0)}
-                  </span>
-                </div>
+            {/* Right: Marks */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap">
+              {item.marks.length === 0 ? (
+                <span className="text-red-400 font-medium">No Marks</span>
+              ) : (
+                item.marks.map((m, i) => (
+                  <div
+                    key={i}
+                    className="px-3 py-1 rounded-full text-sm font-medium bg-white/10 backdrop-blur-3xl flex gap-2 items-center"
+                  >
+                    <span className="text-white/70 truncate w-[80px]" title={m.exam}>
+                      {m.exam}
+                    </span>
+                    <span className="text-sky-300">{m.obtained}</span>
+                    <span className="text-amber-300">/</span>
+                    <span className="text-amber-300">{m.maxMark}</span>
+                  </div>
+                ))
+              )}
 
-                <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1">
-                  <h1 className="text-purple-300 font-medium">
-                    {item.total.obtained}
-                  </h1>
-                  <span className="text-amber-300">/</span>
-                  <h1 className="text-amber-300 font-medium">
-                    {item.total.maxMark}
-                  </h1>
-                </div>
+              {/* Total Marks */}
+              <div className="px-3 py-1 rounded-full text-sm font-semibold bg-black text-green-400 flex gap-1 items-center">
+                <span>{item.total.obtained}</span>
+                <span>/</span>
+                <span>{item.total.maxMark}</span>
               </div>
             </div>
           </div>
         );
       })}
-    </div>
-  );
-};
-
-const MarkData = ({ data }: { data: MarkDetail }) => {
-  return (
-    <div className="w-full flex flex-col px-2 text-sm text-gray-300 gap-2">
-      {data.marks.map((item, i) => (
-        <div
-          key={i}
-          className="flex items-center justify-between bg-white/5 rounded-lg p-2"
-        >
-          <div className="truncate w-[60%]" title={item.exam}>
-            {item.exam}
-          </div>
-          <div className="flex gap-2 text-white/80">
-            <h1 className="text-sky-300">{item.obtained}</h1>
-            <span className="text-gray-500">|</span>
-            <h1 className="text-amber-300">{item.maxMark}</h1>
-          </div>
-        </div>
-      ))}
     </div>
   );
 };

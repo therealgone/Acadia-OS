@@ -6,10 +6,17 @@ import { GlobalLoader } from "../components/loader";
 
 const Page = () => {
   const { data, isPending } = useCourse();
-  if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
+
+  if (isPending)
+    return (
+      <div className="flex h-screen w-full justify-center items-center">
+        <GlobalLoader className="h-10 w-10 text-yellow-400" />
+      </div>
+    );
+
   if (!data || data.length === 0)
     return (
-      <div className="flex h-full w-full justify-center items-center text-white/70">
+      <div className="flex h-screen w-full justify-center items-center text-white/70">
         No data found
       </div>
     );
@@ -21,92 +28,72 @@ export default Page;
 
 const Data = ({ data }: { data: CourseDetail[] }) => {
   return (
-    <div className="py-5 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-2 lg:px-5">
+    <div className="w-full h-full flex flex-col gap-6 py-5 px-4 lg:px-8">
       {data.map((item, i) => (
         <div
           key={i}
-          className="flex flex-col rounded-2xl panel p-4 shadow-2xl hover-glow transition-all duration-200"
+          className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl border border-yellow-400/20 hover:shadow-yellow-400/40 hover:scale-[1.02] transition-all duration-200"
         >
-          {/* Header: Course Code & Type */}
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-2 bg-white/10 px-2 py-1 rounded-full apply-border-sm">
-              <span className="text-sm font-semibold">{item.courseCode}</span>
+          {/* Left: Course Info */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1">
+            {/* Course Code & Type */}
+            <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full apply-border-sm">
+              <span className="text-white font-semibold">{item.courseCode}</span>
               <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium backdrop-blur-3xl ${item.courseType.includes("Project")
-                  ? "bg-orange-400 text-orange-900"
-                  : item.courseType.includes("Theory")
+                className={`px-2 py-0.5 rounded-full text-xs font-semibold backdrop-blur-3xl ${
+                  item.courseType.includes("Project")
+                    ? "bg-orange-400 text-orange-900"
+                    : item.courseType.includes("Theory")
                     ? "bg-blue-400 text-blue-900"
                     : "bg-green-500/30 text-green-400"
-                  }`}
+                }`}
               >
                 {item.courseType.charAt(0)}
               </span>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 px-2 py-1 rounded-full apply-border-sm">
-              <span className="text-xs font-medium">Credit</span>
-              <span className="px-2 py-0.5 rounded-full bg-black text-green-400 font-semibold">
-                {item.courseCredit}
-              </span>
+
+            {/* Course Title */}
+            <div className="flex flex-col">
+              <span className="text-white font-bold text-lg">{item.courseTitle}</span>
+              <span className="text-white/60 text-sm">{item.courseFaculty.split("(")[0]}</span>
             </div>
           </div>
 
-          {/* Course Details */}
-          <div className="flex flex-col gap-2 text-sm">
-            <DetailRow
-              className="text-white font-semibold"
-              label="Course"
-              value={item.courseTitle}
-            />
-            <DetailRow
-              className="text-sky-300"
-              label="Faculty"
-              value={item.courseFaculty.split("(")[0]}
-            />
-            <DetailRow
-              className={
-                item.courseType === "Theory"
-                  ? "text-blue-400"
-                  : item.courseType === "Lab Based Theory"
-                    ? "text-green-400"
-                    : item.courseType === "Project Based Theory"
-                      ? "text-orange-400"
-                      : "text-gray-400"
-              }
-              label="Type"
-              value={item.courseType}
-            />
-            <DetailRow
-              className="text-purple-300"
-              label="Slot"
-              value={item.courseSlot.join(" , ")}
-            />
-            <DetailRow
-              className="text-amber-300"
-              label="Class Room"
-              value={item.courseRoomNo}
-            />
+          {/* Right: Details */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Tag label="Type" value={item.courseType} typeColor={item.courseType} />
+            <Tag label="Slot" value={item.courseSlot.join(" , ")} typeColor="slot" />
+            <Tag label="Class Room" value={item.courseRoomNo} typeColor="room" />
+            <Tag label="Credit" value={item.courseCredit.toString()} typeColor="credit" />
           </div>
-
-
         </div>
       ))}
     </div>
   );
 };
 
-const DetailRow = ({
+const Tag = ({
   label,
   value,
-  className,
+  typeColor,
 }: {
   label: string;
   value: string;
-  className?: string;
+  typeColor: string;
 }) => {
+  let bgColor = "bg-white/10 text-white/70";
+
+  if (typeColor === "Theory") bgColor = "bg-blue-400 text-blue-900";
+  else if (typeColor.includes("Lab")) bgColor = "bg-orange-400 text-orange-900";
+  else if (typeColor.includes("Project")) bgColor = "bg-green-400 text-green-900";
+  else if (typeColor === "slot") bgColor = "bg-yellow-400/20 text-yellow-300";
+  else if (typeColor === "room") bgColor = "bg-purple-400/20 text-purple-300";
+  else if (typeColor === "credit") bgColor = "bg-black text-green-400";
+
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-1">
-      <span className="font-semibold text-white/70 min-w-[100px]">{label}</span>
-      <span className={`break-words w-full sm:w-[70%]${className ? " " + className : ""}`}>{value}</span>
+    <div className={`px-3 py-1 rounded-full text-sm font-medium ${bgColor} backdrop-blur-3xl`}>
+      <span className="font-semibold mr-1">{label}:</span>
+      <span>{value}</span>
     </div>
   );
 };

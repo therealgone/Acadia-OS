@@ -105,6 +105,7 @@ html,body{ cursor:default }
 .border-dashed{ border-style: dashed; }
 .hover-glow-yellow:hover{ box-shadow:0 0 28px rgba(245,158,11,0.35); }
 .glow-yellow{ box-shadow:0 0 28px rgb(245, 159, 11); }
+.glow-yellow-mobil{ box-shadow:0 0 10px rgb(245, 159, 11); }
 .hover-glow-blue:hover{ box-shadow:0 0 15px rgba(255,255,255,0.25); }
 .hover-glow-white:hover{ box-shadow:0 0 28px rgba(255,255,255,0.2); }
 .neon-underline{ position:relative; display:inline-block; }
@@ -127,6 +128,10 @@ body {
 .tag-warning{ color:var(--warning); border-color:rgba(245,158,11,0.25); background:rgba(245,158,11,0.08); }
 .tag-error{ color:var(--error); border-color:rgba(239,68,68,0.25); background:rgba(239,68,68,0.08); }
 .tag-info{ color:var(--info); border-color:rgba(59,130,246,0.25); background:rgba(59,130,246,0.08); }
+.tag-info-blue{ color:var(--info); border-color:rgba(59, 131, 246, 0.509); background:rgba(59,130,246,0.08); }
+.tag-info-orange{ color:var( --warning); border-color:rgba(255, 133, 34, 0.565); background:rgba(252, 143, 34, 0.282); }
+
+
 
 @layer utilities {
   .apply-border-sm {

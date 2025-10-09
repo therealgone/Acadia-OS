@@ -12,43 +12,49 @@ const Page = () => {
   const [selection, setSelection] = React.useState<PredictSelection | null>(null);
 
   if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
+
   if (!data || data.length === 0)
     return (
-      <div className="flex h-full w-full justify-center items-center">
-        No data found
+      <div className="flex h-full w-full justify-center items-center text-white/70">
+        No attendance data found
       </div>
     );
 
   return (
-    <div className="flex flex-col gap-4 py-3 ">
-      <div className="flex items-center justify-between px-2 lg:px-5">
-        <div className="text-sm text-white/60">
+    <div className="flex flex-col gap-6 py-4">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between  px-3 lg:px-6 gap-2">
+        <div className="text-sm text-white/70">
           {selection ? (
-            <span>
-              Scenario: <span className="font-medium">{selection.scenario}</span> • Range count: <span className="font-medium">{selection.count}</span>
-            </span>
+            <>
+              Scenario: <span className="font-medium">{selection.scenario}</span> •
+              Range: <span className="font-medium">{selection.count}</span>
+            </>
           ) : (
-            <span>Predict attendance based on a date range</span>
+            "Predict attendance based on date range"
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center  gap-2">
           {selection && (
             <button
-              className="px-3 py-1.5 rounded bg-white/10 apply-border-sm"
+              className="px-3 py-1.5 rounded  bg-white/10 border border-white/20 hover:bg-white/20 transition"
               onClick={() => setSelection(null)}
             >
               Reset
             </button>
           )}
-          <button className="px-3 py-1.5 rounded btn-modern" onClick={() => setModalOpen(true)}>
+          <button
+            className="px-3 py-1.5 rounded bg-blue-500/80 hover:bg-blue-500 text-white font-medium transition"
+            onClick={() => setModalOpen(true)}
+          >
             Predict
           </button>
         </div>
       </div>
-      <h2 className="text-lg text-white/60 px-2 lg:px-5" style={{fontWeight:500}}>Theory</h2>
-      <Data data={data} category="theory" selection={selection} />
-      <h2 className="text-lg text-white/60 px-2 lg:px-5" style={{fontWeight:500}}>Practical</h2>
-      <Data data={data} category="practical" selection={selection} />
+
+      {/* Sections */}
+      <Section title="Theory" data={data} category="theory" selection={selection} />
+      <Section title="Practical" data={data} category="practical" selection={selection} />
 
       <PredictModal
         open={modalOpen}
@@ -61,88 +67,130 @@ const Page = () => {
 
 export default Page;
 
-const Data = ({
+const Section = ({
+  title,
   data,
   category,
-  selection = null,
+  selection,
 }: {
+  title: string;
   data: AttendanceDetail[];
   category: string;
   selection: PredictSelection | null;
 }) => {
-  const filteredData = data.filter(
+  const filtered = data.filter(
     (i) => i.courseCategory.toLowerCase() === category
   );
+
   return (
-    <div className="py-5 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-2 lg:px-5">
-      {filteredData.map((item, i) => {
-        const attended = item.courseConducted - item.courseAbsent;
-        const total = item.courseConducted;
-        const r = 75;
-        let futureAttendInc = 0;
-        let futureTotalInc = 0;
-        if (selection) {
-          futureTotalInc = selection.count;
-          if (selection.scenario === "attend") futureAttendInc = selection.count;
-        }
-        const predict = computePredict({
-          attended: attended + futureAttendInc,
-          total: total + futureTotalInc,
-          requiredPercentage: r,
-          windowSize: 10,
-        });
-        return (
-          <div
-            key={i}
-            className="flex flex-col items-center gap-3 rounded-2xl panel min-h-50 shadow-2xl hover-glow-white"
-          >
-            <div className="w-full h-full text-white/70  flex flex-col gap-4 ">
-              <div className="flex justify-between w-full px-3 min-h-12 items-center border-b border-dotted border-[color:var(--border-strong)]/40">
-                <div className="flex gap-1 px-1 py-0.5 rounded-full text-sm">
-                  <h1 className="tag tag-info">
-                    {item.courseConducted}
-                  </h1>
-                  <span className="tag tag-success ">
-                    {item.courseConducted - item.courseAbsent}
-                  </span>
-                </div>
-                {item.courseCode}
-                <span
-                  className={`tag ${
-                    Number(item.courseAttendance) >= 75
-                      ? "tag-success"
-                      : "tag-error"
-                  }`}
-                >
-                  {item.courseAttendance} %
-                </span>
-              </div>
-              <div className=" flex items-center justify-center w-[92%] h-full mx-auto ">
-                {item.courseTitle}
-              </div>
-              <div className="flex justify-between w-full px-3 min-h-12 items-center  ">
-                <h1 className=" tag tag-info">
-                  {item.courseCategory}
-                </h1>
-                <div className="grid grid-cols-3 gap-2 text-xs">
-                  <div className="tag tag-info px-2 py-1 text-center">
-                    <div className="text-[10px] text-[var(--text-muted)]">Pred</div>
-                    <div className="font-medium att-yellow">{predict.currentPct}%</div>
-                  </div>
-                  <div className="tag tag-success px-2 py-1 text-center">
-                    <div className="text-[10px] text-[var(--text-muted)]">Margin</div>
-                    <div className="font-medium att-green">{Math.max(0, predict.mMaxSkipsAllowed)}</div>
-                  </div>
-                  <div className="tag tag-error px-2 py-1 text-center">
-                    <div className="text-[10px] text-[var(--text-muted)]">Req</div>
-                    <div className="font-medium att-red">{predict.xMinConsecutiveToReachR ?? "∞"}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div className="flex flex-col gap-3">
+      <h2 className="text-lg text-white/80 font-semibold px-3 lg:px-6">{title}</h2>
+      <div className="flex flex-col gap-3 px-3 lg:px-6">
+        {filtered.map((item, i) => (
+          <Card key={i} item={item} selection={selection} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const Card = ({
+  item,
+  selection,
+}: {
+  item: AttendanceDetail;
+  selection: PredictSelection | null;
+}) => {
+  const attended = item.courseConducted - item.courseAbsent;
+  const total = item.courseConducted;
+  const required = 75;
+
+  let futureAttendInc = 0;
+  let futureTotalInc = 0;
+
+  if (selection) {
+    futureTotalInc = selection.count;
+    if (selection.scenario === "attend") futureAttendInc = selection.count;
+  }
+
+  const predict = computePredict({
+    attended: attended + futureAttendInc,
+    total: total + futureTotalInc,
+    requiredPercentage: required,
+    windowSize: 10,
+  });
+
+  const attendancePct = Number(item.courseAttendance);
+  const isTheory = item.courseCategory.toLowerCase() === "theory";
+  const color = isTheory ? "#3B82F6" : "#FB923C"; // blue or orange
+
+  return (
+    <div className="w-full bg-white/[0.04] backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/[0.06] transition-all duration-300">
+      <div className="flex flex-col gap-2 p-4">
+        {/* Top Row */}
+        <div className="flex flex-wrap justify-between items-center text-white/80 text-sm">
+          <div className="flex gap-3 items-center">
+            <span className="font-semibold text-white/90">{item.courseCode}</span>
+            <span
+              className={`px-2 py-0.5 text-xs rounded-full ${
+                isTheory
+                  ? "bg-blue-500/20 text-blue-300"
+                  : "bg-orange-500/20 text-orange-300"
+              }`}
+            >
+              {item.courseCategory}
+            </span>
           </div>
-        );
-      })}
+          <div>
+            <span className="font-semibold">
+              {attended}/{total}
+            </span>
+            <span
+              className={`ml-2 font-semibold ${
+                attendancePct >= 75 ? "text-green-400" : "text-red-400"
+              }`}
+            >
+              {attendancePct}%
+            </span>
+          </div>
+        </div>
+
+        {/* Title */}
+        <div className="text-white/90 font-medium">{item.courseTitle}</div>
+
+        {/* Attendance Bar */}
+        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden mt-1">
+          <div
+            className="h-full rounded-full transition-all duration-700"
+            style={{
+              width: `${Math.min(attendancePct, 100)}%`,
+              backgroundColor: color,
+            }}
+          ></div>
+        </div>
+
+        {/* Prediction Info */}
+        <div className="flex justify-between text-xs text-white/70 mt-2">
+          <div>
+            <p className="text-[10px]">Predicted</p>
+            <span className="font-semibold text-yellow-400">
+              {predict.currentPct}%
+            </span>
+          </div>
+          <div>
+            <p className="text-[10px]">Margin</p>
+            <span className="font-semibold text-green-400">
+              {Math.max(0, predict.mMaxSkipsAllowed)}
+            </span>
+          </div>
+          <div>
+            <p className="text-[10px]">Need to Attend</p>
+            <span className="font-semibold text-red-400">
+              {predict.xMinConsecutiveToReachR ?? "∞"}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
