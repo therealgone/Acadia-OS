@@ -94,21 +94,17 @@ export const LoginComponent = () => {
 
   return (
     <div 
-      className="relative flex-1 flex items-center justify-center px-4 lg:px-0 min-h-screen overflow-hidden pt-12" 
-      style={{background:"var(--bg-primary)"}}
-    >
+      className="relative flex-1 flex items-center justify-center p-5 lg:px-0 min-h-screen  pt-12" >
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-[-20%] left-[-15%] w-[32rem] h-[32rem] rounded-full blur-[150px] opacity-25" style={{background:"radial-gradient(circle, var(--accent-secondary), transparent 60%)"}}></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[36rem] h-[36rem] rounded-full blur-[170px] opacity-20" style={{background:"radial-gradient(circle, var(--accent-primary), transparent 60%)"}}></div>
+       
       </div>
 
-      <div className="relative w-full max-w-lg mx-auto p-1 border border-transparent rounded-3xl z-10 shadow-[0_20px_60px_rgba(0,0,0,0.5)] transition-all duration-500">
-        <div className="p-6 sm:p-8 md:p-10 rounded-[1.4rem] panel border border-white/10 relative overflow-hidden">
-          <div className="absolute inset-0 rounded-[1.4rem] pointer-events-none transition-all duration-500" style={{ boxShadow: `0 0 50px rgba(124, 58, 237, 0.4), inset 0 0 10px rgba(0, 114, 255, 0.2)` }}></div>
+      <div className="relative w-full max-w-lg mx-auto ">
+        <div className="p-6 sm:p-8 md:p-10 rounded-[1.4rem] ">
 
           <div className="relative text-center mb-6 sm:mb-8">
             <div className="flex items-center justify-center space-x-2 mb-2 sm:mb-3 text-2xl sm:text-3xl font-bold" style={{color:"var(--text-primary)"}}>
-              <CheckCircle size={28} className="sm:w-8 sm:h-8" style={{ color: 'var(--accent-primary)' }} />
+              <CheckCircle size={28} className="sm:w-8 sm:h-8"  />
               <span>Acadia OS</span>
             </div>
             <h1 className="text-lg sm:text-xl font-medium" style={{color:"var(--text-secondary)"}}>Secure Academic Portal Access</h1>
@@ -116,9 +112,9 @@ export const LoginComponent = () => {
 
           <div className="flex justify-center items-center mb-4 sm:mb-6">
             <div className="flex items-center space-x-2">
-              <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-colors duration-300 ${currentStep >= 1 ? 'btn-accent text-white' : 'bg-white/10 text-[color:var(--text-secondary)]'}`}>1</span>
+              <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-colors duration-300 ${currentStep >= 1 ? 'border-green-400 border bg-green-400/60 text-white' : 'bg-white/10 text-[color:var(--text-secondary)]'}`}>1</span>
               <div className={`w-10 sm:w-12 h-0.5 transition-colors duration-300 ${currentStep > 1 ? 'bg-white/30' : 'bg-white/10'}`}></div>
-              <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-colors duration-300 ${currentStep === 2 ? 'btn-accent text-white' : 'bg-white/10 text-[color:var(--text-secondary)]'}`}>2</span>
+              <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-colors duration-300 ${currentStep === 2 ? 'border-green-400 border bg-green-400/60 text-white' : 'bg-white/10 text-[color:var(--text-secondary)]'}`}>2</span>
             </div>
           </div>
 
@@ -127,14 +123,14 @@ export const LoginComponent = () => {
               {isEmailStep && (
                 <div className="relative">
                   <Mail className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5" style={{color:"var(--text-secondary)"}} />
-                  <input id="name" name="name" type="text" placeholder="SRM Mail ID" autoComplete="email" required disabled={loading} className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3 rounded-xl bg-white/5 border border-white/20 text-[color:var(--text-primary)] placeholder-[color:var(--text-secondary)] outline-none transition-all duration-300 focus:border-[color:var(--accent-primary)] focus:ring-1 focus:ring-[color:var(--accent-primary)] text-sm sm:text-base" />
+                  <input id="name" name="name" type="text" placeholder="SRM Mail ID" autoComplete="email" required disabled={loading} className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3 rounded-xl bg-white/85 border border-white/20 text-[color:var(--text-primary)] placeholder-[color:var(--text-secondary)] outline-none transition-all duration-300 focus:border-[color:var(--accent-primary)] focus:ring-1 focus:ring-white  text-sm sm:text-base" />
                 </div>
               )}
 
               {!isEmailStep && (
                 <div className="relative">
                   <Lock className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5" style={{color:"var(--text-secondary)"}} />
-                  <input id="password" name="password" type={eyeOpen ? "text" : "password"} placeholder="Password" autoComplete="current-password" required disabled={loading} className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3 rounded-xl bg-white/5 border border-white/20 text-[color:var(--text-primary)] placeholder-[color:var(--text-secondary)] outline-none transition-all duration-300 focus:border-[color:var(--accent-primary)] focus:ring-1 focus:ring-[color:var(--accent-primary)] text-sm sm:text-base" />
+                  <input id="password" name="password" type={eyeOpen ? "text" : "password"} placeholder="Password" autoComplete="current-password" required disabled={loading} className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3 rounded-xl bg-white/5 border border-white/20 text-[color:var(--text-primary)] placeholder-[color:var(--text-secondary)] outline-none transition-all duration-300 focus:border-white focus:ring-1 focus:ring-white text-sm sm:text-base" />
                   <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-white transition-colors" style={{color:"var(--text-secondary)"}}>
                     {eyeOpen ? <Eye onClick={() => setEyeOpen(false)} className="w-4 h-4 sm:w-5 sm:h-5" /> : <EyeOff onClick={() => setEyeOpen(true)} className="w-4 h-4 sm:w-5 sm:h-5" />}
                   </div>
@@ -153,7 +149,7 @@ export const LoginComponent = () => {
 
             {error && <div className="text-red-400 text-xs sm:text-sm font-medium border border-red-500/30 bg-red-500/10 p-2 sm:p-3 rounded-lg text-center">{error}</div>}
 
-            <button type="submit" disabled={loading} className="w-full py-3 sm:py-3 rounded-xl font-bold text-white shadow-xl shadow-black/50 transition-all duration-300 flex items-center justify-center space-x-2 btn-accent hover-glow hover:scale-[1.01] disabled:opacity-60 text-sm sm:text-base">
+            <button type="submit" disabled={loading} className="w-full py-3 sm:py-3 rounded-xl font-bold text-white shadow-xl shadow-black/50 transition-all duration-300 flex items-center justify-center space-x-2 btn-danger hover-glow hover:scale-[1.01] disabled:opacity-60 text-sm sm:text-base">
               {loading ? <Loader className="w-4 h-4 sm:w-5 sm:h-5" /> : (isEmailStep ? "Continue" : "Login Securely")}
             </button>
           </form>

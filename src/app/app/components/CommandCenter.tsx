@@ -38,7 +38,7 @@ export const CommandCenter = () => {
                 const IconComp = i.icon;
                 const isActive = pathname?.startsWith(i.href);
                 return (
-                  
+                  <li key={i.name}>
                     <Link
                       href={i.href}
                       aria-current={isActive ? "page" : undefined}
@@ -54,7 +54,7 @@ export const CommandCenter = () => {
                       </div>
                      
                     </Link>
-                  
+                  </li>
                 );
               })}
             </ul>

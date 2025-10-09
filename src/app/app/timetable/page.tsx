@@ -61,7 +61,7 @@ function DayChange({ data }: { data: DaySchedule[] }) {
   >
     {/* Label */}
     <span className="text-sm text-white/70 font-medium tracking-wide">
-      Today's DO
+      Today&apos;s DO
     </span>
 
     {/* Day Order */}

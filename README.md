@@ -1,119 +1,171 @@
-# acadia-os
+## Acadia OS
 
-A cleaner, modern interface for SRM Academia. Fast, organized, and beautiful.
+A sleek, modern interface for SRM Academia — fast, organized, and beautiful.
 
-## Features
+Built with great care and attention to UX. Done by Jeevan Baabu Murugan.
 
-- Timetable, Attendance, Marks, Profile
-- Vertical flow on mobile, grid on desktop
-- Modern palette, semantic tags, soft panels
-- PWA-ready, optimized for Vercel
+### Highlights
+- Real-time academic data: Timetable, Attendance, Marks, Courses, Calendar, Profile
+- Predictive insights: Attendance projection and actionable margins
+- Offline-friendly caching: Client-side persistence with TanStack Query
+- Responsive UI: Mobile-first layout with a desktop dock and glass panels
+- Secure auth flow: Cookie-based sessions with middleware protection
+- Edge-ready: Middleware on edge; deploys seamlessly on Vercel
 
-## Tech
-
-- Next.js 15 (App Router)
+## Tech Stack
+- Next.js 15 (App Router) + React 19
 - TypeScript
-- Tailwind (with custom CSS vars)
-- TanStack Query
+- Tailwind CSS v4 with custom CSS variables and utility layers
+- TanStack Query v5 (+ async-storage persister, devtools)
+- Zustand (small client-side state for auth flow)
+- Lucide / React Icons
+- srm-academia-api (SRM data access)
+
+## Project Structure
+```text
+acadia-os/
+├─ src/
+│  ├─ app/                         # App Router
+│  │  ├─ layout.tsx                # Root layout, global containers
+│  │  ├─ page.tsx                  # Landing (Hero + Headers)
+│  │  ├─ globals.css               # Tailwind + tokens + utilities
+│  │  ├─ app/                      # Auth-protected application
+│  │  │  ├─ layout.tsx             # Provides QueryProvider + shell
+│  │  │  ├─ components/            # App-level components
+│  │  │  │  ├─ CommandCenter.tsx   # Mobile bottom nav + desktop dock
+│  │  │  │  ├─ loader.tsx          # SVG loader + GlobalLoader wrapper
+│  │  │  │  └─ provider.tsx        # Query client, persistence, menu
+│  │  │  ├─ attendance/
+│  │  │  │  ├─ PredictModal.tsx    # Date range modal, scenario select
+│  │  │  │  └─ page.tsx
+│  │  │  ├─ calendar/
+│  │  │  │  └─ page.tsx
+│  │  │  ├─ course/
+│  │  │  │  └─ page.tsx
+│  │  │  ├─ marks/
+│  │  │  │  └─ page.tsx
+│  │  │  ├─ profile/
+│  │  │  │  └─ page.tsx
+│  │  │  └─ timetable/
+│  │  │     └─ page.tsx
+│  │  ├─ auth/
+│  │  │  ├─ login/
+│  │  │  │  └─ page.tsx
+│  │  │  └─ logout/
+│  │  │     └─ page.tsx
+│  │  └─ components/                # Landing headers, hero
+│  ├─ hooks/
+│  │  ├─ query.ts                   # TanStack Query hooks
+│  │  └─ zustand.ts                 # Auth flow and utilities
+│  ├─ server/
+│  │  └─ action.ts                  # Server actions (srm-academia-api)
+│  ├─ utils/
+│  │  ├─ attendancePredict.ts       # Attendance math + projections
+│  │  ├─ currentClass.ts            # Time-window check for current class
+│  │  ├─ currentMonth.ts            # Calendar helpers
+│  │  ├─ getCookieClient.ts         # Read cookies on client
+│  │  └─ getCookieServer.ts         # Read cookies on server
+│
+├─ public/                          # Icons, manifest, sw.js
+├─ next.config.ts                   # Next config (images, experimental)
+├─ vercel.json                      # Vercel project settings
+└─ package.json                     # Scripts and dependencies
+```
+
+## Feature Overview
+
+### Authentication & Security
+- Middleware (`src/middleware.ts`) protects all `/app/**` routes.
+- Server actions (`src/server/action.ts`) delegate to `srm-academia-api` for:
+  - User verification, password verification, logout
+  - Timetable, Attendance, Marks, Courses, Calendar, Day Order
+- Cookies `token` and `user` set on successful login; cleared on logout.
+
+### Data Layer
+- TanStack Query with:
+  - Sensible `staleTime` per resource
+  - Disabled queries when unauthenticated
+  - LocalStorage persistence (30 days)
+  - React Query Devtools in development
+
+### Timetable
+- Day Order navigation with current day highlighting and smooth scroll.
+- Current class auto-highlight using precise time window checks.
+- Attendance integration shows up-to-date percentages.
+
+### Attendance
+- Split by Theory and Practical with clear color semantics.
+- Predictive modal to simulate attend/absent over a date range.
+- Projection math: min classes to reach threshold, skip margins, window feasibility.
+
+### Marks
+- Per-course marks with exam breakdowns and totals.
+- Course metadata joined for cleaner display.
+
+### Courses
+- Compact cards: code, type, faculty, slot, room, credits.
+
+### Calendar
+- Month grid with current day highlight, holiday states, events.
+
+### Profile
+- Student details and a prominent logout action.
+
+### UX & UI System
+- Tailwind v4 + custom CSS variables (`globals.css`) for tokens:
+  - Background, text, accents, borders, rings
+- Reusable utility classes and “glass” panels.
+- Mobile bottom navigation and desktop dock (`CommandCenter`).
+- Consistent loaders with centered layout (`GlobalLoader`).
 
 ## Getting Started
 
-1. **Clone the repository**
+### Prerequisites
+- Node.js 22.x (per `package.json` engines)
+- npm 10+
 
-   ```bash
-   git clone https://github.com/<you>/acadia-os.git
-   cd acadia-os
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   pnpm install
-   ```
-
-3. **Run the development server**
-
-   ```bash
-   pnpm dev
-   ```
-
-4. **Open your browser**
-   Open http://localhost:3000
-
-## Project Structure
-
-```
-acadia-os/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── app/               # Main application routes
-│   │   │   ├── attendance/    # Attendance tracking
-│   │   │   ├── calendar/      # Academic calendar
-│   │   │   ├── course/        # Course information
-│   │   │   ├── marks/         # Grades and marks
-│   │   │   ├── profile/       # User profile
-│   │   │   ├── timetable/     # Class schedule
-│   │   │   └── components/    # Shared components
-│   │   ├── auth/              # Authentication pages
-│   │   └── components/        # Global components
-│   ├── hooks/                 # Custom React hooks
-│   ├── server/                # Server actions
-│   └── utils/                 # Utility functions
-├── public/                    # Static assets
-└── package.json              # Dependencies and scripts
+### Install
+```bash
+git clone https://github.com/<your-username>/acadia-os.git
+cd acadia-os
+npm ci
 ```
 
-## 🎯 Key Features Explained
+### Development
+```bash
+npm run dev
+# open http://localhost:3000
+```
 
-### Modern Dashboard
+### Build & Start
+```bash
+npm run build
+npm start
+```
 
-- Clean interface that replaces the traditional SRM Portal
-- Real-time data updates with React Query
-- Responsive design that works on all devices
-
-### Academic Management
-
-- **Timetable**: View your daily class schedule with ease
-- **Attendance**: Track your attendance percentage across all courses
-- **Marks**: Monitor your academic performance and grades
-- **Courses**: Access detailed course information
-- **Calendar**: Academic calendar with important dates and events
-- **Profile**: Academic Student information
-
-## 🔧 Scripts
-
-- dev: `pnpm dev`
-- build: `pnpm build`
-- start: `pnpm start`
-- lint: `pnpm lint`
+### Lint
+```bash
+npm run lint
+```
 
 ## Deployment (Vercel)
+This repo includes `vercel.json` and is optimized for Vercel.
 
-1. Push to a GitHub repo named `acadia-os`.
-2. Import in Vercel and select framework: Next.js.
-3. Set environment variables (Project → Settings → Environment Variables).
-4. Leave build settings on Automatic and deploy.
+1. Push to GitHub.
+2. Import the project in Vercel (Framework: Next.js).
+3. Build command: `npm run vercel-build` (already set).
+4. Install command: `npm ci` (already set).
+5. Deploy.
 
-This repo includes `vercel.json` with Next.js + pnpm defaults. Ensure Node 18+ and pnpm are enabled in Vercel Project Settings.
+No extra env vars are required by the app; data access is via `srm-academia-api`.
 
-Troubleshooting:
-- If dependency install fails, enable pnpm in Vercel or remove non-pnpm lockfiles.
-- Verify required env vars exist for production.
+## Notes on Data Access
+This app depends on the `srm-academia-api` package for authenticated data. Ensure your browser manages cookies correctly and that your account has access.
 
-## 🌐 API
+## Credits
+- Design and Development: Jeevan Baabu Murugan
 
-This application uses the `srm-academia-api` package to interact with SRM University's backend services. The API provides secure access to:
+## License
+This project is licensed under the Creative Commons Attribution 4.0 International License — see `LICENSE-CC-BY-4.0`.
 
-- Student authentication
-- Academic data retrieval
-- Real-time updates
 
-## 📄 License
-
-This project is licensed under the Creative Commons Attribution 4.0 International License - see the [LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0) file for details.
-
-## 🔗 Links
-
-- **GitHub Repository**: [https://github.com/jackwaghan/academiax](https://github.com/jackwaghan/academiax)
-- **NPM Package**: [https://www.npmjs.com/package/srm-academia-api](https://www.npmjs.com/package/srm-academia-api)
-- **AcademiaX**: [https://academiax.in](https://academiax.in)

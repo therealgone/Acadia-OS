@@ -1,15 +1,13 @@
 "use client";
 
-import { QueryClient, QueryClientProvider, useIsFetching, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useRef, useState } from "react";
+import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import React from "react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { usePathname } from "next/navigation";
-import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Icon from "@/../public/favicon.svg";
-import { useUserInfo } from "@/hooks/query";
 import Loading from "../loading";
 import { CommandCenter } from "./CommandCenter";
 
@@ -84,7 +82,6 @@ export default QueryProvider;
 // ===== MenuBar Component =====
 const MenuBar = () => {
   const path = usePathname().split("/");
-  const isFetching = useIsFetching();
   const queryClient = useQueryClient();
 
   const onReload = () => {

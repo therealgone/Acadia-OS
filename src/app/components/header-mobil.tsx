@@ -6,7 +6,7 @@ export default function HeaderMobil() {
 
     return (
 
-      <div className="relative max-w-6xl mx-auto flex items-center justify-center">
+      <div className="relative max-w-6xl mx-auto flex items-center justify-center mt-10">
         {/* Logo & Brand */}
         <div className="flex items-center gap-2 group flex-shrink-0">
           <div className="relative w-9 h-9 ">
