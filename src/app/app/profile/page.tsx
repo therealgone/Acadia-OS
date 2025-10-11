@@ -30,7 +30,7 @@ const Data = ({ data }: { data: UserInfo }) => {
   return (
     <div className="w-full h-full mt-20 flex flex-col justify-center items-center bg-[var(--bg-primary)] px-4 ">
       {/* Profile Card */}
-      <div className="w-full max-w-sm flex flex-col items-center gap-6 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl p-6 border border-yellow-400/20">
+      <div className="w-full max-w-sm flex flex-col items-center gap-6 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl p-6 ">
         {/* Name & Department */}
         <div className="flex flex-col items-center gap-1">
           <h1 className="text-2xl text-center font-extrabold text-white">
@@ -41,17 +41,17 @@ const Data = ({ data }: { data: UserInfo }) => {
  
         {/* Profile Details */}
         <div className="w-full flex flex-col gap-3">
-          <ProfileRow label="Reg. Number" value={data.regNumber} />
-          <ProfileRow label="Mobile" value={data.mobile} />
-          <ProfileRow label="Semester" value={data.semester} />
-          <ProfileRow label="Section" value={data.section} />
+          <ProfileRow label="Reg. Number" value={data.regNumber} colour="tag-pink" />
+          <ProfileRow label="Mobile" value={data.mobile} colour="tag-cyan" />
+          <ProfileRow label="Semester" value={data.semester} colour="tag-indigo" />
+          <ProfileRow label="Section" value={data.section} colour="tag-lime" />
         </div>
 
         {/* Logout Button */}
         <div className="w-full mt-4 rounded-full overflow-hidden ">
           <a
             href="/auth/logout"
-            className="w-full px-4 py-3 flex justify-between items-center font-medium bg-red-600/70 hover:bg-red-600/90 transition-colors text-white rounded-full"
+            className="w-full px-4 py-3 flex justify-between items-center font-medium panel-red-bg hover:scale-[1.04] transition-colors text-white rounded-full"
           >
             <span>Log Out</span>
             <LogOut className="w-5 h-5" />
@@ -65,12 +65,17 @@ const Data = ({ data }: { data: UserInfo }) => {
 const ProfileRow = ({
   label,
   value,
+  colour,
 }: {
   label: string;
   value: string | number;
+  colour:string;
 }) => (
-  <div className="flex justify-between items-center w-full px-3 py-2 bg-white/10 rounded-xl border border-yellow-400/10">
-    <span className="text-white text-sm">{label}</span>
-    <span className="text-yellow-300 font-medium">{value}</span>
+  <div className="items-center w-full   ">
+    <div className={`  text-sm font-bold tracking-wide ${colour} px-2 py-0.5 rounded-full items-center flex justify-between`}>
+     <div><span> {label} :</span></div>
+     <div> <span className="">{value}</span></div>
+    </div>
+  
   </div>
 );

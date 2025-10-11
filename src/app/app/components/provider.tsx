@@ -84,14 +84,27 @@ const MenuBar = () => {
   const path = usePathname().split("/");
   const queryClient = useQueryClient();
 
-  const onReload = () => {
+let lastReloadTime = 0; // store last reload timestamp in ms
+
+const onReload = () => {
+  const now = Date.now();
+  const FIVE_MINUTES = 5 * 60 * 1000; // 5 minutes in ms
+
+  if (now - lastReloadTime >= FIVE_MINUTES) {
     queryClient.invalidateQueries();
-  };
+    lastReloadTime = now; // update last reload time
+    console.log("Data reloaded!");
+  } else {
+    console.log("Please wait before reloading again.");
+  }
+};
 
  return (
   <div className="flex justify-between items-center w-full text-lg">
     {/* Left side: Title + Sync status */}
+      <a href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/">
      <div className="flex gap-1 md:lg:xl:gap-4 items-center justify-center ">
+    
         <Image
           loading="lazy"
           src={Icon}
@@ -99,10 +112,12 @@ const MenuBar = () => {
           height={25}
           alt="Acadia OS Logo"
         />
-        <span className="leading-none text-sm md:lg:xl:text-lg font-medium">Acadia OS</span>
+        <span className="leading-none text-sm md:lg:xl:text-lg font-extrabold tracking-widest">Acadia OS</span>
+       
       </div>
+       </a>
     <div className="flex items-center gap-4">
-      <span className="capitalize text-lg md:lg:xl:text-lg font-extrabold text-center items-center">
+      <span className="uppercase text-lg md:lg:xl:text-lg text-center items-center  tracking-widest font-sans font-extrabold  ">
         {path[path.length - 1]}
       </span>
 

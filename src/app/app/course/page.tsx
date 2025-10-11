@@ -28,15 +28,16 @@ export default Page;
 
 const Data = ({ data }: { data: CourseDetail[] }) => {
   return (
-    <div className="w-full h-full flex flex-col gap-6 py-5 px-4 lg:px-8">
+    <div className="w-full h-full flex flex-col gap-6 py-5 px-4 lg:px-8 overflow-hidden mt-10">
       {data.map((item, i) => (
         <div
           key={i}
-          className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl border border-yellow-400/20 hover:shadow-yellow-400/40 hover:scale-[1.02] transition-all duration-200"
+          className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-4 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl   hover:scale-[1.02] transition-all duration-200"
         >
           {/* Left: Course Info */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1">
             {/* Course Code & Type */}
+            <div className="flex justify-between items-center w-full sm:w-auto gap-2">
             <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full apply-border-sm">
               <span className="text-white font-semibold">{item.courseCode}</span>
               <span
@@ -50,6 +51,9 @@ const Data = ({ data }: { data: CourseDetail[] }) => {
               >
                 {item.courseType.charAt(0)}
               </span>
+              
+            </div>
+            <div className="sm:hidden flex "><Tag label="Credit" value={item.courseCredit.toString()} typeColor="credit" /></div>
             </div>
 
             {/* Course Title */}
@@ -64,7 +68,9 @@ const Data = ({ data }: { data: CourseDetail[] }) => {
             <Tag label="Type" value={item.courseType} typeColor={item.courseType} />
             <Tag label="Slot" value={item.courseSlot.join(" , ")} typeColor="slot" />
             <Tag label="Class Room" value={item.courseRoomNo} typeColor="room" />
+            <div className="hidden md:block">
             <Tag label="Credit" value={item.courseCredit.toString()} typeColor="credit" />
+            </div>
           </div>
         </div>
       ))}
@@ -76,15 +82,19 @@ const Tag = ({
   label,
   value,
   typeColor,
+
+
 }: {
   label: string;
   value: string;
   typeColor: string;
+
+
 }) => {
   let bgColor = "bg-white/10 text-white/70";
 
-  if (typeColor === "Theory") bgColor = "bg-blue-400 text-blue-900";
-  else if (typeColor.includes("Lab")) bgColor = "bg-orange-400 text-orange-900";
+  if (typeColor === "Theory") bgColor = "bg-blue-500/20 text-blue-300";
+  else if (typeColor.includes("Lab")) bgColor = "bg-orange-500/20 text-orange-300";
   else if (typeColor.includes("Project")) bgColor = "bg-green-400 text-green-900";
   else if (typeColor === "slot") bgColor = "bg-yellow-400/20 text-yellow-300";
   else if (typeColor === "room") bgColor = "bg-purple-400/20 text-purple-300";
@@ -97,3 +107,4 @@ const Tag = ({
     </div>
   );
 };
+

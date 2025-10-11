@@ -32,7 +32,7 @@ export const CommandCenter = () => {
           className="px-2 pb-2 pt-2"
           style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.5rem)" }}
         >
-          <nav className="mx-auto rounded-full px-2 max-w-md w-full lg:rounded-t-2xl dock-glass backdrop-blur-md border border-white/10 shadow-[0_-8px_40px_rgba(0,0,0,0.25)]">
+          <nav className="mx-auto rounded-2xl px-2 max-w-md w-full lg:rounded-t-2xl dock-glass backdrop-blur-md border border-white/10 shadow-[0_-8px_40px_rgba(0,0,0,0.25)]">
             <ul className="flex items-stretch justify-between">
               {items.map((i) => {
                 const IconComp = i.icon;

@@ -2,7 +2,7 @@
 import React from "react";
 
 export type PredictSelection = {
-  scenario: "attend" | "absent";
+  scenario: "Assume Present" | "Assume Absent";
   count: number; // number of occurrences in the selected date range
 };
 
@@ -17,8 +17,8 @@ export function PredictModal({
 }) {
   const [start, setStart] = React.useState<string>("");
   const [end, setEnd] = React.useState<string>("");
-  const [scenario, setScenario] = React.useState<"attend" | "absent">(
-    "absent"
+  const [scenario, setScenario] = React.useState<"Assume Present" | "Assume Absent">(
+    "Assume Absent"
   );
   const [touched, setTouched] = React.useState(false);
 
@@ -55,7 +55,7 @@ export function PredictModal({
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg">Predict Attendance</h2>
           <button
-            className="px-3 py-1.5 rounded bg-white/10 apply-border-sm"
+            className="px-3 py-1.5 rounded panel-red-bg apply-border-sm"
             onClick={onClose}
           >
             Close
@@ -95,32 +95,32 @@ export function PredictModal({
         <div className="flex items-center gap-3 mb-4">
           <button
             className={`flex-1 px-3 py-2 rounded apply-border-sm ${
-              scenario === "absent" ? "btn-accent" : "bg-white/10"
+              scenario === "Assume Absent" ? "bg-blue-500/80 hover:bg-blue-500" : "bg-white/10"
             }`}
-            onClick={() => setScenario("absent")}
+            onClick={() => setScenario("Assume Absent")}
           >
-            Assume Absent
+            Assume Absent 
           </button>
           <button
             className={`flex-1 px-3 py-2 rounded apply-border-sm ${
-              scenario === "attend" ? "btn-accent" : "bg-white/10"
+              scenario === "Assume Present" ? "bg-blue-500/80 hover:bg-blue-500" : "bg-white/10"
             }`}
-            onClick={() => setScenario("attend")}
+            onClick={() => setScenario("Assume Present")}
           >
-            Assume Attend
+            Assume Present
           </button>
         </div>
 
         <div className="flex justify-end gap-3">
           <button
-            className="px-4 py-2 rounded apply-border-sm bg-white/10"
+            className="px-4 py-2 panel-red-bg rounded"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
             disabled={isInvalidRange}
-            className={`px-4 py-2 rounded ${isInvalidRange ? "bg-white/10 text-white/40" : "btn-accent"}`}
+            className={`px-4 py-2 rounded ${isInvalidRange ? "bg-white/10 text-white/40" : "bg-blue-500/80 hover:bg-blue-500"}`}
             onClick={() => {
               onApply({ scenario, count: computeCount() });
               onClose();

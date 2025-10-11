@@ -16,40 +16,55 @@ const Page = () => {
   if (!data || data.length === 0)
     return (
       <div className="flex h-full w-full justify-center items-center text-white/70">
-        No attendance data found
+        No Attendance Data Found
       </div>
     );
 
   return (
-    <div className="flex flex-col gap-6 py-4">
+    <div className="flex flex-col gap-6 py-4 ">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between  px-3 lg:px-6 gap-2">
-        <div className="text-sm text-white/70">
-          {selection ? (
-            <>
-              Scenario: <span className="font-medium">{selection.scenario}</span> •
-              Range: <span className="font-medium">{selection.count}</span>
-            </>
-          ) : (
-            "Predict attendance based on date range"
-          )}
-        </div>
-        <div className="flex items-center  gap-2">
+      <div className="flex flex-wrap  items-center justify-between  px-3 lg:px-6 gap-2 ">
+        
+        <div className=" flex">
           {selection && (
             <button
-              className="px-3 py-1.5 rounded  bg-white/10 border border-white/20 hover:bg-white/20 transition"
+              className="px-3 py-1.5 rounded-full  bg-white/10 border border-white/20 hover:bg-white/20 transition"
               onClick={() => setSelection(null)}
             >
               Reset
             </button>
           )}
+          </div>
+         <div className=" flex-10 text-sm text-white/70 items-center  text-center  hidden md:block px-5 py-5 -mb-5   ">
+          {selection ? (
+            <>
+              Scenario: <span className="font-extrabold text-blue-500">{selection.scenario}</span> •
+              No of Days: <span className="font-extrabold text-blue-500">{selection.count}</span>
+            </>
+          ) : (
+            ""
+          )}
+        </div>
+          <div className="  absolute right-5 top-20 lg:static xl:static md:static md:flex-11  md:flex ">
           <button
-            className="px-3 py-1.5 rounded bg-blue-500/80 hover:bg-blue-500 text-white font-medium transition"
+            className="px-3 py-1.5  bg-blue-500/80 hover:bg-blue-500 text-white font-medium transition rounded-full  "
             onClick={() => setModalOpen(true)}
           >
             Predict
           </button>
+          </div>
+          <div className="text-sm text-white/70 flex  sm:hidden px-5 py-5 -mb-5  ">
+          {selection ? (
+            <>
+              Scenario: <span className="font-extrabold text-blue-500">{selection.scenario}</span> •
+              No of Days: <span className="font-extrabold text-blue-500">{selection.count}</span>
+            </>
+          ) : (
+            ""
+          )}
         </div>
+        
+        
       </div>
 
       {/* Sections */}
@@ -83,7 +98,7 @@ const Section = ({
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 ">
       <h2 className="text-lg text-white/80 font-semibold px-3 lg:px-6">{title}</h2>
       <div className="flex flex-col gap-3 px-3 lg:px-6">
         {filtered.map((item, i) => (
@@ -110,7 +125,7 @@ const Card = ({
 
   if (selection) {
     futureTotalInc = selection.count;
-    if (selection.scenario === "attend") futureAttendInc = selection.count;
+    if (selection.scenario === "Assume Present") futureAttendInc = selection.count;
   }
 
   const predict = computePredict({
@@ -142,12 +157,14 @@ const Card = ({
             </span>
           </div>
           <div>
-            <span className="font-semibold">
+            <span className=" tag-orange px-1.5 py-0.5 rounded-full">
               {attended}/{total}
             </span>
+            </div>
+            <div className=" ">
             <span
-              className={`ml-2 font-semibold ${
-                attendancePct >= 75 ? "text-green-400" : "text-red-400"
+              className={`ml-2 font-semibold rounded-full px-1.5 py-0.5 ${
+                attendancePct >= 75 ? "tag-success" : "tag-warning"
               }`}
             >
               {attendancePct}%
@@ -161,20 +178,20 @@ const Card = ({
         {/* Attendance Bar */}
         <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden mt-1">
           <div
-            className="h-full rounded-full transition-all duration-700"
+            className={`h-full rounded-full transition-all duration-700  ${attendancePct >= 75 ? "bg-green-500" : 'bg-red-500'}`}
             style={{
-              width: `${Math.min(attendancePct, 100)}%`,
-              backgroundColor: color,
+              width: `${Math.min(attendancePct, 100)}%`
+              
             }}
           ></div>
         </div>
 
         {/* Prediction Info */}
-        <div className="flex justify-between text-xs text-white/70 mt-2">
+        <div className="flex justify-between text-xs text-white/70 mt-2 text-center ">
           <div>
             <p className="text-[10px]">Predicted</p>
-            <span className="font-semibold text-yellow-400">
-              {predict.currentPct}%
+            <span className={`font-extrabold text-blue-500 ${selection ? predict.currentPct >= 75 ? "text-green-500": "text-red-500" : ""} `}>
+              {selection ? predict.currentPct : " - " }
             </span>
           </div>
           <div>

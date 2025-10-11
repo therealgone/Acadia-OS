@@ -46,37 +46,55 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
         return (
           <div
             key={idx}
-            className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 rounded-3xl bg-white/5 backdrop-blur-lg border border-yellow-400/20 shadow-2xl hover:shadow-yellow-400/40 hover:scale-[1.02] transition-all duration-200"
+            className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 rounded-3xl bg-white/5 backdrop-blur-lg shadow-2xl hover:scale-[1.02] transition-all duration-200"
           >
             {/* Left: Course Info */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1 ">
-              <div
-                className={`px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-3xl ${
-                  category === "theory"
-                    ? "bg-blue-400 text-blue-900"
-                    : "bg-orange-400 text-orange-900"
-                }`}
-              >
-                {course?.courseCode} - {course?.courseType?.charAt(0)}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1 w-full">
+              {/* Course code badge + total marks (mobile) */}
+              <div className="flex justify-between items-center w-full sm:w-auto gap-2">
+                <div
+                  className={`px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-3xl whitespace-nowrap ${
+                    category === "theory"
+                      ? "bg-blue-500/20 text-blue-300"
+                      : "bg-orange-500/20 text-orange-300"
+                  }`}
+                >
+                  {course?.courseCode} - {course?.courseType?.charAt(0)}
+                </div>
+
+                {/* Total Marks for mobile */}
+                <div className="px-3 py-1 rounded-full text-sm font-semibold bg-black text-green-400 flex sm:hidden gap-1">
+                  <span>{item.total.obtained}</span>
+                  <span>/</span>
+                  <span>{item.total.maxMark}</span>
+                </div>
               </div>
 
-              <div className="flex flex-col gap-1">
-                <span className="text-white font-bold text-lg ">{course?.courseTitle}</span>
-                <span className="text-white/60 text-sm ">{course?.courseFaculty.split("(")[0]}</span>
+              {/* Course title and faculty */}
+              <div className="flex flex-col gap-1 w-full sm:w-auto">
+                <span className="text-white font-bold text-lg truncate">
+                  {course?.courseTitle}
+                </span>
+                <span className="text-white/60 text-sm truncate">
+                  {course?.courseFaculty.split("(")[0]}
+                </span>
               </div>
             </div>
 
             {/* Right: Marks */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap">
+            <div className="flex flex-wrap sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mt-2 sm:mt-0 w-full sm:w-auto">
               {item.marks.length === 0 ? (
                 <span className="text-red-400 font-medium">No Marks</span>
               ) : (
                 item.marks.map((m, i) => (
                   <div
                     key={i}
-                    className="px-3 py-1 rounded-full text-sm font-medium bg-white/10 backdrop-blur-3xl flex gap-2 items-center"
+                    className="px-3 py-1 rounded-full text-sm font-medium bg-white/10 backdrop-blur-3xl flex gap-1 sm:gap-2 items-center flex-shrink-0"
                   >
-                    <span className="text-white/70 truncate w-[80px]" title={m.exam}>
+                    <span
+                      className="text-white/70 truncate max-w-[80px]"
+                      title={m.exam}
+                    >
                       {m.exam}
                     </span>
                     <span className="text-sky-300">{m.obtained}</span>
@@ -86,8 +104,8 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
                 ))
               )}
 
-              {/* Total Marks */}
-              <div className="px-3 py-1 rounded-full text-sm font-semibold bg-black text-green-400 flex gap-1 items-center">
+              {/* Total Marks for desktop */}
+              <div className="px-3 py-1 rounded-full text-sm font-semibold bg-black text-green-400 flex hidden sm:flex gap-1 items-center flex-shrink-0">
                 <span>{item.total.obtained}</span>
                 <span>/</span>
                 <span>{item.total.maxMark}</span>
