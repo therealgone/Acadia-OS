@@ -40,49 +40,55 @@ const Page = React.memo(() => {
   return (
     <div className="flex flex-col gap-6 py-4 ">
       {/* Header */}
-      <div className="flex flex-wrap  items-center justify-between  px-3 lg:px-6 gap-2 ">
-        
-        <div className=" flex">
-          {selection && (
-            <button
-              className="px-3 py-1.5 rounded-full  bg-white/10 border border-white/20 hover:bg-white/20 transition"
-              onClick={handleSelectionReset}
-            >
-              Reset
-            </button>
-          )}
-          </div>
-         <div className=" flex-10 text-sm text-white/70 items-center  text-center  hidden md:block px-5 py-5 -mb-5   ">
-          {selection ? (
-            <>
-              Scenario: <span className="font-extrabold text-blue-500">{selection.scenario}</span> •
-              No of Days: <span className="font-extrabold text-blue-500">{selection.count}</span>
-            </>
-          ) : (
-            ""
-          )}
-        </div>
-          <div className="  absolute right-5 top-20 lg:static xl:static md:static md:flex-11  md:flex ">
-          <button
-            className="px-3 py-1.5  bg-blue-500/80 hover:bg-blue-500 text-white font-medium transition rounded-full  "
-            onClick={handleModalOpen}
-          >
-            Predict
-          </button>
-          </div>
-          <div className="text-sm text-white/70 flex  sm:hidden px-5 py-5 -mb-5  ">
-          {selection ? (
-            <>
-              Scenario: <span className="font-extrabold text-blue-500">{selection.scenario}</span> •
-              No of Days: <span className="font-extrabold text-blue-500">{selection.count}</span>
-            </>
-          ) : (
-            ""
-          )}
-        </div>
-        
-        
-      </div>
+     <div className="flex flex-row md:flex-row items-center justify-between w-full px-4 lg:px-6 gap-3">
+
+  {/* Scenario Info (center on both mobile & desktop) */}
+  <div className=" order-2 text-center text-sm  text-white/70  w-full md:w-auto ">
+    {selection ? (
+      <>
+        Scenario:{" "}
+       
+        <span className="font-extrabold  tag tag-orange">
+          {selection.scenario}
+        </span>{" "}
+       
+        No of Days:{" "}
+       
+        <span className="font-bold m-1   tag-warning">
+          {selection.count}
+        </span>
+      </>
+    ) : (
+      ""
+    )}
+  </div>
+
+  {/* Left: Reset button */}
+  <div className=" order-1">
+    {selection && (
+      <button
+        className="px-3 py-1.5 rounded-full btn  transition"
+        onClick={handleSelectionReset}
+      >
+        Reset
+      </button>
+    )}
+  </div>
+
+  {/* Right: Predict button */}
+  <div className=" order-3">
+    <button
+      className="px-3 py-1.5 btn text-white font-medium transition rounded-full"
+      onClick={handleModalOpen}
+    >
+      Predict
+    </button>
+  </div>
+
+
+
+</div>
+
 
       {/* Sections */}
       <Suspense fallback={<GlobalLoader className="h-8 w-8 text-blue-400" />}>
