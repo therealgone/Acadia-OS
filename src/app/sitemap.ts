@@ -6,14 +6,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
-      images: ["/Landing/BigScreen.png"],
+      images: ["/web-app-manifest-512x512.png"],
     },
     {
       url: "/auth/login",
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
-      images: ["/Landing/BigScreenLogin.png"],
+      images: ["/web-app-manifest-512x512.png"],
     },
   ];
 }

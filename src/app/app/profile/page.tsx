@@ -3,7 +3,11 @@ import { useUserInfo } from "@/hooks/query";
 import React from "react";
 import { UserInfo } from "srm-academia-api";
 import { GlobalLoader } from "../components/loader";
-import { LogOut } from "lucide-react";
+
+import { Github, Linkedin, MessageCircle, LogOut
+} from "lucide-react";
+import Icon from "@/../public/favicon.svg";
+import Image from "next/image";
 
 const Page = () => {
   const { data, isPending } = useUserInfo();
@@ -56,8 +60,38 @@ const Data = ({ data }: { data: UserInfo }) => {
             <span>Log Out</span>
             <LogOut className="w-5 h-5" />
           </a>
+
+          
         </div>
+           <div className="flex flex-row gap-10 ">
+                  <a 
+                    href="https://github.com/therealgone" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300"
+                  >
+                    <Github size={20} className="text-[#E1E1E3]" />
+                  </a>
+                  <a 
+                    href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300"
+                  >
+                    <Linkedin size={20} className="text-[#E1E1E3]" />
+                  </a>
+                  <a 
+                    href="https://chat.whatsapp.com/BsIHwgrahSoHvVNVV9OHkA" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300"
+                  >
+                    <MessageCircle size={20} />
+                   
+                  </a>
+                </div>
       </div>
+    
     </div>
   );
 };

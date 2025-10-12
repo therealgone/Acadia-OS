@@ -123,14 +123,14 @@ export const LoginComponent = () => {
               {isEmailStep && (
                 <div className="relative">
                   <Mail className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5" style={{color:"var(--text-secondary)"}} />
-                  <input id="name" name="name" type="text" placeholder="SRM Mail ID" autoComplete="email" required disabled={loading} className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3 rounded-xl bg-white/85 border border-white/20 text-[color:var(--text-primary)] placeholder-[color:var(--text-secondary)] outline-none transition-all duration-300 focus:border-[color:var(--accent-primary)] focus:ring-1 focus:ring-white  text-sm sm:text-base" />
+                  <input id="name" name="name" type="text" placeholder="SRM Mail ID" autoComplete="email" required disabled={loading} className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3 rounded-xl bg-white/85 border border-white/20 text-[color:var(--text-primary)] placeholder-[color:var(--text-secondary)] outline-none transition-all duration-300 focus:border-[color:var(--accent-primary)] focus:ring-1 focus:ring-white focus:text-black  text-sm sm:text-base" />
                 </div>
               )}
 
               {!isEmailStep && (
                 <div className="relative">
                   <Lock className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5" style={{color:"var(--text-secondary)"}} />
-                  <input id="password" name="password" type={eyeOpen ? "text" : "password"} placeholder="Password" autoComplete="current-password" required disabled={loading} className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3 rounded-xl bg-white/5 border border-white/20 text-[color:var(--text-primary)] placeholder-[color:var(--text-secondary)] outline-none transition-all duration-300 focus:border-white focus:ring-1 focus:ring-white text-sm sm:text-base" />
+                  <input id="password" name="password" type={eyeOpen ? "text" : "password"} placeholder="Password" autoComplete="current-password" required disabled={loading} className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3 rounded-xl bg-white/5 border border-white/20 text-[color:var(--text-primary)] placeholder-[color:var(--text-secondary)] outline-none transition-all duration-300 focus:border-white focus:ring-1  focus:ring-white text-sm sm:text-base" />
                   <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-white transition-colors" style={{color:"var(--text-secondary)"}}>
                     {eyeOpen ? <Eye onClick={() => setEyeOpen(false)} className="w-4 h-4 sm:w-5 sm:h-5" /> : <EyeOff onClick={() => setEyeOpen(true)} className="w-4 h-4 sm:w-5 sm:h-5" />}
                   </div>

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 
 import { usePathname } from "next/navigation";
 import {
@@ -13,16 +13,21 @@ import {
   UserPen,
 } from "lucide-react";
 
-export const CommandCenter = () => {
+// Memoized navigation items to prevent recreation on every render
+const NAVIGATION_ITEMS = [
+  { name: "Timetable", href: "/app/timetable", icon: Timer },
+  { name: "Attendance", href: "/app/attendance", icon: Percent },
+  { name: "Marks", href: "/app/marks", icon: SquarePen },
+  { name: "Course", href: "/app/course", icon: School },
+  { name: "Calendar", href: "/app/calendar", icon: Calendar },
+  { name: "Profile", href: "/app/profile", icon: UserPen },
+] as const;
+
+export const CommandCenter = React.memo(() => {
   const pathname = usePathname();
-  const items = [
-    { name: "Timetable", href: "/app/timetable", icon: Timer },
-    { name: "Attendance", href: "/app/attendance", icon: Percent },
-    { name: "Marks", href: "/app/marks", icon: SquarePen },
-    { name: "Course", href: "/app/course", icon: School },
-    { name: "Calendar", href: "/app/calendar", icon: Calendar },
-    { name: "Profile", href: "/app/profile", icon: UserPen },
-  ];
+  
+  // Memoize the items to prevent recreation
+  const items = useMemo(() => NAVIGATION_ITEMS, []);
 
   return (
     <>
@@ -41,6 +46,7 @@ export const CommandCenter = () => {
                   <li key={i.name}>
                     <Link
                       href={i.href}
+                      prefetch={true} // Prefetch routes for faster navigation
                       aria-current={isActive ? "page" : undefined}
                       className="flex flex-col items-center justify-center gap-1 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                     >
@@ -69,7 +75,7 @@ export const CommandCenter = () => {
             const IconComp = i.icon;
             const isActive = pathname?.startsWith(i.href);
             return (
-              <Link key={i.name} href={i.href}>
+              <Link key={i.name} href={i.href} prefetch={true}>
                 <div
                   className="group flex flex-col items-center justify-center mx-4 transition-all duration-200 ease-out hover:scale-110"
                 >
@@ -92,4 +98,6 @@ export const CommandCenter = () => {
       
     </>
   );
-};
+});
+
+CommandCenter.displayName = 'CommandCenter';

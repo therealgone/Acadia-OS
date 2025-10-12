@@ -14,6 +14,7 @@ import {
   getDayOrder,
 } from "srm-academia-api";
 
+
 export async function validateUser(email: string) {
   const res = await verifyUser(email);
   return { res };

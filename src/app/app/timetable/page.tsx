@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { RotateCcw } from "lucide-react";
+import React, { useState, useEffect, useRef, useMemo, useCallback, Suspense } from "react";
+
 import { useAttendance, useDayOrder, useTimetable } from "@/hooks/query";
 import { AttendanceDetail, DaySchedule } from "srm-academia-api";
 import { GlobalLoader } from "../components/loader";
 import { isCurrentClass } from "@/utils/currentClass";
 
-export default function Page() {
+const Page = React.memo(() => {
   const { data, isPending } = useTimetable();
 
   if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
@@ -18,19 +18,27 @@ export default function Page() {
       </div>
     );
 
-  return <DayChange data={data} />;
-}
+  return (
+    <Suspense fallback={<GlobalLoader className="h-8 w-8 text-blue-400" />}>
+      <DayChange data={data} />
+    </Suspense>
+  );
+});
 
-function DayChange({ data }: { data: DaySchedule[] }) {
-  const day = data?.map((i) => i.dayOrder.split(" ")[1]);
+Page.displayName = 'TimetablePage';
+
+export default Page;
+
+const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
+  // Memoize day extraction to prevent recalculation
+  const day = useMemo(() => data?.map((i) => i.dayOrder.split(" ")[1]), [data]);
   const [today, setToday] = useState<number>(0);
   const [dayOrder, setDayOrder] = useState<number>(0);
-
-  
 
   const { data: dayOrderData, isLoading, isError, refetch, isFetching } =
     useDayOrder();
 
+  // Memoize day order update effect
   useEffect(() => {
     if (dayOrderData) {
       const todayDayOrder = Number(dayOrderData.dayOrder);
@@ -41,16 +49,25 @@ function DayChange({ data }: { data: DaySchedule[] }) {
     }
   }, [dayOrderData]);
 
-  const isActive =data[dayOrder];
+  // Memoize current day data
+  const isActive = useMemo(() => data[dayOrder], [data, dayOrder]);
+
+  // Memoize day order click handler
+  const handleDayOrderClick = useCallback((index: number) => {
+    setDayOrder(index);
+  }, []);
+
+  // Memoize today click handler
+  const handleTodayClick = useCallback(() => {
+    if (today && today !== 0) setDayOrder(today - 1);
+  }, [today]);
 
   return (
     <div className="w-full h-full flex flex-col  scrollbar-none">
       {/* Header */}
       <div className="w-full flex justify-center py-4">
   <div
-    onClick={() => {
-      if (today && today !== 0) setDayOrder(today - 1);
-    }}
+    onClick={handleTodayClick}
     className="
       relative flex items-center justify-between gap-4
       w-[200px] sm:w-[300px] px-4 py-2
@@ -64,7 +81,7 @@ function DayChange({ data }: { data: DaySchedule[] }) {
     "
   >
     {/* Label */}
-    <span className="text-sm text-white/70 font-medium tracking-wider">
+    <span className="text-sm text-white/70 font-medium tracking-wider whitespace-nowrap">
       Today&apos;s DO
     </span>
 
@@ -76,9 +93,9 @@ function DayChange({ data }: { data: DaySchedule[] }) {
         
         ${
           isLoading
-            ? "bg-white/10 text-yellow-400  "
+            ? "  tag-warning tag "
             : today === 0 || isError
-            ? "bg-red-600/20 text-red-400"
+            ? ""
             : ""
         }
       `}
@@ -86,24 +103,24 @@ function DayChange({ data }: { data: DaySchedule[] }) {
       {isLoading || isFetching ? (
         <GlobalLoader className="w-4 h-4 text-yellow-400" />
       ) : isError ? (
-        <div className="flex items-center gap-1">
+        <div className="flex  items-center gap-1">
           <span>Failed</span>
           <button
             onClick={() => refetch()}
-            className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-500/30 hover:bg-red-500/50 text-xs text-white"
+            className="flex  items-center gap-1 px-2 py-0.5 rounded-md bg-red-500/30 hover:bg-red-500/50 text-xs text-white"
           >
-            <RotateCcw className="w-3 h-3" />
+           
           </button>
         </div>
       ) : today === 0 ? (
-        "Holiday"
+        "Hoilday"
       ) : (
         today
       )}
     </span>
 
     {/* Glow effect */}
-    {today && today !== 0 && !isError && (
+    {today  !== 0 && !isError && (
       <span className="absolute -inset-1 rounded-xl  blur-md text-yellow-500 pointer-events-none"></span>
     )}
   </div>
@@ -115,7 +132,7 @@ function DayChange({ data }: { data: DaySchedule[] }) {
      {Array.from({ length: 5 }).map((_, index) => (
     <button
       key={index}
-      onClick={() => setDayOrder(index)}
+      onClick={() => handleDayOrderClick(index)}
       className={`px-4 py-2 rounded-2xl  hover-glow hover:-translate-y-2 hover:shadow-[0_8px_40px_rgba(0,0,0,0.25)]  transition-all duration-300 shadow-md  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 
         ${dayOrder === index ? "panel-red-bg -translate-y-1 " : "bg-white/10"}
       `}
@@ -131,9 +148,11 @@ function DayChange({ data }: { data: DaySchedule[] }) {
       </div>
     </div>
   );
-}
+});
 
-function Data({
+DayChange.displayName = 'DayChange';
+
+const Data = React.memo(({
   data,
   dayorder,
   today,
@@ -141,7 +160,7 @@ function Data({
   data: DaySchedule[];
   dayorder: number;
   today: number;
-}) {
+}) => {
   const { data: attendanceData, isError } = useAttendance();
   const currentRef = useRef<HTMLDivElement>(null);
 
@@ -154,15 +173,34 @@ function Data({
     }
   }, [today, dayorder]);
 
+  // Memoize breaktime calculation function
+  const breaktime = useCallback((time: string) => {
+    const [hr, min] = time.split(":").map(Number);
+    return hr * 60 + min;
+  }, []);
+
+  // Memoize current day classes
+  const currentDayClasses = useMemo(() => {
+    if (!data[dayorder]) return [];
+    return data[dayorder].class.filter(item => item.isClass);
+  }, [data, dayorder]);
+
+  
+
   return (
     <div className="flex flex-col gap-4 px-5 py-3 w-full">
-      {data[dayorder].class.map((item) => {
+      {currentDayClasses.map((item) => {
+     
         const attendance = attendanceData?.find(
           (i) =>
             i.courseCode === item.courseCode &&
             ((item.slot.startsWith("P") && i.courseSlot === "LAB") ||
               !item.slot.startsWith("P"))
         );
+
+       
+       
+        
 
         const current =
           today && today !== 0 && dayorder === today - 1
@@ -195,9 +233,12 @@ function Data({
                       {item.courseType?.charAt(0)}
                     </span>
                     </div>
-
+                    
                     <div className="items-center "> 
-                    <span className="tag text-white  tracking-wider font-bold">{item.time}</span>
+                   
+                    <span className="tag text-white  tracking-wider font-bold">
+                      
+                      {item.time}</span>
                     </div>
                   
                   
@@ -232,20 +273,24 @@ function Data({
                 </div>
               </>
             ) : (
-              <div className="flex justify-between items-center text-white/60">
-                <span>{item.time}</span>
-                <span className="tag tag-error">No class</span>
-              </div>
+             <div className="sm:hidden "></div>
             )}
           </div>
         );
-      })}
+      })
+      }
+      
     </div>
   );
-}
+});
 
-function AttendanceData({ attendance }: { attendance: AttendanceDetail }) {
-  const isLow = Number(attendance.courseAttendance) <= 75;
+Data.displayName = 'TimetableData';
+
+
+const AttendanceData = React.memo(({ attendance }: { attendance: AttendanceDetail }) => {
+  // Memoize attendance percentage calculation
+  const attendancePct = useMemo(() => Number(attendance.courseAttendance), [attendance.courseAttendance]);
+  const isLow = useMemo(() => attendancePct <= 75, [attendancePct]);
 
   return (
     <div className="flex items-center gap-3">
@@ -254,9 +299,11 @@ function AttendanceData({ attendance }: { attendance: AttendanceDetail }) {
           isLow ? "tag tag-error" : "tag tag-success"
         }`}
       >
-        {attendance.courseAttendance}%
+        {attendancePct}%
       </span>
       
     </div>
   );
-}
+});
+
+AttendanceData.displayName = 'AttendanceData';

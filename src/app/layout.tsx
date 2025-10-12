@@ -17,12 +17,30 @@ export const metadata: Metadata = {
     url: "",
     siteName: "Acadia OS",
   },
+  // Performance optimizations
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  // Cache control
+  other: {
+    "Cache-Control": "public, max-age=31536000, immutable",
+  },
 };
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-inter",
+  display: "swap", // Optimize font loading
+  preload: true, // Preload font for better performance
 });
 
 export default function RootLayout({
@@ -36,6 +54,11 @@ export default function RootLayout({
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <link rel="manifest" href="/site.webmanifest" />
+        {/* Performance optimizations */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
       </head>
       <body
         className={`antialiased ${inter.className} `}

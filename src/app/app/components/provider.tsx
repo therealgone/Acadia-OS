@@ -14,10 +14,19 @@ import { CommandCenter } from "./CommandCenter";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      gcTime: Infinity,
-      retry: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+      // Performance optimizations
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours default garbage collection
+      staleTime: 1000 * 60 * 5, // 5 minutes default stale time
+      retry: 3, // Retry failed requests 3 times
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+      refetchOnWindowFocus: false, // Prevent unnecessary refetches on window focus
+      refetchOnReconnect: true, // Refetch when connection is restored
+      refetchOnMount: true, // Refetch on component mount - IMPORTANT for initial data loading
+      networkMode: 'online', // Only run queries when online
+    },
+    mutations: {
+      retry: 1, // Retry mutations once
+      networkMode: 'online', // Only run mutations when online
     },
   },
 });
@@ -28,19 +37,26 @@ export type BeforeInstallPromptEvent = Event & {
 };
 
 const QueryProvider = ({ children }: { children: React.ReactNode }) => {
+  const [isClient, setIsClient] = React.useState(false);
 
-  if (typeof window === "undefined") return <Loading />;
+  React.useEffect(() => {
+    setIsClient(true);
+    
+    if (typeof window !== "undefined") {
+      const localStoragePersister = createAsyncStoragePersister({
+        storage: window.localStorage,
+      });
 
-  const localStoragePersister = createAsyncStoragePersister({
-    storage: window.localStorage,
-  });
+      persistQueryClient({
+        persister: localStoragePersister,
+        queryClient,
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+        buster: "v1.0.2",
+      });
+    }
+  }, []);
 
-  persistQueryClient({
-    persister: localStoragePersister,
-    queryClient,
-    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-    buster: "v1.0.2",
-  });
+  if (!isClient) return <Loading />;
 
   return (
 <QueryClientProvider client={queryClient}>
@@ -103,7 +119,7 @@ const onReload = () => {
   <div className="flex justify-between items-center w-full text-lg">
     {/* Left side: Title + Sync status */}
       <a href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/">
-     <div className="flex gap-1 md:lg:xl:gap-4 items-center justify-center ">
+     <div className="flex  items-center  gap-2 ">
     
         <Image
           loading="lazy"
@@ -112,7 +128,7 @@ const onReload = () => {
           height={25}
           alt="Acadia OS Logo"
         />
-        <span className="leading-none text-sm md:lg:xl:text-lg font-extrabold tracking-widest">Acadia OS</span>
+        <span className="leading-none text-sm md:lg:xl:text-lg font-extrabold  ">Acadia OS</span>
        
       </div>
        </a>
@@ -125,13 +141,14 @@ const onReload = () => {
     </div>
    
 
-    {/* Right side: Reload button */}
-    <button
+    <div className="-mr-2">
+      <button
       onClick={onReload}
       className="px-3 py-1 rounded-full att-red border flex items-center  text-sm hover:scale-105 transition-transform duration-200"
     >
       Reload
-    </button>
+    </button></div>
+    
   </div>
 );
 
