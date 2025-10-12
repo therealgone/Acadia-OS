@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,14 +12,24 @@ const inter = Inter({
 });
 
 const description =
-  "Acadia OS is a modern, secure, and user-friendly academic portal designed to provide students with streamlined access to their timetable, attendance, marks, courses, and calendar..";
+  "Acadia OS is a modern, secure, and user-friendly academic portal designed to provide students with streamlined access to their timetable, attendance, marks, courses, and calendar.";
 
 export const metadata: Metadata = {
   title: "Acadia OS",
   description,
   authors: [{ name: "Jeevan Baabu Murugan" }],
   keywords: [
-    "SRM", "Acadia OS", "SRM KTR", "Attendance", "Timetable", "Calendar", "Student Dashboard" , "academia","academia.srmist","srmist","academia.srmist.edu.in"
+    "SRM",
+    "Acadia OS",
+    "SRM KTR",
+    "Attendance",
+    "Timetable",
+    "Calendar",
+    "Student Dashboard",
+    "academia",
+    "academia.srmist",
+    "srmist",
+    "academia.srmist.edu.in",
   ],
   openGraph: {
     title: "Acadia OS",
@@ -54,14 +65,45 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link
+          rel="icon"
+          type="image/png"
+          href="/favicon-96x96.png"
+          sizes="96x96"
+        />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+        <link
+          rel="apple-touch-icon"
+          href="/apple-touch-icon.png"
+          sizes="180x180"
+        />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+
+        {/* Google Analytics */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-HLC4VJFL1V"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-HLC4VJFL1V');
+            `,
+          }}
+        />
       </head>
       <body className={`antialiased ${inter.className}`}>
         <div>{children}</div>
