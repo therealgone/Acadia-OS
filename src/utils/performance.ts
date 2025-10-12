@@ -77,7 +77,6 @@ export function logBundleSize(): void {
   if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     // Log current bundle size information
     const scripts = document.querySelectorAll('script[src]');
-    const totalSize = 0;
     
     scripts.forEach(script => {
       const src = script.getAttribute('src');

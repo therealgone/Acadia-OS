@@ -2,40 +2,60 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { 
-  Database, TrendingUp, Zap, Lock, Calendar, Clock, BookOpen, 
+import {
+  Database, TrendingUp, Zap, Lock, Calendar, Clock, BookOpen,
   User, ArrowRight, CheckCircle, Wifi, BarChart3, Target,
-  Shield, Sparkles, Github, Linkedin, MessageCircle, Grid3x3, 
+  Shield, Sparkles, Github, Linkedin, MessageCircle, Grid3x3,
 } from "lucide-react";
 import Icon from "@/../public/favicon.svg";
 import Image from "next/image";
 
+export const metadata = {
+  title: "Acadia OS – SRM Dashboard",
+  description: "SRM student dashboard for timetable, attendance, marks, and courses.",
+  keywords: ["SRM", "Acadia OS", "Dashboard", "Timetable", "Attendance", "Marks"],
+  openGraph: {
+    title: "Acadia OS – SRM Dashboard",
+    description: "Check your timetable, attendance, marks, and courses instantly.",
+    url: "https://acadia-os.vercel.app",
+    images: ["/web-app-manifest-512x512.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Acadia OS – SRM Dashboard",
+    description: "Check your timetable, attendance, marks, and courses instantly.",
+    images: ["/web-app-manifest-512x512.png"],
+  },
+};
+
+
+
 const features = [
-  { 
-    title: "Real-time Sync", 
-    desc: "Live timetable, attendance, and marks data synced instantly", 
-    icon: <Database size={20} />, 
+  {
+    title: "Real-time Sync",
+    desc: "Live timetable, attendance, and marks data synced instantly",
+    icon: <Database size={20} />,
     color: "text-[#22D3EE]",
     bgColor: "bg-[#22D3EE]/10"
   },
-  { 
-    title: "Predictive Analytics", 
-    desc: "Smart attendance projections with actionable margins", 
-    icon: <TrendingUp size={20} />, 
+  {
+    title: "Predictive Analytics",
+    desc: "Smart attendance projections with actionable margins",
+    icon: <TrendingUp size={20} />,
     color: "text-[#F59E0B]",
     bgColor: "bg-[#F59E0B]/10"
   },
-  { 
-    title: "Offline Ready", 
-    desc: "Client-side caching with TanStack Query for seamless experience", 
-    icon: <Wifi size={20} />, 
+  {
+    title: "Offline Ready",
+    desc: "Client-side caching with TanStack Query for seamless experience",
+    icon: <Wifi size={20} />,
     color: "text-[#7C3AED]",
     bgColor: "bg-[#7C3AED]/10"
   },
-  { 
-    title: "Secure Sessions", 
-    desc: "Cookie-based auth with middleware protection", 
-    icon: <Lock size={20} />, 
+  {
+    title: "Secure Sessions",
+    desc: "Cookie-based auth with middleware protection",
+    icon: <Lock size={20} />,
     color: "text-[#10B981]",
     bgColor: "bg-[#10B981]/10"
   },
@@ -48,71 +68,71 @@ const stats = [
 ];
 
 const modules = [
-  { 
-    name: "Timetable", 
-    icon: <Clock size={24} />, 
+  {
+    name: "Timetable",
+    icon: <Clock size={24} />,
     desc: "Day order navigation with current day highlighting and auto-scroll to active class",
     features: ["Current class highlight", "Time window checks", "Attendance integration"],
-    color: "#7C3AED" 
+    color: "#7C3AED"
   },
-  { 
-    name: "Attendance", 
-    icon: <CheckCircle size={24} />, 
+  {
+    name: "Attendance",
+    icon: <CheckCircle size={24} />,
     desc: "Theory/practical split with predictive modal for date range simulation",
     features: ["Color-coded status", "Skip margin calculator", "Projection math"],
-    color: "#22D3EE" 
+    color: "#22D3EE"
   },
-  { 
-    name: "Marks", 
-    icon: <BarChart3 size={24} />, 
+  {
+    name: "Marks",
+    icon: <BarChart3 size={24} />,
     desc: "Per-course marks with exam breakdowns and comprehensive totals",
     features: ["Exam breakdowns", "Course metadata", "Grade tracking"],
-    color: "#10B981" 
+    color: "#10B981"
   },
-  { 
-    name: "Courses", 
-    icon: <BookOpen size={24} />, 
+  {
+    name: "Courses",
+    icon: <BookOpen size={24} />,
     desc: "Compact cards with code, type, faculty, slot, room, and credits",
     features: ["Faculty info", "Slot timings", "Credit hours"],
-    color: "#F59E0B" 
+    color: "#F59E0B"
   },
-  { 
-    name: "Calendar", 
-    icon: <Calendar size={24} />, 
+  {
+    name: "Calendar",
+    icon: <Calendar size={24} />,
     desc: "Month grid with current day highlight, holiday states, and events",
     features: ["Holiday tracking", "Event reminders", "Day highlights"],
-    color: "#EF4444" 
+    color: "#EF4444"
   },
-  { 
-    name: "Profile", 
-    icon: <User size={24} />, 
+  {
+    name: "Profile",
+    icon: <User size={24} />,
     desc: "Student details with secure logout and account management",
     features: ["Personal info", "Session control", "Quick access"],
-    color: "#8B5CF6" 
+    color: "#8B5CF6"
   },
 ];
 
 const HeroSection = () => {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
 
- useEffect(() => {
-  const handleMouseMove = (e: MouseEvent) => {
-    setMousePosition({
-      x: (e.clientX / window.innerWidth) * 100,
-      y: (e.clientY / window.innerHeight) * 100,
-    });
-  };
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      });
+    };
 
-  window.addEventListener("mousemove", handleMouseMove);
-  return () => window.removeEventListener("mousemove", handleMouseMove);
-}, []);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
 
   return (
     <div className="relative w-full bg-[#1c1c21] overflow-x-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <motion.div 
+        <motion.div
           className="absolute w-[600px] h-[600px] rounded-full blur-[120px] opacity-20"
           style={{
             background: "radial-gradient(circle, #7C3AED, transparent 70%)",
@@ -122,18 +142,18 @@ const HeroSection = () => {
           }}
           transition={{ type: "spring", damping: 50, stiffness: 100 }}
         />
-        <div 
+        <div
           className="absolute -top-[20rem] -right-[20rem] w-[50rem] h-[50rem] rounded-full blur-[140px] opacity-15"
           style={{ background: "radial-gradient(circle, #22D3EE, transparent 60%)" }}
         />
-        <div 
+        <div
           className="absolute top-[40rem] -left-[15rem] w-[45rem] h-[45rem] rounded-full blur-[130px] opacity-10"
           style={{ background: "radial-gradient(circle, #F59E0B, transparent 60%)" }}
         />
       </div>
 
       {/* Grid Overlay */}
-      <div 
+      <div
         className="fixed inset-0 -z-10 opacity-[0.03] pointer-events-none"
         style={{
           backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
@@ -147,35 +167,35 @@ const HeroSection = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="  flex items-center justify-center">
-             <Image
-          loading="lazy"
-          src={Icon}
-          width={35}
-          height={35}
-          alt="Acadia OS Logo"
-        />
+              <Image
+                loading="lazy"
+                src={Icon}
+                width={35}
+                height={35}
+                alt="Acadia OS Logo"
+              />
             </div>
             <span className="text-2xl font-bold text-white">Acadia OS</span>
           </div>
           <div className="flex items-center gap-4">
-            <a 
-              href="https://github.com/therealgone" 
+            <a
+              href="https://github.com/therealgone"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300"
             >
               <Github size={20} className="text-[#E1E1E3]" />
             </a>
-            <a 
-              href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/" 
+            <a
+              href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300"
             >
               <Linkedin size={20} className="text-[#E1E1E3]" />
             </a>
-            <a 
-              href="https://chat.whatsapp.com/BsIHwgrahSoHvVNVV9OHkA" 
+            <a
+              href="https://chat.whatsapp.com/BsIHwgrahSoHvVNVV9OHkA"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-[#10B981]/30 bg-[#10B981]/10 hover:bg-[#10B981]/20 text-[#10B981] transition-all duration-300"
@@ -191,17 +211,7 @@ const HeroSection = () => {
       <section className="relative z-10 min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto w-full px-6 lg:px-16 py-20">
           {/* Top Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex justify-center mb-8"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(255,255,255,0.15)] bg-[rgba(255,255,255,0.04)] backdrop-blur-xl">
-              <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-              <span className="text-sm text-[#E1E1E3]">Built for SRM Students</span>
-            </div>
-          </motion.div>
+
 
           {/* Main Headline */}
           <div className="text-center max-w-5xl mx-auto mb-16">
@@ -213,7 +223,7 @@ const HeroSection = () => {
             >
               <span className="text-white">Academic Intelligence</span>
               <br />
-              <span 
+              <span
                 className="bg-clip-text text-transparent"
                 style={{
                   backgroundImage: "linear-gradient(135deg, #7C3AED 0%, #22D3EE 100%)"
@@ -229,7 +239,7 @@ const HeroSection = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="text-base sm:text-lg lg:text-xl text-[#A5A6AA] max-w-3xl mx-auto leading-relaxed"
             >
-              Real-time timetables, predictive attendance analytics, and offline-ready performance. 
+              Real-time timetables, predictive attendance analytics, and offline-ready performance.
               Your complete academic companion with secure sessions and responsive design.
             </motion.p>
 
@@ -290,7 +300,7 @@ const HeroSection = () => {
                 </div>
                 <h3 className="text-lg font-semibold text-[#E1E1E3] mb-2">{feature.title}</h3>
                 <p className="text-sm text-[#A5A6AA] leading-relaxed">{feature.desc}</p>
-                <div 
+                <div
                   className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{
                     background: `radial-gradient(600px at 50% 50%, ${feature.color.replace('text-', '')}15, transparent 70%)`
@@ -330,7 +340,7 @@ const HeroSection = () => {
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 className="group p-6 rounded-2xl border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.03)] backdrop-blur-xl hover:bg-[rgba(255,255,255,0.06)] transition-all duration-300 hover:scale-[1.02]"
               >
-                <div 
+                <div
                   className="inline-flex p-3 rounded-xl mb-4"
                   style={{ backgroundColor: `${module.color}15` }}
                 >
@@ -383,7 +393,7 @@ const HeroSection = () => {
               </div>
               <h3 className="text-2xl font-semibold text-[#E1E1E3] mb-3">Secure Authentication</h3>
               <p className="text-[#A5A6AA] leading-relaxed mb-4">
-                Cookie-based sessions with middleware protection ensure your data stays private and secure. 
+                Cookie-based sessions with middleware protection ensure your data stays private and secure.
                 Every request is validated and protected.
               </p>
               <ul className="space-y-2">
@@ -476,15 +486,15 @@ const HeroSection = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3">
-              
-                <div className="  flex items-center justify-center">
-             <Image
-          loading="lazy"
-          src={Icon}
-          width={35}
-          height={35}
-          alt="Acadia OS Logo"
-        />
+
+              <div className="  flex items-center justify-center">
+                <Image
+                  loading="lazy"
+                  src={Icon}
+                  width={35}
+                  height={35}
+                  alt="Acadia OS Logo"
+                />
               </div>
               <div>
                 <div className="text-lg font-bold text-white">Acadia OS</div>
@@ -492,24 +502,24 @@ const HeroSection = () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <a 
-                href="https://github.com/therealgone" 
+              <a
+                href="https://github.com/therealgone"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300"
               >
                 <Github size={20} className="text-[#E1E1E3]" />
               </a>
-              <a 
-                href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/" 
+              <a
+                href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300"
               >
                 <Linkedin size={20} className="text-[#E1E1E3]" />
               </a>
-              <a 
-                href="https://chat.whatsapp.com/BsIHwgrahSoHvVNVV9OHkA" 
+              <a
+                href="https://chat.whatsapp.com/BsIHwgrahSoHvVNVV9OHkA"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#10B981]/30 bg-[#10B981]/10 hover:bg-[#10B981]/20 text-[#10B981] transition-all duration-300"

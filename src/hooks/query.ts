@@ -19,107 +19,73 @@ import {
 } from "srm-academia-api";
 import { getCookie } from "@/utils/getCookieClient";
 
-export function useTimetable() {
+// ------------------ ETag-based APIs ------------------
+function useETagQuery<T>(key: string, fetchFn: () => Promise<T>) {
   return useQuery({
-    queryKey: ["timetable"],
-    queryFn: async () => {
-      const { data } = await timetable(getCookie());
-      if (data.error) throw new Error(data.error);
-      return data.timetable as DaySchedule[];
-    },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours - long cache for timetable
-    gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days - keep in cache longer
-    enabled: !!getCookie(), // Only fetch if user is authenticated
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
-    retry: 3, // Retry failed requests
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    queryKey: [key],
+    queryFn: fetchFn,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity, // ETag handles freshness
+    gcTime: Infinity,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }
 
-export function useAttendance() {
-  return useQuery({
-    queryKey: ["attendance"],
-    queryFn: async () => {
-      const cookie = getCookie();
-      console.log('Fetching attendance with cookie:', !!cookie); // Debug log
-      const { data } = await attendance(cookie);
-      if (data.error) throw new Error(data.error);
-      return data.attendance as AttendanceDetail[];
-    },
-    staleTime: 1000 * 60 * 30, // 30 minutes - medium cache for attendance
-    gcTime: 1000 * 60 * 60 * 2, // 2 hours - keep in cache
-    enabled: !!getCookie(), // Only fetch if user is authenticated
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
-    retry: 3, // Retry failed requests
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+export function useTimetable() {
+  return useETagQuery("timetable", async () => {
+    const { data } = await timetable(getCookie());
+    if (data.error) throw new Error(data.error);
+    return data.timetable as DaySchedule[];
   });
 }
 
 export function useMarks() {
-  return useQuery({
-    queryKey: ["marks"],
-    queryFn: async () => {
-      const { data } = await marks(getCookie());
-      if (data.error) throw new Error(data.error);
-      return data.markList as MarkDetail[];
-    },
-    staleTime: 1000 * 60 * 30, // 30 minutes - medium cache for marks
-    gcTime: 1000 * 60 * 60 * 2, // 2 hours - keep in cache
-    enabled: !!getCookie(), // Only fetch if user is authenticated
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
-    retry: 3, // Retry failed requests
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+  return useETagQuery("marks", async () => {
+    const { data } = await marks(getCookie());
+    if (data.error) throw new Error(data.error);
+    return data.markList as MarkDetail[];
   });
 }
 
 export function useUserInfo() {
-  return useQuery({
-    queryKey: ["userInfo"],
-    queryFn: async () => {
-      const { data } = await userInfo(getCookie());
-      if (data.error) throw new Error(data.error);
-      return data.userInfo as UserInfo;
-    },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours - long cache for user info
-    gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days - keep in cache longer
-    enabled: !!getCookie(), // Only fetch if user is authenticated
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
-    retry: 3, // Retry failed requests
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+  return useETagQuery("userInfo", async () => {
+    const { data } = await userInfo(getCookie());
+    if (data.error) throw new Error(data.error);
+    return data.userInfo as UserInfo;
   });
 }
 
 export function useCourse() {
-  return useQuery({
-    queryKey: ["course"],
-    queryFn: async () => {
-      const { data } = await Course(getCookie());
-      if (data.error) throw new Error(data.error);
-      return data.courseList as CourseDetail[];
-    },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours - long cache for course info
-    gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days - keep in cache longer
-    enabled: !!getCookie(), // Only fetch if user is authenticated
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
-    retry: 3, // Retry failed requests
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+  return useETagQuery("course", async () => {
+    const { data } = await Course(getCookie());
+    if (data.error) throw new Error(data.error);
+    return data.courseList as CourseDetail[];
   });
 }
 
 export function useCalendar() {
+  return useETagQuery("calendar", async () => {
+    const { data } = await Calendar(getCookie());
+    if (data.error) throw new Error(data.error);
+    return data.calendar as Month[];
+  });
+}
+
+// ------------------ StaleTime-based APIs ------------------
+export function useAttendance() {
   return useQuery({
-    queryKey: ["calendar"],
+    queryKey: ["attendance"],
     queryFn: async () => {
-      const { data } = await Calendar(getCookie());
+      const { data } = await attendance(getCookie());
       if (data.error) throw new Error(data.error);
-      return data.calendar as Month[];
+      return data.attendance as AttendanceDetail[];
     },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours - long cache for calendar
-    gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days - keep in cache longer
-    enabled: !!getCookie(), // Only fetch if user is authenticated
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
-    retry: 3, // Retry failed requests
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    staleTime: 1000 * 60 * 50, // 50 minutes
+    gcTime: 1000 * 60 * 60 * 2, // 2 hours
+    refetchOnWindowFocus: false,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }
 
@@ -131,13 +97,11 @@ export function useDayOrder() {
       if (data.error) throw new Error(data.error);
       return data as DayOrderResponse;
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes - short cache for day order (changes frequently)
-    gcTime: 1000 * 60 * 30, // 30 minutes - keep in cache
-    enabled: !!getCookie(), // Only fetch if user is authenticated
-    refetchOnWindowFocus: true, // Refetch on focus for real-time updates
-    refetchOnMount: true, // Always refetch on mount for current day
-    retry: 3, // Retry failed requests
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    refetchInterval: 1000 * 60 * 10, // Refetch every 10 minutes for day order updates
+    staleTime: 1000 * 60 * 30, // 30 minutes
+    gcTime: 1000 * 60 * 60, // 1 hour
+    refetchOnWindowFocus: true,
+    refetchInterval: 1000 * 60 * 30, // auto refresh every 30 min
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }

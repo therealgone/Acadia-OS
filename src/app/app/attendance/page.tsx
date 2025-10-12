@@ -1,12 +1,12 @@
 "use client";
 import { useAttendance } from "@/hooks/query";
-import React, { useMemo, useCallback, Suspense, useState } from "react";
+import React, { useMemo, useCallback, Suspense } from "react";
 import { AttendanceDetail } from "srm-academia-api";
 import { GlobalLoader } from "../components/loader";
 import { computePredict } from "@/utils/attendancePredict";
 import { PredictSelection } from "./PredictModal";
 import dynamic from "next/dynamic";
-import { attendance } from "@/server/action";
+
 
 // Lazy load PredictModal for better performance
 const PredictModal = dynamic(() => import("./PredictModal").then(mod => ({ default: mod.PredictModal })), {
@@ -30,7 +30,7 @@ const Page = React.memo(() => {
 
   if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
 
-  if (!data || data.length === 0)
+  if (!data || !Array.isArray(data) || data.length === 0)
     return (
       <div className="flex h-full w-full justify-center items-center text-white/70">
         No Attendance Data Found
@@ -163,10 +163,9 @@ const Card = React.memo(({
     windowSize: 10,
   }), [attended, futureAttendInc, total, futureTotalInc, required]);
 
-  const { attendancePct, isTheory, color } = useMemo(() => ({
+  const { attendancePct, isTheory } = useMemo(() => ({
     attendancePct: Number(item.courseAttendance),
     isTheory: item.courseCategory.toLowerCase() === "theory",
-    color: item.courseCategory.toLowerCase() === "theory" ? "#3B82F6" : "#FB923C",
   }), [item.courseAttendance, item.courseCategory]);
 
 

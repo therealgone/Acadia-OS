@@ -14,7 +14,7 @@ const Page = () => {
       </div>
     );
 
-  if (!data || data.length === 0)
+  if (!data || !Array.isArray(data) || data.length === 0)
     return (
       <div className="flex h-screen w-full justify-center items-center text-white/70">
         No data found

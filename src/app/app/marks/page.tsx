@@ -14,7 +14,7 @@ const Page = () => {
       </div>
     );
 
-  if (!data || data.length === 0)
+  if (!data || !Array.isArray(data) || data.length === 0)
     return (
       <div className="flex h-screen w-full justify-center items-center text-gray-400">
         No data found
@@ -41,7 +41,7 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
   return (
     <div className="w-full flex flex-col gap-4">
       {filteredData.map((item, idx) => {
-        const course = courseList?.find((c) => c.courseCode === item.course);
+        const course = courseList && Array.isArray(courseList) ? courseList.find((c) => c.courseCode === item.course) : undefined;
 
         return (
           <div

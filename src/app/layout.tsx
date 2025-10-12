@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { SpeedInsights } from "@vercel/speed-insights/next"
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-inter",
+  display: "swap",
+  preload: true,
+});
 
 const description =
   "Discover a sleek and modern way to manage your academics - no clutter, just clarity.";
@@ -10,14 +17,23 @@ export const metadata: Metadata = {
   title: "Acadia OS",
   description,
   authors: [{ name: "Jeevan Baabu Murugan" }],
-  keywords: ["SRM", "Academia", "Acadia OS", "Attendance", "Calendar"],
+  keywords: [
+    "SRM", "Acadia OS", "SRM KTR", "Attendance", "Timetable", "Calendar", "Student Dashboard" , "academia","academia.srmist","srmist","academia.srmist.edu.in"
+  ],
   openGraph: {
     title: "Acadia OS",
     description,
-    url: "",
+    url: "https://acadia-os.vercel.app",
     siteName: "Acadia OS",
+    images: ["/web-app-manifest-512x512.png"],
+    type: "website",
   },
-  // Performance optimizations
+  twitter: {
+    card: "summary_large_image",
+    title: "Acadia OS",
+    description,
+    images: ["/web-app-manifest-512x512.png"],
+  },
   robots: {
     index: true,
     follow: true,
@@ -29,19 +45,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  // Cache control
-  other: {
-    "Cache-Control": "public, max-age=31536000, immutable",
-  },
 };
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-inter",
-  display: "swap", // Optimize font loading
-  preload: true, // Preload font for better performance
-});
 
 export default function RootLayout({
   children,
@@ -54,18 +58,13 @@ export default function RootLayout({
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <link rel="manifest" href="/site.webmanifest" />
-        {/* Performance optimizations */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
       </head>
-      <body
-        className={`antialiased ${inter.className} `}
-      >
-        <div className="container mx-auto px-4 lg:px-6 ">{children}
-           <SpeedInsights />
-        </div>
+      <body className={`antialiased ${inter.className}`}>
+        <div>{children}</div>
       </body>
     </html>
   );

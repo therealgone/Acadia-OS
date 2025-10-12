@@ -6,12 +6,11 @@ import { useAttendance, useDayOrder, useTimetable } from "@/hooks/query";
 import { AttendanceDetail, DaySchedule } from "srm-academia-api";
 import { GlobalLoader } from "../components/loader";
 import { isCurrentClass } from "@/utils/currentClass";
-
 const Page = React.memo(() => {
   const { data, isPending } = useTimetable();
 
   if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
-  if (!data || data.length === 0)
+  if (!data || !Array.isArray(data) || data.length === 0)
     return (
       <div className="flex h-full w-full justify-center items-center text-white/70">
         No data found
@@ -30,8 +29,6 @@ Page.displayName = 'TimetablePage';
 export default Page;
 
 const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
-  // Memoize day extraction to prevent recalculation
-  const day = useMemo(() => data?.map((i) => i.dayOrder.split(" ")[1]), [data]);
   const [today, setToday] = useState<number>(0);
   const [dayOrder, setDayOrder] = useState<number>(0);
 
@@ -40,7 +37,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
 
   // Memoize day order update effect
   useEffect(() => {
-    if (dayOrderData) {
+    if (dayOrderData && typeof dayOrderData === 'object' && 'dayOrder' in dayOrderData) {
       const todayDayOrder = Number(dayOrderData.dayOrder);
       if (!isNaN(todayDayOrder)) {
         setToday(todayDayOrder);
@@ -48,9 +45,6 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
       }
     }
   }, [dayOrderData]);
-
-  // Memoize current day data
-  const isActive = useMemo(() => data[dayOrder], [data, dayOrder]);
 
   // Memoize day order click handler
   const handleDayOrderClick = useCallback((index: number) => {
@@ -187,12 +181,12 @@ const Data = React.memo(({
     <div className="flex flex-col gap-4 px-5 py-3 w-full">
       {currentDayClasses.map((item) => {
      
-        const attendance = attendanceData?.find(
+        const attendance = attendanceData && Array.isArray(attendanceData) ? attendanceData.find(
           (i) =>
             i.courseCode === item.courseCode &&
             ((item.slot.startsWith("P") && i.courseSlot === "LAB") ||
               !item.slot.startsWith("P"))
-        );
+        ) : undefined;
 
        
        
@@ -281,6 +275,8 @@ const Data = React.memo(({
 });
 
 Data.displayName = 'TimetableData';
+
+
 
 
 const AttendanceData = React.memo(({ attendance }: { attendance: AttendanceDetail }) => {

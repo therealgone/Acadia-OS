@@ -10,7 +10,7 @@ const Page = () => {
   const { data, isPending } = useCalendar();
 
   if (isPending) return <GlobalLoader className="h-10 w-10 text-yellow-400" />;
-  if (!data || data.length === 0)
+  if (!data || !Array.isArray(data) || data.length === 0)
     return (
       <div className="flex h-full w-full justify-center items-center text-gray-400">
         No data found

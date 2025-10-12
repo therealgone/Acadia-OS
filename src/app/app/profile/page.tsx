@@ -24,7 +24,7 @@ const Page = () => {
       </div>
     );
 
-  return <Data data={data} />;
+  return <Data data={data as UserInfo} />;
 };
 
 export default Page;

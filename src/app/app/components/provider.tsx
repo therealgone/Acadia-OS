@@ -116,11 +116,11 @@ const onReload = () => {
 };
 
  return (
-  <div className="flex justify-between items-center w-full text-lg">
+  <div className="flex justify-between  w-full text-lg px-5">
     {/* Left side: Title + Sync status */}
-      <a href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/">
-     <div className="flex  items-center  gap-2 ">
-    
+      
+     <div className=" ">
+    <a href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/"></a>
         <Image
           loading="lazy"
           src={Icon}
@@ -128,12 +128,11 @@ const onReload = () => {
           height={25}
           alt="Acadia OS Logo"
         />
-        <span className="leading-none text-sm md:lg:xl:text-lg font-extrabold  ">Acadia OS</span>
+             
        
       </div>
-       </a>
-    <div className="flex items-center gap-4">
-      <span className="uppercase text-lg md:lg:xl:text-lg text-center items-center  tracking-widest font-sans font-extrabold  ">
+    <div className="text-center">
+      <span className="uppercase text-lg md:lg:xl:text-lg   tracking-widest font-sans font-extrabold  ">
         {path[path.length - 1]}
       </span>
 
@@ -141,10 +140,10 @@ const onReload = () => {
     </div>
    
 
-    <div className="-mr-2">
+    <div >
       <button
       onClick={onReload}
-      className="px-3 py-1 rounded-full att-red border flex items-center  text-sm hover:scale-105 transition-transform duration-200"
+      className="px-3 py-1 rounded-full att-red border   text-sm hover:scale-105 transition-transform duration-200"
     >
       Reload
     </button></div>
