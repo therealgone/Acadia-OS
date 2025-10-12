@@ -1,11 +1,20 @@
 "use client";
 import React from "react";
 import { useCalendar } from "@/hooks/query";
-import { PredictSelection } from "@/types";
+
 import { GlobalLoader } from "../components/loader";
 import { Calendar, TrendingUp, X, CheckCircle, XCircle } from "lucide-react";
 
+export type PredictSelection = {
+  start: string;
+  end: string;
+  scenario: "Assume Present" | "Assume Absent";
+  count: number;
+};
+
 export function PredictModal({
+
+  
   open,
   onClose,
   onApply,

@@ -8,6 +8,7 @@ import { PredictSelection } from "./PredictModal";
 import dynamic from "next/dynamic";
 
 
+
 // Lazy load PredictModal for better performance
 const PredictModal = dynamic(() => import("./PredictModal").then(mod => ({ default: mod.PredictModal })), {
   loading: () => <GlobalLoader className="h-6 w-6 text-blue-400" />,

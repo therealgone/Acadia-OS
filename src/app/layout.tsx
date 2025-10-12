@@ -78,16 +78,9 @@ export default function RootLayout({
           sizes="180x180"
         />
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 
-       <Script
+        {/* Google Analytics */}
+        <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-HLC4VJFL1V"
         />
@@ -103,7 +96,6 @@ export default function RootLayout({
             `,
           }}
         />
-        
       </head>
       <body className={`antialiased ${inter.className}`}>
         <div>{children}</div>
