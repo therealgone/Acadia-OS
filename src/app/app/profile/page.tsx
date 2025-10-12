@@ -6,8 +6,7 @@ import { GlobalLoader } from "../components/loader";
 
 import { Github, Linkedin, MessageCircle, LogOut
 } from "lucide-react";
-import Icon from "@/../public/favicon.svg";
-import Image from "next/image";
+
 
 const Page = () => {
   const { data, isPending } = useUserInfo();

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { 
   Database, TrendingUp, Zap, Lock, Calendar, Clock, BookOpen, 
   User, ArrowRight, CheckCircle, Wifi, BarChart3, Target,
-  Shield, Sparkles, Github, Linkedin, MessageCircle, Grid3x3, Layers
+  Shield, Sparkles, Github, Linkedin, MessageCircle, Grid3x3, 
 } from "lucide-react";
 import Icon from "@/../public/favicon.svg";
 import Image from "next/image";

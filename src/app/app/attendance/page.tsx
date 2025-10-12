@@ -1,6 +1,6 @@
 "use client";
 import { useAttendance } from "@/hooks/query";
-import React, { useMemo, useCallback, Suspense, useState, useEffect,useRef } from "react";
+import React, { useMemo, useCallback, Suspense, useState } from "react";
 import { AttendanceDetail } from "srm-academia-api";
 import { GlobalLoader } from "../components/loader";
 import { computePredict } from "@/utils/attendancePredict";

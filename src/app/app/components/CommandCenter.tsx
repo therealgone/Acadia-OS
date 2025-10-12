@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo,  } from "react";
 
 import { usePathname } from "next/navigation";
 import {

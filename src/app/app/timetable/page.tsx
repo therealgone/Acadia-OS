@@ -173,11 +173,7 @@ const Data = React.memo(({
     }
   }, [today, dayorder]);
 
-  // Memoize breaktime calculation function
-  const breaktime = useCallback((time: string) => {
-    const [hr, min] = time.split(":").map(Number);
-    return hr * 60 + min;
-  }, []);
+  
 
   // Memoize current day classes
   const currentDayClasses = useMemo(() => {
