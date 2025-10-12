@@ -9,88 +9,48 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
-      images: [
-        {
-          url: `${baseUrl}/web-app-manifest-512x512.png`,
-        },
-      ],
     },
     {
       url: `${baseUrl}/auth/login`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
-      images: [
-        {
-          url: `${baseUrl}/web-app-manifest-512x512.png`,
-        },
-      ],
     },
     {
       url: `${baseUrl}/app/timetable`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
-      images: [
-        {
-          url: `${baseUrl}/web-app-manifest-512x512.png`,
-        },
-      ],
     },
     {
       url: `${baseUrl}/app/attendance`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
-      images: [
-        {
-          url: `${baseUrl}/web-app-manifest-512x512.png`,
-        },
-      ],
     },
     {
       url: `${baseUrl}/app/marks`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
-      images: [
-        {
-          url: `${baseUrl}/web-app-manifest-512x512.png`,
-        },
-      ],
     },
     {
       url: `${baseUrl}/app/course`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
-      images: [
-        {
-          url: `${baseUrl}/web-app-manifest-512x512.png`,
-        },
-      ],
     },
     {
       url: `${baseUrl}/app/calendar`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
-      images: [
-        {
-          url: `${baseUrl}/web-app-manifest-512x512.png`,
-        },
-      ],
     },
     {
       url: `${baseUrl}/app/profile`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
-      images: [
-        {
-          url: `${baseUrl}/web-app-manifest-512x512.png`,
-        },
-      ],
     },
   ];
 }
