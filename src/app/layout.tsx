@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 const description =
-  "Discover a sleek and modern way to manage your academics - no clutter, just clarity.";
+  "Acadia OS is a modern, secure, and user-friendly academic portal designed to provide students with streamlined access to their timetable, attendance, marks, courses, and calendar..";
 
 export const metadata: Metadata = {
   title: "Acadia OS",
