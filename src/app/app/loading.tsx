@@ -1,10 +1,10 @@
-import React from "react";
-import { Loader } from "./components/loader";
+"use client";
+import { GlobalLoader } from "./components/loader";
 
 export default function Loading() {
   return (
-    <div className="flex w-dvw h-dvh items-center justify-center ">
-      <Loader className="h-10 w-10 text-yellow-200" />
+    <div className="fixed inset-0 flex items-center justify-center">
+      <GlobalLoader className="w-28 h-28 text-[color:var(--accent-secondary)]" />
     </div>
   );
 }

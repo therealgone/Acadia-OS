@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/app/",
     },
-    sitemap: "/sitemap.xml",
+    sitemap: "https://acadia-os.vercel.app/sitemap.xml",
   };
 }

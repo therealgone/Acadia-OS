@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { useSyncExternalStore } from "react";
-import { persist } from "zustand/middleware";
 
 // Sidebar state
 type SidebarState = {
@@ -66,4 +65,4 @@ export const useSidebar = create<SidebarState>((set) => ({
 }));
 
 
-export const useOptionalClasses = create(() => ({}));
+
