@@ -98,12 +98,12 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
         <GlobalLoader className="w-4 h-4 text-yellow-400" />
       ) : isError ? (
         <div className="flex  items-center gap-1">
-          <span>Failed</span>
+          
           <button
             onClick={() => refetch()}
-            className="flex  items-center gap-1 px-2 py-0.5 rounded-md bg-red-500/30 hover:bg-red-500/50 text-xs text-white"
-          >
            
+          >
+           <span>Failed</span>
           </button>
         </div>
       ) : today === 0 ? (
