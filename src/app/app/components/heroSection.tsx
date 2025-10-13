@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import {
   Database, TrendingUp, Zap, Lock, Calendar, Clock, BookOpen,
   User, ArrowRight, CheckCircle, Wifi, BarChart3, Target,
-  Shield, Sparkles, Github, Linkedin, MessageCircle, Grid3x3,
+  Shield, Sparkles, Github, Linkedin, MessageCircle, Grid3x3, Package,
 } from "lucide-react";
 import Icon from "@/../public/favicon.svg";
 import Image from "next/image";
@@ -198,10 +198,19 @@ const HeroSection = () => {
               href="https://chat.whatsapp.com/BsIHwgrahSoHvVNVV9OHkA"
               target="_blank"
               rel="noopener noreferrer"
+              className=" p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300"
+            >
+              <MessageCircle size={18} />
+              
+            </a>
+            <a
+              href="https://chat.whatsapp.com/BsIHwgrahSoHvVNVV9OHkA"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-[#10B981]/30 bg-[#10B981]/10 hover:bg-[#10B981]/20 text-[#10B981] transition-all duration-300"
             >
               <MessageCircle size={18} />
-              <span className="text-sm font-medium">Report Bug</span>
+              <span className="text-sm font-medium">Join WhatsApp Group</span>
             </a>
           </div>
         </div>
@@ -209,17 +218,17 @@ const HeroSection = () => {
 
       {/* Hero Section */}
       <section className="relative z-10 min-h-screen flex items-center">
-        <div className="max-w-7xl mx-auto w-full px-6 lg:px-16 py-20">
+        <div className="max-w-7xl mx-auto w-full px-6 lg:px-16 py-5 ">
           {/* Top Badge */}
 
 
           {/* Main Headline */}
-          <div className="text-center max-w-5xl mx-auto mb-16">
+          <div className="text-center max-w-5xl mx-auto mb-10 ">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.1] mb-6"
+              className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.1] "
             >
               <span className="text-white">Academic Intelligence</span>
               <br />
@@ -232,12 +241,30 @@ const HeroSection = () => {
                 Meets Design
               </span>
             </motion.h1>
+            <a href="https://www.npmjs.com/package/srm-academia-api"
+            className="flex items-center justify-center p-3">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-base sm:text-lg lg:text-xl "
+            >
+              <div className="tag-blue tag text-2xl font-bold  flex justify-center gap-2 items-center py-10 mt-3 mb-3 ">
+             
+               <Package size={18} className="animate-pulse " />
+              
+               <span> Build using srm-academia-api</span>
+             
+            </div>
+             
+            </motion.div>
+            </a>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-base sm:text-lg lg:text-xl text-[#A5A6AA] max-w-3xl mx-auto leading-relaxed"
+              className="text-base sm:text-lg lg:text-xl text-[#A5A6AA] max-w-3xl mx-auto leading-normal"
             >
               Real-time timetables, predictive attendance analytics, and offline-ready performance.
               Your complete academic companion with secure sessions and responsive design.

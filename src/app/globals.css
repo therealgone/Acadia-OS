@@ -191,6 +191,7 @@ body {
 .hover-glow-blue:hover { box-shadow: 0 0 18px rgba(59,130,246,0.35); }
 .hover-glow-white:hover { box-shadow: 0 0 28px rgba(255,255,255,0.25); }
 .glow-orange { box-shadow: 0 0 28px rgba(248, 160, 45, 0.466); }
+.b-glow-yellow { box-shadow: 0 0 10px #FACC15; }
 
 /* ======================
    🏷 Tags / Badges

@@ -52,8 +52,8 @@ export const CommandCenter = React.memo(() => {
                     >
                       <div
                         className={
-                          "rounded-xl p-2 transition-colors " +
-                          (isActive ? " panel-red-bg " : "bg-white/10 ")
+                          "rounded-xl p-2 transition-colors  duration-300 " +
+                          (isActive ? " bg-[#EF4444] text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] scale-[1.03]  " : "bg-white/10 scale-[1]  ")
                         }
                       >
                         <IconComp className="w-6 h-6" />
@@ -79,7 +79,12 @@ export const CommandCenter = React.memo(() => {
                 <div
                   className="group flex flex-col items-center justify-center mx-4 transition-all duration-200 ease-out hover:scale-110"
                 >
-                  <div className={`bg-white/10 rounded-2xl p-3 backdrop-blur-sm transition-all duration-300 shadow-md hover:shadow-lg hover-glow ${isActive ? "panel-red-bg -translate-y-1 transition-transform" : ""}`}>
+                  <div
+                        className={
+                          "rounded-xl p-2 transition-colors  duration-300 " +
+                          (isActive ? " bg-[#EF4444] text-white shadow-[0_0_20px_rgba(239,68,68,0.4)]  -translate-y-1 " : "bg-white/10  ")
+                        }
+                      >
                     <IconComp className="w-6 h-6 icon-default group-hover:text-white" />
                   </div>
                   

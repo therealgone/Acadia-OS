@@ -1,8 +1,10 @@
 "use client";
 import { useCourse } from "@/hooks/query";
-import React from "react";
+import React, { useState } from "react";
 import { CourseDetail } from "srm-academia-api";
 import { GlobalLoader } from "../components/loader";
+
+
 
 const Page = () => {
   const { data, isPending } = useCourse();
@@ -29,10 +31,17 @@ export default Page;
 const Data = ({ data }: { data: CourseDetail[] }) => {
   return (
     <div className="w-full h-full flex flex-col gap-6 py-5 px-4 lg:px-8 overflow-hidden mt-10">
-      {data.map((item, i) => (
+      {data.sort((a,b) => a.courseTitle.localeCompare(b.courseTitle)).map((item, i) => (
         <div
           key={i}
-          className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-4 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl   hover:scale-[1.02] transition-all duration-200"
+          className={`flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-4  backdrop-blur-md rounded-3xl    hover:scale-[1.02] transition-all duration-200
+            ${
+                  item.courseType.includes("Lab") && item.courseSlot.some((slot: string) => slot.startsWith("P"))
+                    ? "bg-orange-500/20 text-orange-300" 
+                    : item.courseType == ("Project Based Theory")
+                    ?"bg-green-500/30 text-green-400" 
+                    : "bg-blue-500/20 text-blue-300"
+                }`}
         >
           {/* Left: Course Info */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1">
@@ -42,10 +51,10 @@ const Data = ({ data }: { data: CourseDetail[] }) => {
               <span className="text-white font-semibold">{item.courseCode}</span>
               <span
                 className={`px-2 py-0.5 rounded-full text-xs font-semibold backdrop-blur-3xl ${
-                  item.courseType.includes("Project")
-                    ? "bg-orange-400 text-orange-900"
-                    : item.courseType.includes("Theory")
-                    ? "bg-blue-400 text-blue-900"
+                  item.courseType.includes("Lab")
+                    ? "bg-orange-500/20 text-orange-300"
+                    :  item.courseType == ("Theory")
+                    ?"bg-blue-500/20 text-blue-300"
                     : "bg-green-500/30 text-green-400"
                 }`}
               >
