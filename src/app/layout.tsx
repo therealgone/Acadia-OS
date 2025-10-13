@@ -77,9 +77,8 @@ export default function RootLayout({
           href="/apple-touch-icon.png"
           sizes="180x180"
         />
-        <link rel="manifest" href="/site.webmanifest" />
-
-        {/* Google Analytics */}
+       <link rel="manifest" href="/site.webmanifest" />
+       {/* Google Analytics */}
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-HLC4VJFL1V"
@@ -96,6 +95,9 @@ export default function RootLayout({
             `,
           }}
         />
+
+
+        
       </head>
       <body className={`antialiased ${inter.className}`}>
         <div>{children}</div>

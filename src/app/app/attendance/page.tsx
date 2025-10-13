@@ -129,7 +129,7 @@ const Section = React.memo(({
 
   return (
     <div className="flex flex-col gap-3 ">
-      <h2 className="text-lg text-white/80 font-semibold px-3 lg:px-6">{title}</h2>
+      <h2 className="text-lg text-white font-semibold px-3 lg:px-6">{title}</h2>
       <div className="flex flex-col gap-3 px-3 lg:px-6">
         {filtered.map((item, i) => (
           <Card key={i} item={item} selection={selection} />
@@ -178,7 +178,10 @@ const Card = React.memo(({
 
 
   return (
-    <div className="w-full bg-white/[0.04] backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/[0.06] transition-all duration-300">
+    <div className={`w-full  backdrop-blur-sm  rounded-2xl  transition-all duration-300
+    ${ isTheory
+                  ? "bg-blue-500/20 "
+                  : "bg-orange-500/20 "}`}>
       <div className="flex flex-col gap-2 p-4">
         {/* Top Row */}
         <div className="flex flex-wrap justify-between items-center text-white/80 text-sm">
@@ -187,8 +190,8 @@ const Card = React.memo(({
             <span
               className={`px-2 py-0.5 text-xs rounded-full ${
                 isTheory
-                  ? "bg-blue-500/20 text-blue-300"
-                  : "bg-orange-500/20 text-orange-300"
+                  ? "bg-blue-500/20 "
+                  : "bg-orange-500/20 "
               }`}
             >
               {item.courseCategory}
@@ -215,7 +218,7 @@ const Card = React.memo(({
         <div className="text-white/90 font-medium">{item.courseTitle}</div>
 
         {/* Attendance Bar */}
-        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden mt-1">
+        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden mt-1 ">
           <div
             className={`h-full rounded-full transition-all duration-700  ${attendancePct >= 75 ? "bg-green-500" : 'bg-red-500'}`}
             style={{
@@ -224,9 +227,10 @@ const Card = React.memo(({
             }}
           ></div>
         </div>
-
+              
         {/* Prediction Info */}
-        <div className="flex justify-between text-xs text-white/70 mt-2 text-center ">
+        <div className="flex justify-between text-xs text-white mt-2 text-center  ">
+        
           <div>
             <p className="text-[10px]">Predicted</p>
             <span className={`font-extrabold text-blue-500 ${selection ? predict.currentPct >= 75 ? "text-green-500": "text-red-500" : ""} `}>

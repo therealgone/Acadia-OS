@@ -36,6 +36,7 @@ export const LoginComponent = () => {
     setLoading(true);
     setError("");
 
+
     try {
       const form = new FormData(e.currentTarget);
       const hash1 = form.get("name") as string;
@@ -91,6 +92,10 @@ export const LoginComponent = () => {
         }
       }
     } catch (err) {
+      if (typeof err === "string" && err.includes("HIP")) {
+        setError("Captcha verification is required from SRM Backend. We cannot process your request at the moment. Please try again later.")
+      }
+      else 
       console.error("Login error:", err);
       setError("An unexpected error occurred. Please try again.");
     } finally {
@@ -135,12 +140,7 @@ export const LoginComponent = () => {
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-            <a href="https://github.com/therealgone" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300">
-              <Github size={16} className="text-[#E1E1E3]" />
-            </a>
-            <a href="https://www.linkedin.com/in/jeevan-baabu-97a19125b/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300">
-              <Linkedin size={16} className="text-[#E1E1E3]" />
-            </a>
+           
             <Link href="/" className="p-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300">
               Back
             </Link>

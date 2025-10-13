@@ -98,12 +98,12 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
         <GlobalLoader className="w-4 h-4 text-yellow-400" />
       ) : isError ? (
         <div className="flex  items-center gap-1">
-          <span>Failed</span>
+          
           <button
             onClick={() => refetch()}
-            className="flex  items-center gap-1 px-2 py-0.5 rounded-md bg-red-500/30 hover:bg-red-500/50 text-xs text-white"
-          >
            
+          >
+           <span>Failed</span>
           </button>
         </div>
       ) : today === 0 ? (
@@ -127,8 +127,8 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
     <button
       key={index}
       onClick={() => handleDayOrderClick(index)}
-      className={`px-4 py-2 rounded-2xl  hover-glow hover:-translate-y-2 hover:shadow-[0_8px_40px_rgba(0,0,0,0.25)]  transition-all duration-300 shadow-md  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 
-        ${dayOrder === index ? "panel-red-bg -translate-y-1 " : "bg-white/10"}
+      className={`md:w-12 md:h-12 w-10 h-10 rounded-xl font-bold text-lg transition-all duration-300 
+        ${dayOrder === index ? "bg-[#EF4444] text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] -translate-y-1.5 " : "border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] text-[#E1E1E3] hover:bg-[rgba(255,255,255,0.08)] hover:scale-105"}
       `}
     >
       {index + 1}
@@ -203,8 +203,8 @@ const Data = React.memo(({
             ref={current ? currentRef : undefined}
             className={`w-full flex flex-col p-4 rounded-2xl  transition-all duration-300 shadow-lg ${
               current
-                ? "border-yellow-400 glow-yellow scale-[1.02]"
-                : "hover:scale-[1.01]"
+                ? "b-glow-yellow   scale-[1.02]   "
+                : " "
             } ${item.courseType?.includes("Theory") &&  !item.slot.startsWith("P")
              ?"bg-blue-500/20 text-blue-300"
             : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
@@ -212,21 +212,21 @@ const Data = React.memo(({
             :"panel"}`}>
             {item.isClass ? (
               <>
-                <div className={`flex justify-between items-center mb-2  pb-2 ${item.courseType?.includes("Theory") &&  !item.slot.startsWith("P")
-             ?" text-blue-300"
-            : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
-             ?" text-orange-300"
-            :"panel"}`}>
+                <div className="flex justify-between items-center mb-2  pb-2">
 
-                  <div className="items-center "> 
-                    <span className="tag tag-lime">
+                  <div className={`${item.courseType?.includes("Theory") &&  !item.slot.startsWith("P")
+             ?" tag tag-blue "
+            : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
+             ?" tag-orange tag"
+            :""}`}> 
+                    <span className="">
                       {item.courseType?.charAt(0)}
                     </span>
                     </div>
                     
                     <div className="items-center "> 
                    
-                    <span className="tag text-white  tracking-wider font-bold">
+                    <span className=" text-white  tracking-wider font-bold tag">
                       
                       {item.time}</span>
                     </div>
@@ -242,7 +242,7 @@ const Data = React.memo(({
                   </div>
 
                 <div className="flex justify-between items-center ">
-                  <h2 className="text-sm  tag tag-purple  rounded-full px-1 backdrop-blur-3xl ">
+                  <h2 className="text-sm  tag tag-lime  rounded-full px-1 backdrop-blur-3xl ">
                     <span className="">Room</span> -{" "}
                     <span className="">
                       {item.courseRoomNo}
