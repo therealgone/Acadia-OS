@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import { useCalendar } from "@/hooks/query";
-
+import { useCalendar, useTimetable } from "@/hooks/query";
 import { GlobalLoader } from "../components/loader";
 import { Calendar, TrendingUp, X, CheckCircle, XCircle } from "lucide-react";
 
@@ -9,12 +8,10 @@ export type PredictSelection = {
   start: string;
   end: string;
   scenario: "Assume Present" | "Assume Absent";
-  count: number;
+  classCountsPerCourse: Record<string, number>; // courseCode -> count
 };
 
 export function PredictModal({
-
-  
   open,
   onClose,
   onApply,
@@ -30,47 +27,99 @@ export function PredictModal({
   );
   const [touched, setTouched] = React.useState(false);
 
-  const { data: calendar, isPending } = useCalendar();
+  const { data: calendar, isPending: calendarPending } = useCalendar();
+  const { data: timetable, isPending: timetablePending } = useTimetable();
+
+  const isPending = calendarPending || timetablePending;
 
   if (!open) return null;
 
-  // ✅ Compute working day count using valid date comparison
-  function computeCount(): number {
-    if (!calendar || !Array.isArray(calendar)) return 0;
-    if (!start || !end) return 0;
+  // ✅ Compute class counts per course using timetable
+  function computeClassCounts(): { counts: Record<string, number>; totalClasses: number } {
+    if (!calendar || !Array.isArray(calendar)) return { counts: {}, totalClasses: 0 };
+    if (!timetable || !Array.isArray(timetable)) return { counts: {}, totalClasses: 0 };
+    if (!start || !end) return { counts: {}, totalClasses: 0 };
 
     const s = new Date(start);
     const e = new Date(end);
-    if (Number.isNaN(s.getTime()) || Number.isNaN(e.getTime()) || e < s) return 0;
+    if (Number.isNaN(s.getTime()) || Number.isNaN(e.getTime()) || e < s) {
+      return { counts: {}, totalClasses: 0 };
+    }
 
-    // Flatten all calendar days with correct YYYY-MM-DD format
-    const allDays = calendar.flatMap((month) =>
-      month.days.map((d) => {
-        // Build proper date string: e.g., "2025-10-14"
-        const monthIndex = new Date(`${month.month} 1, ${new Date().getFullYear()}`).getMonth() + 1;
-        const paddedMonth = monthIndex.toString().padStart(2, "0");
-        const paddedDay = d.date.toString().padStart(2, "0");
-        const fullDateStr = `${new Date().getFullYear()}-${paddedMonth}-${paddedDay}`;
-        return {
-          date: new Date(fullDateStr),
-          dayOrder: d.dayOrder,
-        };
-      })
-    );
+    // Get all day orders in the selected range
+    const dayOrdersInRange: number[] = [];
+    
+    // Extract year from selected date range
+    const startYear = s.getFullYear();
+    const endYear = e.getFullYear();
+    
+    calendar.forEach((month) => {
+      month.days.forEach((day) => {
+        // Parse month name to get month index (0-11)
+        const monthDate = new Date(`${month.month} 1, 2000`);
+        const monthIndex = monthDate.getMonth(); // 0-11
+        
+        // Try both years if range spans year boundary
+        const yearsToCheck = startYear === endYear ? [startYear] : [startYear, endYear];
+        
+        for (const year of yearsToCheck) {
+          // Build proper date string
+          const paddedMonth = (monthIndex + 1).toString().padStart(2, "0");
+          const paddedDay = day.date.toString().padStart(2, "0");
+          const fullDateStr = `${year}-${paddedMonth}-${paddedDay}`;
+          const dayDate = new Date(fullDateStr);
 
-    // Filter valid working days in the selected range
-    const workingDays = allDays.filter(
-      (d) =>
-        d.date >= s &&
-        d.date <= e &&
-        d.dayOrder !== "-" &&
-        d.dayOrder.trim() !== ""
-    );
+          // Check if this day is in range and has a valid day order
+          if (dayDate >= s && dayDate <= e && day.dayOrder !== "-" && day.dayOrder.trim() !== "") {
+            const dayOrderNum = parseInt(day.dayOrder, 10);
+            if (!isNaN(dayOrderNum)) {
+              dayOrdersInRange.push(dayOrderNum);
+            }
+          }
+        }
+      });
+    });
 
-    return workingDays.length;
+    // Count classes per course from timetable
+    const classCountsPerCourse: Record<string, number> = {};
+
+    dayOrdersInRange.forEach((dayOrder) => {
+      // Day order is 1-indexed, timetable array is 0-indexed
+      const daySchedule = timetable[dayOrder - 1];
+      if (!daySchedule) return;
+
+      daySchedule.class.forEach((classItem) => {
+        if (!classItem.isClass) return;
+
+        const courseCode = classItem.courseCode;
+        
+        // Use the same logic as attendance data to distinguish theory vs lab
+        // Priority: slot takes precedence over courseType
+        // Theory: slot does NOT start with "P" (regardless of courseType)
+        // Lab: slot starts with "P" (regardless of courseType)
+        const isTheory = !classItem.slot.startsWith("P");
+        const isLab = classItem.slot.startsWith("P");
+        
+        // Create key based on the actual course structure
+        // For labs: courseCode + "Lab" 
+        // For theory: courseCode + "Theory"
+        const key = isLab ? `${courseCode}Lab` : `${courseCode}Theory`;
+        
+        // Debug: Log key generation
+        console.log(`[PredictModal] Course: ${courseCode}, Type: ${classItem.courseType}, Slot: ${classItem.slot}, isTheory: ${isTheory}, isLab: ${isLab}, Key: ${key}`);
+
+
+        classCountsPerCourse[key] = (classCountsPerCourse[key] || 0) + 1;
+      });
+    });
+
+    const totalClasses = Object.values(classCountsPerCourse).reduce((sum, count) => sum + count, 0);
+
+
+    return { counts: classCountsPerCourse, totalClasses };
   }
 
-  const count = computeCount();
+  const { counts: classCountsPerCourse, totalClasses } = computeClassCounts();
 
   const isInvalidRange = (() => {
     if (!start || !end) return true;
@@ -85,7 +134,7 @@ export function PredictModal({
       start,
       end,
       scenario,
-      count,
+      classCountsPerCourse,
     });
     onClose();
   };
@@ -215,7 +264,7 @@ export function PredictModal({
             </div>
           </div>
 
-          {/* Working Days Result */}
+          {/* Total Classes Result */}
           {touched && (
             <div className={`p-4 rounded-xl border ${
               isInvalidRange 
@@ -234,10 +283,10 @@ export function PredictModal({
                   <div className="flex items-center gap-2">
                     <Calendar size={18} className="text-[#F59E0B]" />
                     <span className="text-sm font-medium text-[#E1E1E3]">
-                      Working Days Found:
+                      Total Classes Found:
                     </span>
                   </div>
-                  <span className="text-2xl font-bold text-[#F59E0B]">{count}</span>
+                  <span className="text-2xl font-bold text-[#F59E0B]">{totalClasses}</span>
                 </div>
               )}
             </div>
@@ -254,7 +303,7 @@ export function PredictModal({
           </button>
           <button
             onClick={handleApply}
-            disabled={isInvalidRange || count === 0}
+            disabled={isInvalidRange || totalClasses === 0}
             className="flex-1 px-6 py-3 rounded-xl bg-[#F59E0B] hover:bg-[#F59E0B]/90 text-white font-semibold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#F59E0B] hover:shadow-[0_0_20px_rgba(245,158,11,0.3)]"
           >
             Apply Prediction
