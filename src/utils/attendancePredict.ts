@@ -9,11 +9,17 @@ export type PredictResults = {
   currentPct: number;
   pctIfAttendNext: number;
   pctIfSkipNext: number;
-  xMinConsecutiveToReachR: number | null; // null when impossible (R==100 and A<T)
-  mMaxSkipsAllowed: number; // never negative in display, clamp to 0
-  kMinAttendOutOfN: number | null; // null when impossible in window
-  windowSize: number; // N used
+  xMinConsecutiveToReachR: number | null;
+  mMaxSkipsAllowed: number;
+  kMinAttendOutOfN: number | null;
+  windowSize: number;
   messages: string[];
+  crt: {
+    // ✅ Added CRT Info
+    classesToReachTarget: number | null;
+    classesCanSkipBeforeDrop: number | null;
+    targetReached: boolean;
+  };
 };
 
 function toPct(numerator: number, denominator: number): number {
@@ -22,7 +28,7 @@ function toPct(numerator: number, denominator: number): number {
 }
 
 function roundPct(value: number): number {
-  return Math.round(value * 100) / 100; // two decimals
+  return Math.round(value * 100) / 100;
 }
 
 export function computePredict(inputs: PredictInputs): PredictResults {
@@ -33,22 +39,17 @@ export function computePredict(inputs: PredictInputs): PredictResults {
 
   const messages: string[] = [];
 
-  const currentPctRaw = toPct(A, T);
-  const currentPct = roundPct(currentPctRaw);
-
+  const currentPct = roundPct(toPct(A, T));
   const pctIfAttendNext = roundPct(toPct(A + 1, T + 1));
   const pctIfSkipNext = roundPct(toPct(A, T + 1));
 
+  // --- Existing Logic ---
   let xMin: number | null;
   if (R === 100) {
-    // Only possible if A==T
-    if (A === T) {
-      xMin = 0;
-    } else {
+    if (A === T) xMin = 0;
+    else {
       xMin = null;
-      messages.push(
-        "Impossible to reach 100% because you have already missed classes."
-      );
+      messages.push("Impossible to reach 100% because you already missed classes.");
     }
   } else {
     const numerator = R * T - 100 * A;
@@ -58,16 +59,13 @@ export function computePredict(inputs: PredictInputs): PredictResults {
   }
 
   let mMax: number;
-  if (R === 0) {
-    // If required is 0, can skip arbitrarily; bound by math with large value
-    mMax = Number.MAX_SAFE_INTEGER;
-  } else {
+  if (R === 0) mMax = Number.MAX_SAFE_INTEGER;
+  else {
     const value = (100 * A - R * T) / R;
     const floored = Math.floor(Math.max(-1, value));
     mMax = Math.max(0, floored);
   }
 
-  // k_min over next N
   let kMin: number | null;
   const needed = (R / 100) * (T + N) - A;
   const kVal = Math.ceil(Math.max(0, needed));
@@ -78,8 +76,33 @@ export function computePredict(inputs: PredictInputs): PredictResults {
     kMin = kVal;
   }
 
-  if (T === 0) {
-    messages.push("No classes held yet — add classes in schedule.");
+  if (T === 0) messages.push("No classes held yet — add classes in schedule.");
+
+  // --- ✅ New CRT Logic ---
+  let classesToReachTarget: number | null = null;
+  let classesCanSkipBeforeDrop: number | null = null;
+  let targetReached = false;
+
+  if (R === 100 && A < T) {
+    classesToReachTarget = null;
+  } else {
+    const diff = R - currentPct;
+    if (diff <= 0) {
+      targetReached = true;
+      classesToReachTarget = 0;
+    } else {
+      const num = R * T - 100 * A;
+      const den = 100 - R;
+      classesToReachTarget = Math.ceil(num / den);
+    }
+  }
+
+  // how many you can skip before going below target
+  if (currentPct <= R) {
+    classesCanSkipBeforeDrop = 0;
+  } else {
+    const val = (100 * A - R * T) / R;
+    classesCanSkipBeforeDrop = Math.floor(val >= 0 ? val : 0);
   }
 
   return {
@@ -91,8 +114,10 @@ export function computePredict(inputs: PredictInputs): PredictResults {
     kMinAttendOutOfN: kMin,
     windowSize: N,
     messages,
+    crt: {
+      classesToReachTarget,
+      classesCanSkipBeforeDrop,
+      targetReached,
+    },
   };
 }
-
-
-
