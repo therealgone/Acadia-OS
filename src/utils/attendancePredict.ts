@@ -1,3 +1,5 @@
+//attendancePredict.ts
+
 export type PredictInputs = {
   attended: number; // A
   total: number; // T
@@ -93,6 +95,3 @@ export function computePredict(inputs: PredictInputs): PredictResults {
     messages,
   };
 }
-
-
-
