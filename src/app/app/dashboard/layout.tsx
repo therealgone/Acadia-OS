@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 export const runtime = "edge";
 export const metadata: Metadata = {
-  title: "Course",
-  description: "Academic Course data",
+  title: "Dashboard",
+  description: "Quick Insight",
 };
 
 export default function RootLayout({

@@ -9,6 +9,8 @@ import { isCurrentClass } from "@/utils/currentClass";
 const Page = React.memo(() => {
   const { data, isPending } = useTimetable();
 
+  
+
   if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
   if (!data || !Array.isArray(data) || data.length === 0)
     return (
@@ -151,7 +153,7 @@ const Data = React.memo(({
   dayorder,
   today,
 }: {
-  data: DaySchedule[];
+  data: DaySchedule[] ;
   dayorder: number;
   today: number;
 }) => {
@@ -220,7 +222,7 @@ const Data = React.memo(({
              ?" tag-orange tag"
             :""}`}> 
                     <span className="">
-                      {item.courseType?.charAt(0)}
+                      {item.courseType?.includes("Theory") &&  !item.slot.startsWith("P") ? "T" : "P"}
                     </span>
                     </div>
                     
@@ -239,15 +241,33 @@ const Data = React.memo(({
                 <span className=" font-extrabold truncate w-auto  ">
                       {item.courseTitle}
                     </span>
+                    
                   </div>
 
                 <div className="flex justify-between items-center ">
-                  <h2 className="text-sm  tag tag-lime  rounded-full px-1 backdrop-blur-3xl ">
-                    <span className="">Room</span> -{" "}
+                  <div className="text-sm flex  rounded-full px-1 backdrop-blur-3xl space-x-1.5  ">
+                    <span className="tag tag-lime ">Room -{" "}
                     <span className="">
                       {item.courseRoomNo}
                     </span>
-                  </h2>
+                    </span>
+                    
+                      <div className="items-center   flex">
+                  <span className="tag tag-orange  ">Slot -
+                    <span className=" ">
+                       {" "}{item.slot}
+                    </span>
+                    </span>
+                    </div>
+
+
+                       </div>
+                     
+              
+                
+
+
+                  
 
                   {attendance ? (
                     <AttendanceData attendance={attendance} />
