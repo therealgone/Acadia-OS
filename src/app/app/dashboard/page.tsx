@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useAttendance, useDayOrder, useTimetable, useMarks } from "@/hooks/query";
+import { useAttendance, useDayOrder, useTimetable, useMarks, useCourse } from "@/hooks/query";
 import { isCurrentClass as originalIsCurrentClass } from "@/utils/currentClass";
+import {Calculation} from "./markcalculation"
 
 const Page = () => {
   const { data } = useTimetable();
   const { data: attendanceData } = useAttendance();
   const { data: marks } = useMarks();
 
-  const today = 1; // FORCE day order to 2
+  const today = 3; // FORCE day order to 2
 
   // Override isCurrentClass for testing: always treat now as 08:20 AM
   const isCurrentClass = (timeRange: string) => {
@@ -22,7 +23,7 @@ const Page = () => {
       const now = new Date();
       return new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
     };
-    const fixedNow = parseTimeToDate("01:30 PM"); // FORCE time
+    const fixedNow = parseTimeToDate("08:30 AM"); // FORCE time
     return fixedNow >= parseTimeToDate(start) && fixedNow <= parseTimeToDate(end);
   };
 
@@ -37,21 +38,52 @@ const Page = () => {
     () => currentDayClasses.find((c) => isCurrentClass(c.time)),
     [currentDayClasses]
   );
-   console.log(currentClass?.courseCategory)
+  console.log(currentClass?.courseCategory)
 
-  const {data:course} = useMarks()
 
-  
-  // Marks for the current class
-  const currentMark = useMemo(
-   
-    () =>
+
+  const { data: course } = useCourse();
+
+
+
+
+
+  //current Mark 
+  const currentMark = useMemo(() => {
+    return marks?.find(
+      (m) =>
+        m.course === currentClass?.courseCode &&
+        (
+          (m.category === "Practical" && currentClass?.slot?.startsWith("P")) ||
+          (m.category === "Theory" && !currentClass?.slot?.startsWith("P"))
+        )
+    );
+  }, [marks, currentClass]);
+
+
+  //Total Attendace
+
+ const totalAttendance = useMemo(() => {
+  return attendanceData?.reduce(
+    (acc, item) => {
+      acc.courseConducted += Number(item.courseConducted) || 0;
+      acc.courseAbsent +=  Number(item.courseAbsent) || 0 ;
       
-        marks?.find((m) => m.course === currentClass?.courseCode && currentClass.courseType === m.category),
-    [marks, currentClass]
-
+      
+      
+      return acc;
     
+    },
+    {
+      courseConducted: 0,
+      courseAbsent: 0,
+    }
   );
+}, [attendanceData]);
+
+
+
+
 
   // Attendance for current class
   const currentAttendance = useMemo(() => {
@@ -77,17 +109,17 @@ const Page = () => {
       { obtained: 0, maxMark: 0 }
     );
   }, [marks]);
-   console.log()
+  console.log()
   return (
 
- 
+
     <div className="flex flex-col items-center justify-center mt-10 gap-4">
       {currentClass ? (
         <div className="p-6 rounded-xl bg-gray-800 text-white w-full max-w-md shadow-lg">
           <h2 className="text-xl font-bold mb-2">{currentClass.courseTitle}</h2>
           <p className="mb-1">Time: {currentClass.time}</p>
           <p className="mb-1">Slot: {currentClass.slot}</p>
-         
+
           <p>
             Current Marks: {currentMark?.total.obtained} / {currentMark?.total.maxMark}
           </p>
@@ -98,6 +130,19 @@ const Page = () => {
       )}
       <p>Total Obtained: {markstotal?.obtained}</p>
       <p>Total Max Mark: {markstotal?.maxMark}</p>
+      <p>Total P : {totalAttendance?.courseConducted}</p>
+      <p>Total A : {totalAttendance?.courseAbsent}</p>
+      <p>
+  {(
+    ((totalAttendance?.courseConducted || 0) /
+      ((totalAttendance?.courseConducted || 0) + (totalAttendance?.courseAbsent || 0))) *
+    100
+  ).toFixed(2)}%
+</p>
+
+      <div>
+        <Calculation/>
+      </div>
     </div>
   );
 };
