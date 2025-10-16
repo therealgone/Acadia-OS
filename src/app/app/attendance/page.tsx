@@ -161,9 +161,7 @@ const Card = React.memo(({
     // Theory and lab are completely separate - no sharing of values
     const classCount = selection.classCountsPerCourse[key] || 0;
     
-    // Debug: Log the key matching
-    console.log(`[${item.courseCode}] Slot: ${item.courseSlot}, Key: ${key}, Class count: ${classCount}`);
-    console.log(`[${item.courseCode}] Future attendance: ${attended + (selection.scenario === "Assume Present" ? classCount : 0)}/${total + classCount}`);
+    // Removed dev logs for performance
 
     return {
       futureTotalInc: classCount,
@@ -186,8 +184,8 @@ const Card = React.memo(({
   return (
     <div className={`w-full backdrop-blur-sm rounded-2xl transition-all duration-300
     ${isTheory
-      ? "bg-blue-500/20"
-      : "bg-orange-500/20"}`}>
+      ? " panel panel-blue-slate-bg"
+      : "panel-orange-muted-bg panel"}`}>
       <div className="flex flex-col gap-2 p-4">
         {/* Top Row */}
         <div className="flex flex-wrap justify-between items-center text-white/80 text-sm">
@@ -196,8 +194,8 @@ const Card = React.memo(({
             <span
               className={`px-2 py-0.5 text-xs rounded-full ${
                 isTheory
-                  ? "bg-blue-500/20"
-                  : "bg-orange-500/20"
+                  ? " panel panel-blue-slate-bg"
+                  : "panel-orange-muted-bg panel"
               }`}
             >
               {item.courseCategory}

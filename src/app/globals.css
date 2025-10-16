@@ -136,7 +136,7 @@ body {
    🧩 Panels and Effects
 ====================== */
 .panel {
-  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04));
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.04));
   border: 1px solid var(--border-weak);
   border-radius: 16px;
   transition: box-shadow .25s ease, transform .25s ease;
@@ -155,11 +155,45 @@ body {
   border-color: #FBBF24; /* Slightly darker yellow border */
 }
 
-/* Blue / Info */
 .panel-blue-bg {
-  background: #3B82F6; /* Blue-500 */
-  color: #ffffff;
-  border-color: #2563EB; /* Blue-600 */
+  background: #1E3A5F; /* Deep Blue Gray */
+  color: #E0F2FE;
+  border-color: #2B4A70;
+}
+
+.panel-blue-slate-bg {
+  background: #243B55; /* Navy Slate */
+  color: #CBD5E1;
+  border-color: #31475C;
+}
+
+.panel-yellow-bg {
+  background: #3A341B; /* Deep Amber */
+  color: #FEF3C7;
+  border-color: #4B3F20;
+}
+
+.panel-orange-bg {
+  background: #3A261B; /* Dark Burnt Orange */
+  color: #FFEDD5;
+  border-color: #4B2E20;
+}
+
+.panel-orange-muted-bg {
+  background: #402A1E;
+  color: #FDBA74;
+  border-color: #523728;
+}
+.panel-yellow-muted-bg {
+  background: #40381E; /* Muted Gold */
+  color: #FDE68A;
+  border-color: #524428;
+}
+
+.panel-green-muted-bg {
+  background: #1E4031; /* Muted Dark Green */
+  color: #A7F3D0;
+  border-color: #285040;
 }
 
 /* Purple / Highlight */
@@ -185,6 +219,77 @@ body {
 
 .border-dotted { border-style: dotted; }
 .border-dashed { border-style: dashed; }
+
+
+/* Charcoal Gray */
+.panel-charcoal-bg {
+  background: #1F2933; /* Dark Gray */
+  color: #F3F4F6;      /* Light text */
+  border-color: #374151; /* Slightly lighter border */
+}
+
+/* Slate Gray */
+.panel-slate-bg {
+  background: #2D3748; 
+  color: #E5E7EB; 
+  border-color: #4B5563;
+}
+
+/* Gunmetal / Deep Gray */
+.panel-gunmetal-bg {
+  background: #111827;
+  color: #D1D5DB;
+  border-color: #1F2937;
+}
+
+/* Dark Blue Gray */
+.panel-bluegray-bg {
+  background: #1E293B;
+  color: #CBD5E1;
+  border-color: #334155;
+}
+
+/* Deep Slate */
+.panel-deepslate-bg {
+  background: #0F172A;
+  color: #F1F5F9;
+  border-color: #1E293B;
+}
+
+/* Soft Black */
+.panel-black-bg {
+  background: #0A0A0A;
+  color: #E5E7EB;
+  border-color: #1F1F1F;
+}
+
+/* Dark Steel */
+.panel-steel-bg {
+  background: #1C1F25;
+  color: #D1D5DB;
+  border-color: #2C2F36;
+}
+
+/* Dark Graphite */
+.panel-graphite-bg {
+  background: #23272A;
+  color: #E5E7EB;
+  border-color: #2C2F33;
+}
+
+/* Dark Smoke */
+.panel-smoke-bg {
+  background: #1B1B1F;
+  color: #F3F4F6;
+  border-color: #2C2C30;
+}
+
+/* Deep Space Gray */
+.panel-space-bg {
+  background: #0D1117;
+  color: #C9D1D9;
+  border-color: #161B22;
+}
 
 /* Glow utilities */
 .hover-glow-yellow:hover { box-shadow: 0 0 28px rgba(245,158,11,0.35); }
@@ -212,6 +317,14 @@ body {
   background: rgba(255,255,255,0.04);
 }
 
+.tag-font {
+  border-radius: 999px;
+  padding: 2px 8px;
+  
+  border: 1px solid var(--border-weak);
+  background: rgba(255,255,255,0.04);
+}
+
 .tag-success {
   color: var(--success);
   border-color: rgba(16,185,129,0.25);
@@ -230,12 +343,17 @@ body {
   background: rgba(239,68,68,0.08);
 }
 
-.tag-orange {
+.tag-ongrae {
   color: var(--orange);
   border-color: rgba(255,140,0,0.25);
   background: rgba(255,140,0,0.08);
 }
 
+.tag-yellow {
+  color: var(--orange);
+  border-color: rgba(255, 238, 0, 0.25);
+  background: rgba(255, 217, 0, 0.08);
+}
 .tag-info {
   color: var(--info);
   border-color: rgba(59,130,246,0.25);

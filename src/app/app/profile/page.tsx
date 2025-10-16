@@ -44,10 +44,10 @@ const Data = ({ data }: { data: UserInfo }) => {
  
         {/* Profile Details */}
         <div className="w-full flex flex-col gap-3">
-          <ProfileRow label="Reg. Number" value={data.regNumber} colour="tag-pink" />
-          <ProfileRow label="Mobile" value={data.mobile} colour="tag-cyan" />
-          <ProfileRow label="Semester" value={data.semester} colour="tag-indigo" />
-          <ProfileRow label="Section" value={data.section} colour="tag-lime" />
+          <ProfileRow label="Reg. Number" value={data.regNumber} colour="tag" />
+          <ProfileRow label="Mobile" value={data.mobile} colour="tag" />
+          <ProfileRow label="Semester" value={data.semester} colour="tag" />
+          <ProfileRow label="Section" value={data.section} colour="tag" />
         </div>
 
         {/* Logout Button */}

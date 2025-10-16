@@ -58,11 +58,7 @@ export function useScreen() {
   return { isMobile };
 }
 
-// Sidebar store
-export const useSidebar = create<SidebarState>((set) => ({
-  isOpen: false,
-  setOpen: (open: boolean) => set({ isOpen: open }),
-}));
+
 
 
 
