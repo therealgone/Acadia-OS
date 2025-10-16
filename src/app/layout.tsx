@@ -30,6 +30,15 @@ export const metadata: Metadata = {
     "academia.srmist",
     "srmist",
     "academia.srmist.edu.in",
+    "acadiaos",
+    "acadiaos srm",
+    "acadia srm",
+    "acadia",
+    "acadia asia srm",
+    "srm acadia",
+    "exam schedule acadia",
+    "acadia design",
+
   ],
   openGraph: {
     title: "Acadia OS",

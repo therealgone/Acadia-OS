@@ -291,6 +291,18 @@ body {
   border-color: #161B22;
 }
 
+
+.seo-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
 /* Glow utilities */
 .hover-glow-yellow:hover { box-shadow: 0 0 28px rgba(245,158,11,0.35); }
 .hover-glow-blue:hover { box-shadow: 0 0 18px rgba(59,130,246,0.35); }
