@@ -123,7 +123,7 @@ const Section = React.memo(({
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 ">
       <h2 className="text-lg text-white font-semibold px-3 lg:px-6">{title}</h2>
       <div className="flex flex-col gap-3 px-3 lg:px-6">
         {filtered.map((item, i) => (
@@ -161,9 +161,7 @@ const Card = React.memo(({
     // Theory and lab are completely separate - no sharing of values
     const classCount = selection.classCountsPerCourse[key] || 0;
     
-    // Debug: Log the key matching
-    console.log(`[${item.courseCode}] Slot: ${item.courseSlot}, Key: ${key}, Class count: ${classCount}`);
-    console.log(`[${item.courseCode}] Future attendance: ${attended + (selection.scenario === "Assume Present" ? classCount : 0)}/${total + classCount}`);
+    // Removed dev logs for performance
 
     return {
       futureTotalInc: classCount,
@@ -184,10 +182,10 @@ const Card = React.memo(({
   }), [item.courseAttendance, item.courseSlot]);
 
   return (
-    <div className={`w-full backdrop-blur-sm rounded-2xl transition-all duration-300
+    <div className={`w-full backdrop-blur-sm rounded-2xl transition-all duration-300 
     ${isTheory
-      ? "bg-blue-500/20"
-      : "bg-orange-500/20"}`}>
+      ? " panel-blue-bg"
+      : "panel-orange-bg "}`}>
       <div className="flex flex-col gap-2 p-4">
         {/* Top Row */}
         <div className="flex flex-wrap justify-between items-center text-white/80 text-sm">
@@ -196,8 +194,8 @@ const Card = React.memo(({
             <span
               className={`px-2 py-0.5 text-xs rounded-full ${
                 isTheory
-                  ? "bg-blue-500/20"
-                  : "bg-orange-500/20"
+                  ? " panel-blue-bg"
+                  : "panel-orange-bg "
               }`}
             >
               {item.courseCategory}
@@ -258,6 +256,8 @@ const Card = React.memo(({
           </div>
         </div>
       </div>
+      <div className="seo-hidden">SRM, SRM KTR, Acadia OS, AcadiaOS, acadiaos srm, Acadia, Acadia SRM, Acadia Asia SRM, SRM Acadia, Student Dashboard, Attendance, Timetable, Calendar, Exam Schedule, GPA Calculator, Marks Calculator, College Timetable, College Attendance Tracker, SRM Students, Academia, academia.srmist, academia.srmist.edu.in, Acadia Design, Acadia Dashboard, College Calendar, SRM Timetable, SRM Attendance, Acadia Portal, SRM Portal, Acadia OS Features, College Management, Student Tools, Academic Planner, Acadia OS SRM KTR, SRM University Tools, Student Performance Tracker, Semester GPA, SRM Academic Dashboard,exam schedule acadia,acadia design </div>
+     
     </div>
   );
 });

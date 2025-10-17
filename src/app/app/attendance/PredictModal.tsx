@@ -140,7 +140,7 @@ export function PredictModal({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center card-surface z-50 px-4">
+    <div className="fixed inset-0 flex items-center justify-center  z-50 px-4">
       <div className="relative w-full max-w-lg rounded-3xl border card-surface backdrop-blur-xl shadow-2xl">
         {isPending && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-3xl z-10">

@@ -46,22 +46,20 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
         return (
           <div
             key={idx}
-            className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 rounded-3xl hover:scale-[1.02] transition-all duration-200 ${
-                    category === "theory"
-                      ? "bg-blue-500/20 text-blue-300"
-                      : "bg-orange-500/20 text-orange-300"
-                  }`}
+            className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 rounded-3xl hover:scale-[1.02] transition-all duration-200 ${category === "theory"
+                ? "panel-blue-bg"
+                : " panel-orange-bg"
+              }`}
           >
             {/* Left: Course Info */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1 w-full">
               {/* Course code badge + total marks (mobile) */}
               <div className="flex justify-between items-center w-full sm:w-auto gap-2">
                 <div
-                  className={`px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-3xl whitespace-nowrap ${
-                    category === "theory"
+                  className={`px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-3xl whitespace-nowrap ${category === "theory"
                       ? "tag tag-blue"
                       : "tag tag-orange"
-                  }`}
+                    }`}
                 >
                   {course?.courseCode} - {course?.courseType?.charAt(0)}
                 </div>

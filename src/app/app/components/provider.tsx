@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Icon from "@/../public/favicon.svg";
 import Loading from "../loading";
+import { RotateCw } from 'lucide-react';
 import { CommandCenter } from "./CommandCenter";
 
 const queryClient = new QueryClient({
@@ -131,7 +132,7 @@ const onReload = () => {
              
        
       </div>
-    <div className="text-center">
+    <div className="text-center hidden md:block">
       <span className="uppercase text-lg md:lg:xl:text-lg   tracking-widest font-sans font-extrabold  ">
         {path[path.length - 1]}
       </span>
@@ -140,12 +141,13 @@ const onReload = () => {
     </div>
    
 
-    <div >
+     <div className="flex flex-col justify-center items-center" >
       <button
       onClick={onReload}
-      className="px-3 py-1 rounded-full att-red border   text-sm hover:scale-105 transition-transform duration-200"
+      className=" flex rounded-full tag tag-error text-center p-1.5 gap-1    text-sm hover:scale-105 transition-transform duration-200"
     >
-      Reload
+      <span className=" flex text-center justify-center items-center">Reload</span>
+      <RotateCw size={20}/>
     </button></div>
     
   </div>
