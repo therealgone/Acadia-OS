@@ -33,7 +33,7 @@ const Data = ({ data }: { data: UserInfo }) => {
   return (
     <div className="w-full h-full mt-20 flex flex-col justify-center items-center bg-[var(--bg-primary)] px-4 ">
       {/* Profile Card */}
-      <div className="w-full max-w-sm flex flex-col items-center gap-6 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl p-6 ">
+      <div className="w-full max-w-sm flex flex-col items-center gap-6 panel panel-space-bg p-6 ">
         {/* Name & Department */}
         <div className="flex flex-col items-center gap-1">
           <h1 className="text-2xl text-center font-extrabold text-white">
@@ -44,10 +44,10 @@ const Data = ({ data }: { data: UserInfo }) => {
  
         {/* Profile Details */}
         <div className="w-full flex flex-col gap-3">
-          <ProfileRow label="Reg. Number" value={data.regNumber} colour="tag-pink" />
-          <ProfileRow label="Mobile" value={data.mobile} colour="tag-cyan" />
-          <ProfileRow label="Semester" value={data.semester} colour="tag-indigo" />
-          <ProfileRow label="Section" value={data.section} colour="tag-lime" />
+          <ProfileRow label="Reg. Number" value={data.regNumber} colour="" />
+          <ProfileRow label="Mobile" value={data.mobile} colour="" />
+          <ProfileRow label="Semester" value={data.semester} colour="" />
+          <ProfileRow label="Section" value={data.section} colour="" />
         </div>
 
         {/* Logout Button */}
@@ -90,7 +90,7 @@ const Data = ({ data }: { data: UserInfo }) => {
                   </a>
                 </div>
       </div>
-    
+     <div className="seo-hidden">SRM, SRM KTR, Acadia OS, AcadiaOS, acadiaos srm, Acadia, Acadia SRM, Acadia Asia SRM, SRM Acadia, Student Dashboard, Attendance, Timetable, Calendar, Exam Schedule, GPA Calculator, Marks Calculator, College Timetable, College Attendance Tracker, SRM Students, Academia, academia.srmist, academia.srmist.edu.in, Acadia Design, Acadia Dashboard, College Calendar, SRM Timetable, SRM Attendance, Acadia Portal, SRM Portal, Acadia OS Features, College Management, Student Tools, Academic Planner, Acadia OS SRM KTR, SRM University Tools, Student Performance Tracker, Semester GPA, SRM Academic Dashboard,exam schedule acadia,acadia design </div>
     </div>
   );
 };

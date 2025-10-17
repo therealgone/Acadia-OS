@@ -189,7 +189,7 @@ export const LoginComponent = () => {
                 <div className="relative">
                   <Lock className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-[#A5A6AA]" />
                   <input id="password" name="password" type={eyeOpen ? "text" : "password"} placeholder="Enter your password" autoComplete="current-password" required disabled={loading} className="w-full pl-10 sm:pl-12 pr-10 py-3 sm:py-3 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-white placeholder-[#6a6b70] outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/20 disabled:opacity-50 text-sm sm:text-base" />
-                  <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-white transition-colors" onClick={() => setEyeOpen(!eyeOpen)}>
+                  <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 cursor-pointer text-black hover:text-zinc-600 transition-colors" onClick={() => setEyeOpen(!eyeOpen)}>
                     {eyeOpen ? <Eye size={18} /> : <EyeOff size={18} />}
                   </div>
                 </div>

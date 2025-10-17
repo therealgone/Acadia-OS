@@ -9,6 +9,8 @@ import { isCurrentClass } from "@/utils/currentClass";
 const Page = React.memo(() => {
   const { data, isPending } = useTimetable();
 
+
+
   if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
   if (!data || !Array.isArray(data) || data.length === 0)
     return (
@@ -60,12 +62,12 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
     <div className="w-full h-full flex flex-col  scrollbar-none">
       {/* Header */}
       <div className="w-full flex justify-center py-4">
-  <div
-    onClick={handleTodayClick}
-    className="
+        <div
+          onClick={handleTodayClick}
+          className="
       relative flex items-center justify-between gap-4
       w-[200px] sm:w-[300px] px-4 py-2
-      tag-orange
+      
       backdrop-blur-md
       rounded-xl
       glow-orange 
@@ -73,68 +75,67 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
       transition-all duration-300
       hover:scale-105
     "
-  >
-    {/* Label */}
-    <span className="text-sm text-white/70 font-medium tracking-wider whitespace-nowrap">
-      Today&apos;s DO
-    </span>
+        >
+          {/* Label */}
+          <span className="text-sm text-white font-medium tracking-wider whitespace-nowrap">
+            Today&apos;s DO
+          </span>
 
-    {/* Day Order */}
-    <span
-      className={`
+          {/* Day Order */}
+          <span
+            className={`
         xl:lg:md:px-3 xl:lg:md:py-1.5 px-3 py-1 rounded-lg text-sm font-semibold
         flex items-center justify-center
         
-        ${
-          isLoading
-            ? "  tag-warning tag "
-            : today === 0 || isError
-            ? ""
-            : ""
-        }
+        ${isLoading
+                ? "  tag-warning tag "
+                : today === 0 || isError
+                  ? ""
+                  : ""
+              }
       `}
-    >
-      {isLoading || isFetching ? (
-        <GlobalLoader className="w-4 h-4 text-yellow-400" />
-      ) : isError ? (
-        <div className="flex  items-center gap-1">
-          
-          <button
-            onClick={() => refetch()}
-           
           >
-           <span>Failed</span>
-          </button>
-        </div>
-      ) : today === 0 ? (
-        "Hoilday"
-      ) : (
-        today
-      )}
-    </span>
+            {isLoading || isFetching ? (
+              <GlobalLoader className="w-4 h-4 text-yellow-400" />
+            ) : isError ? (
+              <div className="flex  items-center gap-1">
 
-    {/* Glow effect */}
-    {today  !== 0 && !isError && (
-      <span className="absolute -inset-1 rounded-xl  blur-md text-yellow-500 pointer-events-none"></span>
-    )}
-  </div>
-</div>
+                <button
+                  onClick={() => refetch()}
+
+                >
+                  <span>Failed</span>
+                </button>
+              </div>
+            ) : today === 0 ? (
+              "Hoilday"
+            ) : (
+              today
+            )}
+          </span>
+
+          {/* Glow effect */}
+          {today !== 0 && !isError && (
+            <span className="absolute -inset-1 rounded-xl  panel-yellow-bg   blur-md text-yellow-500 pointer-events-none"></span>
+          )}
+        </div>
+      </div>
 
       {/* Day order navigation */}
-      
+
       <div className="flex justify-center xl:lg:md:gap-50 gap-6  p-3  items-center   md:text-4xl font-extrabold tracking-wide  ">
-     {Array.from({ length: 5 }).map((_, index) => (
-    <button
-      key={index}
-      onClick={() => handleDayOrderClick(index)}
-      className={`md:w-12 md:h-12 w-10 h-10 rounded-xl font-bold text-lg transition-all duration-300 
-        ${dayOrder === index ? "bg-[#EF4444] text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] -translate-y-1.5 " : "border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] text-[#E1E1E3] hover:bg-[rgba(255,255,255,0.08)] hover:scale-105"}
+        {Array.from({ length: 5 }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handleDayOrderClick(index)}
+            className={`md:w-12 md:h-12 w-10 h-10 rounded-xl font-bold text-lg transition-all duration-300 
+        ${dayOrder === index ? "panel-red-bg  -translate-y-1.5 " : "panel-default-bg"}
       `}
-    >
-      {index + 1}
-    </button>
-  ))}
-    
+          >
+            {index + 1}
+          </button>
+        ))}
+
       </div>
 
       <div className="flex-1  scrollbar-none">
@@ -167,7 +168,7 @@ const Data = React.memo(({
     }
   }, [today, dayorder]);
 
-  
+
 
   // Memoize current day classes
   const currentDayClasses = useMemo(() => {
@@ -175,12 +176,12 @@ const Data = React.memo(({
     return data[dayorder].class.filter(item => item.isClass);
   }, [data, dayorder]);
 
-  
+
 
   return (
     <div className="flex flex-col gap-4 px-5 py-3 w-full">
       {currentDayClasses.map((item) => {
-     
+
         const attendance = attendanceData && Array.isArray(attendanceData) ? attendanceData.find(
           (i) =>
             i.courseCode === item.courseCode &&
@@ -188,9 +189,9 @@ const Data = React.memo(({
               !item.slot.startsWith("P"))
         ) : undefined;
 
-       
-       
-        
+
+
+
 
         const current =
           today && today !== 0 && dayorder === today - 1
@@ -201,58 +202,69 @@ const Data = React.memo(({
           <div
             key={item.time}
             ref={current ? currentRef : undefined}
-            className={`w-full flex flex-col p-4 rounded-2xl  transition-all duration-300 shadow-lg ${
-              current
-                ? "b-glow-yellow   scale-[1.02]   "
+            className={`w-full flex flex-col p-4 rounded-2xl  transition-all duration-300 shadow-lg ${current
+                ? " b-glow-yellow    scale-[1.02]   "
                 : " "
-            } ${item.courseType?.includes("Theory") &&  !item.slot.startsWith("P")
-             ?"bg-blue-500/20 text-blue-300"
-            : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
-             ?"bg-orange-500/20 text-orange-300"
-            :"panel"}`}>
+              } ${item.courseType?.includes("Theory") && !item.slot.startsWith("P")
+                ? "panel-blue-bg panel "
+                : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
+                  ? "panel-orange-bg "
+                  : "panel"}`}>
             {item.isClass ? (
               <>
                 <div className="flex justify-between items-center mb-2  pb-2">
 
-                  <div className={`${item.courseType?.includes("Theory") &&  !item.slot.startsWith("P")
-             ?" tag tag-blue "
-            : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
-             ?" tag-orange tag"
-            :""}`}> 
+                  <div className={`${item.courseType?.includes("Theory") && !item.slot.startsWith("P")
+                    ? " tag tag-blue "
+                    : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
+                      ? " tag-orange tag"
+                      : ""}`}>
                     <span className="">
-                      {item.courseType?.charAt(0)}
-                    </span>
-                    </div>
-                    
-                    <div className="items-center "> 
-                   
-                    <span className=" text-white  tracking-wider font-bold tag">
-                      
-                      {item.time}</span>
-                    </div>
-                  
-                  
-                  
-                </div>
-               
-                 <div className="border-b border-white/20 flex  pb-2 text-center mb-2">
-                <span className=" font-extrabold truncate w-auto  ">
-                      {item.courseTitle}
+                      {item.courseType?.includes("Theory") && !item.slot.startsWith("P") ? "T" : "P"}
                     </span>
                   </div>
 
+                  <div className="items-center ">
+
+                    <span className=" text-white  tracking-wider font-bold tag">
+
+                      {item.time}</span>
+                  </div>
+
+
+
+                </div>
+
+                <div className="border-b border-white/20 flex  pb-2 text-center mb-2">
+                  <span className=" font-extrabold truncate w-auto  ">
+                    {item.courseTitle}
+                  </span>
+
+                </div>
+
                 <div className="flex justify-between items-center ">
-                  <h2 className="text-sm  tag tag-lime  rounded-full px-1 backdrop-blur-3xl ">
-                    <span className="">Room</span> -{" "}
-                    <span className="">
-                      {item.courseRoomNo}
+                  <div className="text-sm flex  rounded-full px-1 backdrop-blur-3xl space-x-1.5  ">
+                    <span className="tag tag-smoke ">Room -{" "}
+                      <span className="">
+                        {item.courseRoomNo}
+                      </span>
                     </span>
-                  </h2>
+
+                    
+
+
+                  </div>
+
+
+
+
+
+
 
                   {attendance ? (
                     <AttendanceData attendance={attendance} />
                   ) : !isError ? (
-                    <span className="tag tag-info animate-pulse">
+                    <span className="tag tag-info">
                       Loading Attendance...
                     </span>
                   ) : (
@@ -263,13 +275,13 @@ const Data = React.memo(({
                 </div>
               </>
             ) : (
-             <div className="sm:hidden "></div>
+              <div className="sm:hidden "></div>
             )}
           </div>
         );
       })
       }
-      
+ <div className="seo-hidden">SRM, SRM KTR, Acadia OS, AcadiaOS, acadiaos srm, Acadia, Acadia SRM, Acadia Asia SRM, SRM Acadia, Student Dashboard, Attendance, Timetable, Calendar, Exam Schedule, GPA Calculator, Marks Calculator, College Timetable, College Attendance Tracker, SRM Students, Academia, academia.srmist, academia.srmist.edu.in, Acadia Design, Acadia Dashboard, College Calendar, SRM Timetable, SRM Attendance, Acadia Portal, SRM Portal, Acadia OS Features, College Management, Student Tools, Academic Planner, Acadia OS SRM KTR, SRM University Tools, Student Performance Tracker, Semester GPA, SRM Academic Dashboard,exam schedule acadia,acadia design </div>
     </div>
   );
 });
@@ -287,13 +299,12 @@ const AttendanceData = React.memo(({ attendance }: { attendance: AttendanceDetai
   return (
     <div className="flex items-center gap-3">
       <span
-        className={`px-3 py-1 rounded-full text-sm bg-black border ${
-          isLow ? "tag tag-error" : "tag tag-success"
-        }`}
+        className={`px-3 py-1 rounded-full text-sm bg-black border ${isLow ? "tag tag-error" : "tag tag-success"
+          }`}
       >
         {attendancePct}%
       </span>
-      
+
     </div>
   );
 });

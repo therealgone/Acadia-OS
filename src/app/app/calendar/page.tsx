@@ -100,11 +100,11 @@ const Data = ({
                 ${
                   holiday
                     ? "panel-red-bg"
-                    : "bg-white/5 text-white/80 hover:bg-white/10"
+                    : "panel-bluegray-bg"
                 }
                 ${
                   isCurrent
-                    ? "ring-2 ring-yellow-400 shadow-[0_0_20px_rgba(255,230,0,0.3)] scale-[1.05] text-yellow-200"
+                    ? "b-glow-yellow"
                     : ""
                 }`}
             >
@@ -161,6 +161,7 @@ const Data = ({
               </button>
             </div>
           </div>
+           <div className="seo-hidden">SRM, SRM KTR, Acadia OS, AcadiaOS, acadiaos srm, Acadia, Acadia SRM, Acadia Asia SRM, SRM Acadia, Student Dashboard, Attendance, Timetable, Calendar, Exam Schedule, GPA Calculator, Marks Calculator, College Timetable, College Attendance Tracker, SRM Students, Academia, academia.srmist, academia.srmist.edu.in, Acadia Design, Acadia Dashboard, College Calendar, SRM Timetable, SRM Attendance, Acadia Portal, SRM Portal, Acadia OS Features, College Management, Student Tools, Academic Planner, Acadia OS SRM KTR, SRM University Tools, Student Performance Tracker, Semester GPA, SRM Academic Dashboard,exam schedule acadia,acadia design </div>
         </div>
       )}
     </>
