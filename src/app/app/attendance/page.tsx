@@ -123,7 +123,7 @@ const Section = React.memo(({
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 ">
       <h2 className="text-lg text-white font-semibold px-3 lg:px-6">{title}</h2>
       <div className="flex flex-col gap-3 px-3 lg:px-6">
         {filtered.map((item, i) => (
@@ -182,10 +182,10 @@ const Card = React.memo(({
   }), [item.courseAttendance, item.courseSlot]);
 
   return (
-    <div className={`w-full backdrop-blur-sm rounded-2xl transition-all duration-300
+    <div className={`w-full backdrop-blur-sm rounded-2xl transition-all duration-300 
     ${isTheory
-      ? " panel panel-blue-slate-bg"
-      : "panel-orange-muted-bg panel"}`}>
+      ? " panel-blue-bg"
+      : "panel-orange-bg "}`}>
       <div className="flex flex-col gap-2 p-4">
         {/* Top Row */}
         <div className="flex flex-wrap justify-between items-center text-white/80 text-sm">
@@ -194,8 +194,8 @@ const Card = React.memo(({
             <span
               className={`px-2 py-0.5 text-xs rounded-full ${
                 isTheory
-                  ? " panel panel-blue-slate-bg"
-                  : "panel-orange-muted-bg panel"
+                  ? " panel-blue-bg"
+                  : "panel-orange-bg "
               }`}
             >
               {item.courseCategory}

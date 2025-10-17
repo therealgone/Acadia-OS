@@ -157,19 +157,18 @@ const Page = () => {
 
   return (
     <div className="min-h-screen p-4 md:p-8">
-        <h1 className="text-2xl font-extrabold mb-4 -mt-5   text-center  ">Welcome To Acadia OS</h1>
       <div className="max-w-7xl mx-auto space-y-6">
        
 
         {currentClass ? (
-          <div className={`relative   rounded-xl    p-6 ${currentClass.slot.startsWith("P") ? " panel panel-orange-muted-bg     ":"  panel-blue-bg panel  " }`}>
+          <div className={`relative   rounded-xl    p-6 ${currentClass.slot.startsWith("P") ? "  panel-orange-bg     ":"  panel-blue-bg   " }`}>
           
             
             <div className="flex items-center text-center justify-center gap-3 mb-4">
              
             
             
-                <h2 className=" font-bold tag-font tag-yellow text-sm">Current Class</h2>
+                <h2 className=" font-bold  tag-smoke text-sm">Current Class</h2>
             
               
             </div>
@@ -181,7 +180,7 @@ const Page = () => {
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-[rgba(255,255,255,0.04)] ">
                   <Clock size={18}  />
                   <div>
-                    <p className="text-white/60 font-bold" >Time</p>
+                    <p className="text-white/30 font-bold" >Time</p>
                     <p className="text-white/60 font-extrabold">{currentClass.time}</p>
                   </div>
                 </div>
@@ -189,7 +188,7 @@ const Page = () => {
                 <div className="flex items-center gap-3 p-3 rounded-xl  bg-[rgba(255,255,255,0.04)]">
                   <MapPin size={18} />
                   <div>
-                    <p className="text-white/60 font-bold"> Room</p>
+                    <p className="text-white/30 font-bold"> Room</p>
                     <p className="text-white/60 font-extrabold">{currentClass.courseRoomNo}</p>
                   </div>
                 </div>
@@ -218,7 +217,7 @@ const Page = () => {
             </div>
           </div>
         ) : (
-          <div className="panel  p-12 text-center">
+          <div className="panel-space-bg panel  p-12 text-center">
             <Clock size={48} className="mx-auto mb-4" />
             <p className="text-xl">No class is happening right now</p>
             <p className="mt-2">Enjoy your free time!</p>
@@ -226,7 +225,7 @@ const Page = () => {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className=" panel panel-graphite-bg  p-6">
+          <div className=" panel panel-bluegray-bg  p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.15)] flex items-center justify-center">
                 <TrendingUp size={20} />
@@ -240,7 +239,7 @@ const Page = () => {
             <div className="space-y-3">
               <div className="pt-3">
                 <div className="w-full rounded-full h-3 overflow-hidden bg-[rgba(255,255,255,0.08)]">
-                  <div className="h-3 transition-all duration-700 ease-out" style={{ width: `${totalAttendancePercentage}%`, backgroundColor: '#10B98177' }} />
+                  <div className="h-3 transition-all duration-700 ease-out" style={{ width: `${totalAttendancePercentage}%`, backgroundColor: '#10B981' }} />
                  
                 </div>
                 <p className="text-center text-2xl font-bold mt-2">{totalAttendancePercentage}%</p>
@@ -256,7 +255,7 @@ const Page = () => {
             </div>
           </div>
 
-          <div className=" panel panel-graphite-bg p-6">
+          <div className=" panel panel-bluegray-bg p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.15)] flex items-center justify-center">
                 <Award size={20} />
@@ -270,7 +269,7 @@ const Page = () => {
             <div className="space-y-3">
                <div className="pt-3">
                 <div className="w-full rounded-full h-3 overflow-hidden bg-[rgba(255,255,255,0.08)]">
-                  <div className="h-3 transition-all duration-700 ease-out" style={{ width: `${marksPercentage}%`,  backgroundColor: '#10B98177' }} />
+                  <div className="h-3 transition-all duration-700 ease-out" style={{ width: `${marksPercentage}%`,  backgroundColor: '#10B981' }} />
                  
                 </div>
                 <p className="text-center text-2xl font-bold mt-2">{marksPercentage}%</p>
@@ -287,7 +286,7 @@ const Page = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link href="/app/dashboard/Mark" className=" panel panel-slate-bg p-4">
+          <Link href="/app/dashboard/Mark" className=" panel panel-green-muted-bg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.15)] flex items-center justify-center">
@@ -318,7 +317,7 @@ const Page = () => {
 
         
       
-        <div className="panel panel-smoke-bg p-4 md:text-center">
+        <div className="panel panel-black-bg p-4 md:text-center">
         
           <div className="flex items-center  md:text-center  mb-6">
               <button onClick={() => setShowlink(!showlink)}

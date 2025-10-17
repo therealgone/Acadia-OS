@@ -131,7 +131,7 @@ const GpaCalculator: React.FC = React.memo(() => {
 
       {/* Result Section */}
       {showResult && (
-        <div className="panel p-5">
+        <div className="panel  panel-space-bg p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-xl panel flex items-center justify-center">
               <Award size={20} />
@@ -140,7 +140,7 @@ const GpaCalculator: React.FC = React.memo(() => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="panel p-4">
+            <div className="panel panel-green-muted-bg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp size={18} />
                 <p className="text-xs text-white/60">GPA Score</p>
@@ -149,7 +149,7 @@ const GpaCalculator: React.FC = React.memo(() => {
               <p className="text-xs text-white/50 mt-1">out of 10.0</p>
             </div>
 
-            <div className="panel p-4">
+            <div className="panel panel-teal-bg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <BarChart3 size={18} />
                 <p className="text-xs text-white/60">Percentage</p>
@@ -161,7 +161,7 @@ const GpaCalculator: React.FC = React.memo(() => {
 
           <div className="w-full rounded-full h-3 overflow-hidden bg-[rgba(255,255,255,0.08)]">
             <div
-              className="h-3 transition-all duration-700 ease-out bg-[#1eff00]"
+              className="h-3 transition-all duration-700 ease-out bg-[#10B981]"
               style={{ width: `${percent}%` }}
             />
           </div>

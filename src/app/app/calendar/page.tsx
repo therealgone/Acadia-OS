@@ -100,11 +100,11 @@ const Data = ({
                 ${
                   holiday
                     ? "panel-red-bg"
-                    : "bg-white/5 text-white/80 hover:bg-white/10"
+                    : "panel-bluegray-bg"
                 }
                 ${
                   isCurrent
-                    ? "ring-2 ring-yellow-400 shadow-[0_0_20px_rgba(255,230,0,0.3)] scale-[1.05] text-yellow-200"
+                    ? "b-glow-yellow"
                     : ""
                 }`}
             >

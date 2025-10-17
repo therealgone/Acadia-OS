@@ -67,7 +67,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
           className="
       relative flex items-center justify-between gap-4
       w-[200px] sm:w-[300px] px-4 py-2
-      tag-orange
+      
       backdrop-blur-md
       rounded-xl
       glow-orange 
@@ -77,7 +77,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
     "
         >
           {/* Label */}
-          <span className="text-sm text-white/70 font-medium tracking-wider whitespace-nowrap">
+          <span className="text-sm text-white font-medium tracking-wider whitespace-nowrap">
             Today&apos;s DO
           </span>
 
@@ -116,7 +116,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
 
           {/* Glow effect */}
           {today !== 0 && !isError && (
-            <span className="absolute -inset-1 rounded-xl  blur-md text-yellow-500 pointer-events-none"></span>
+            <span className="absolute -inset-1 rounded-xl  panel-yellow-bg   blur-md text-yellow-500 pointer-events-none"></span>
           )}
         </div>
       </div>
@@ -129,7 +129,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
             key={index}
             onClick={() => handleDayOrderClick(index)}
             className={`md:w-12 md:h-12 w-10 h-10 rounded-xl font-bold text-lg transition-all duration-300 
-        ${dayOrder === index ? "bg-[#EF4444] text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] -translate-y-1.5 " : "border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] text-[#E1E1E3] hover:bg-[rgba(255,255,255,0.08)] hover:scale-105"}
+        ${dayOrder === index ? "panel-red-bg  -translate-y-1.5 " : "panel-default-bg"}
       `}
           >
             {index + 1}
@@ -203,12 +203,12 @@ const Data = React.memo(({
             key={item.time}
             ref={current ? currentRef : undefined}
             className={`w-full flex flex-col p-4 rounded-2xl  transition-all duration-300 shadow-lg ${current
-                ? "b-glow-yellow   scale-[1.02]   "
+                ? " b-glow-yellow    scale-[1.02]   "
                 : " "
               } ${item.courseType?.includes("Theory") && !item.slot.startsWith("P")
-                ? "panel panel-blue-slate-bg"
+                ? "panel-blue-bg panel "
                 : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
-                  ? "panel panel-orange-muted-bg"
+                  ? "panel-orange-bg "
                   : "panel"}`}>
             {item.isClass ? (
               <>
@@ -244,19 +244,13 @@ const Data = React.memo(({
 
                 <div className="flex justify-between items-center ">
                   <div className="text-sm flex  rounded-full px-1 backdrop-blur-3xl space-x-1.5  ">
-                    <span className="tag tag-lime ">Room -{" "}
+                    <span className="tag tag-smoke ">Room -{" "}
                       <span className="">
                         {item.courseRoomNo}
                       </span>
                     </span>
 
-                    <div className="items-center   flex">
-                      <span className="tag tag-orange  ">Slot -
-                        <span className=" ">
-                          {" "}{item.slot}
-                        </span>
-                      </span>
-                    </div>
+                    
 
 
                   </div>
@@ -270,7 +264,7 @@ const Data = React.memo(({
                   {attendance ? (
                     <AttendanceData attendance={attendance} />
                   ) : !isError ? (
-                    <span className="tag tag-info animate-pulse">
+                    <span className="tag tag-info">
                       Loading Attendance...
                     </span>
                   ) : (

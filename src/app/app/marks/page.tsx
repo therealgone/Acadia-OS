@@ -47,8 +47,8 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
           <div
             key={idx}
             className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 rounded-3xl hover:scale-[1.02] transition-all duration-200 ${category === "theory"
-                ? "bg-blue-500/20 text-blue-300"
-                : "panel panel-orange-muted-bg"
+                ? "panel-blue-bg"
+                : " panel-orange-bg"
               }`}
           >
             {/* Left: Course Info */}

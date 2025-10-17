@@ -33,7 +33,7 @@ const Data = ({ data }: { data: UserInfo }) => {
   return (
     <div className="w-full h-full mt-20 flex flex-col justify-center items-center bg-[var(--bg-primary)] px-4 ">
       {/* Profile Card */}
-      <div className="w-full max-w-sm flex flex-col items-center gap-6 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl p-6 ">
+      <div className="w-full max-w-sm flex flex-col items-center gap-6 panel panel-space-bg p-6 ">
         {/* Name & Department */}
         <div className="flex flex-col items-center gap-1">
           <h1 className="text-2xl text-center font-extrabold text-white">
@@ -44,10 +44,10 @@ const Data = ({ data }: { data: UserInfo }) => {
  
         {/* Profile Details */}
         <div className="w-full flex flex-col gap-3">
-          <ProfileRow label="Reg. Number" value={data.regNumber} colour="tag" />
-          <ProfileRow label="Mobile" value={data.mobile} colour="tag" />
-          <ProfileRow label="Semester" value={data.semester} colour="tag" />
-          <ProfileRow label="Section" value={data.section} colour="tag" />
+          <ProfileRow label="Reg. Number" value={data.regNumber} colour="" />
+          <ProfileRow label="Mobile" value={data.mobile} colour="" />
+          <ProfileRow label="Semester" value={data.semester} colour="" />
+          <ProfileRow label="Section" value={data.section} colour="" />
         </div>
 
         {/* Logout Button */}
