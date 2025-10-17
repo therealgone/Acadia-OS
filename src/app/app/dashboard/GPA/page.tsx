@@ -299,5 +299,5 @@ const GpaCalculator: React.FC = React.memo(() => {
     </div>
   );
 });
-
+GpaCalculator.displayName = "GpaCalculator";
 export default GpaCalculator;

@@ -7,7 +7,6 @@ import {
   useDayOrder,
   useTimetable,
   useMarks,
-  useCourse,
 } from "@/hooks/query";
 import {
   BookOpen,
@@ -25,21 +24,22 @@ import {
 // ✅ Utility function to check current time range (same as isCurrentClass)
 const isCurrentClass = (timeRange: string) => {
   const [start, end] = timeRange.split(" - ");
-  const parseTimeToDate = (timeStr: string) => {
-    const [time, modifier] = timeStr.split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
-    if (modifier === "PM" && hours !== 12) hours += 12;
-    if (modifier === "AM" && hours === 12) hours = 0;
-    const now = new Date();
-    return new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      hours,
-      minutes,
-      0
-    );
-  };
+const parseTimeToDate = (timeStr: string) => {
+  const [time, modifier] = timeStr.split(" ");
+  const [hours, minutes] = time.split(":").map(Number); // <-- use const
+  let hrs = hours;
+  if (modifier === "PM" && hours !== 12) hrs += 12;
+  if (modifier === "AM" && hours === 12) hrs = 0;
+  const now = new Date();
+  return new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    hrs,
+    minutes,
+    0
+  );
+};
   const now = new Date();
   return now >= parseTimeToDate(start) && now <= parseTimeToDate(end);
 };

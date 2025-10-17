@@ -2,10 +2,7 @@ import { create } from "zustand";
 import { useSyncExternalStore } from "react";
 
 // Sidebar state
-type SidebarState = {
-  isOpen: boolean;
-  setOpen: (open: boolean) => void;
-};
+
 
 // Auth state
 export type UseAuthType = {
