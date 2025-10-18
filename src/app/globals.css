@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+oo@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 /* ===== Scrollbar Hidden Globally ===== */
@@ -470,7 +470,7 @@ body {
   background: rgba(16,185,129,0.15);
 }
 
-.tag-warning {
+.tag-red {
   color: #F59E0B;
   border-color: rgba(245,158,11,0.4);
   background: rgba(245,158,11,0.15);
