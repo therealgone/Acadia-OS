@@ -1,138 +1,158 @@
 "use client";
+
+import React, { useState, useEffect, useRef, useMemo, useCallback, Suspense } from "react";
+
 import { useAttendance, useDayOrder, useTimetable } from "@/hooks/query";
-import React, { useState, useRef, useEffect } from "react";
-import { Minus, Plus, RotateCcw } from "lucide-react";
 import { AttendanceDetail, DaySchedule } from "srm-academia-api";
 import { GlobalLoader } from "../components/loader";
 import { isCurrentClass } from "@/utils/currentClass";
-import { useRouter } from "next/navigation";
-
-const Page = () => {
+const Page = React.memo(() => {
   const { data, isPending } = useTimetable();
+
+
+
   if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
-  if (!data || data.length === 0)
+  if (!data || !Array.isArray(data) || data.length === 0)
     return (
-      <div className="flex h-full w-full justify-center items-center ">
+      <div className="flex h-full w-full justify-center items-center text-white/70">
         No data found
       </div>
     );
-  return <DayChange data={data} />;
-};
+
+  return (
+    <Suspense fallback={<GlobalLoader className="h-8 w-8 text-blue-400" />}>
+      <DayChange data={data} />
+    </Suspense>
+  );
+});
+
+Page.displayName = 'TimetablePage';
 
 export default Page;
 
-const DayChange = ({ data }: { data: DaySchedule[] }) => {
-  const router = useRouter();
-  const day = data?.map((i) => i.dayOrder.split(" ")[1]);
-  const [today, setToday] = useState<number>();
+const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
+  const [today, setToday] = useState<number>(0);
   const [dayOrder, setDayOrder] = useState<number>(0);
 
-  const {
-    data: dayOrderData,
-    isLoading: dayOrderLoading,
-    isError: dayOrderError,
-    refetch: dayOrderRefetch,
-    isFetching: dayOrderIsFetching,
-  } = useDayOrder();
+  const { data: dayOrderData, isLoading, isError, refetch, isFetching } =
+    useDayOrder();
 
+  // Memoize day order update effect
   useEffect(() => {
-    if (dayOrderData) {
+    if (dayOrderData && typeof dayOrderData === 'object' && 'dayOrder' in dayOrderData) {
       const todayDayOrder = Number(dayOrderData.dayOrder);
       if (!isNaN(todayDayOrder)) {
         setToday(todayDayOrder);
         setDayOrder(todayDayOrder - 1);
-        return;
       }
-      setToday(0);
     }
   }, [dayOrderData]);
 
+  // Memoize day order click handler
+  const handleDayOrderClick = useCallback((index: number) => {
+    setDayOrder(index);
+  }, []);
+
+  // Memoize today click handler
+  const handleTodayClick = useCallback(() => {
+    if (today && today !== 0) setDayOrder(today - 1);
+  }, [today]);
+
   return (
-    <div className="w-full h-full flex flex-col overflow-auto scrollbar-none">
-      <div className="w-full flex items-center justify-center gap-6 overflow-auto scrollbar-none">
-        {/* Today */}
+    <div className="w-full h-full flex flex-col  scrollbar-none">
+      {/* Header */}
+      <div className="w-full flex justify-center py-4">
         <div
-          onClick={() => {
-            if (today && today !== 0) {
-              setDayOrder(today - 1);
-              return;
-            }
-          }}
-          className="flex bg-white/10 pl-2 pr-1 py-0.5 rounded-full text-sm apply-border-sm items-center justify-center gap-3 cursor-pointer"
+          onClick={handleTodayClick}
+          className="
+      relative flex items-center justify-between gap-4
+      w-[200px] sm:w-[300px] px-4 py-2
+      panel
+     panel-yellow-bg
+     b-glow-yellow
+    
+     
+    "
         >
-          <span className="relative flex h-2 w-2 ">
-            <span className="absolute animate-ping inset-0 rounded-full bg-green-400 opacity-75"></span>
-            <span className="rounded-full h-1.5 w-1.5 bg-green-500 apply-inner-shadow-sm m-auto"></span>
+          {/* Label */}
+          <span className="text-sm text-white font-medium tracking-wider whitespace-nowrap">
+            Today&apos;s DO
           </span>
-          <h1>Today</h1>
+
+          {/* Day Order */}
           <span
-            className={`px-2.5 py-0.5 rounded-full text-sm apply-border-sm backdrop-blur-3xl bg-black items-center flex ${
-              dayOrderLoading
-                ? "text-blue-400"
-                : today === 0 || dayOrderError
-                ? "text-red-400"
-                : "text-blue-400"
-            }`}
+            className={`
+        xl:lg:md:px-3 xl:lg:md:py-1.5 px-3 py-1 rounded-lg text-sm font-semibold
+        flex items-center justify-center
+        
+        ${isLoading
+                ? "  tag-warning tag "
+                : today === 0 || isError
+                  ? ""
+                  : ""
+              }
+      `}
           >
-            {dayOrderLoading || dayOrderIsFetching ? (
-              <GlobalLoader className="w-4 h-4 text-[color:var(--accent-secondary)]" />
-            ) : dayOrderError ? (
-              <span className="flex gap-2 items-center justify-center">
-                <h1>Failed</h1>
+            {isLoading || isFetching ? (
+              <GlobalLoader className="w-4 h-4 " />
+            ) : isError ? (
+              <div className="flex  items-center gap-1">
+
                 <button
-                  onClick={() => dayOrderRefetch()}
-                  className="px-2 py-0.5 btn-danger flex items-center gap-1"
+                  onClick={() => refetch()}
+
                 >
-                  <RotateCcw className="w-3 h-3" />
-                  Reload
+                  <span>Failed</span>
                 </button>
-              </span>
+              </div>
             ) : today === 0 ? (
-              "Holiday"
+              <p className="">Hoilday</p>
             ) : (
               today
             )}
           </span>
+
+          {/* Glow effect */}
+          {today !== 0 && !isError && (
+            <span className=""></span>
+          )}
         </div>
       </div>
 
-      <div className="w-full flex-shrink-0 h-[15%] py-5 scrollbar-none">
-        <div className="relative max-w-100 mx-auto h-full flex items-center justify-center text-5xl lg:text-6xl font-extrabold tracking-wide">
-          <span className="text-white/80">{day[dayOrder]}</span>
-          <div
-            onClick={() => {
-              setDayOrder(dayOrder > 0 ? dayOrder - 1 : day.length - 1);
-            }}
-            className="absolute top-1/2 -translate-y-1/2 left-15 bg-white/10 p-1 apply-border-sm rounded-lg cursor-pointer shadow-2xl"
+      {/* Day order navigation */}
+
+      <div className="flex justify-center xl:lg:md:gap-50 gap-6  p-3  items-center   md:text-4xl font-extrabold tracking-wide  ">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handleDayOrderClick(index)}
+            className={`md:w-12 md:h-12 w-10 h-10 rounded-xl font-bold text-lg transition-all duration-300 
+        ${dayOrder === index ? "panel-red-bg  -translate-y-1.5 " : "panel-pruplegrey-bg"}
+      `}
           >
-            <Minus className="w-5 h-5" />
-          </div>
-          <div
-            onClick={() => {
-              setDayOrder(dayOrder < day.length - 1 ? dayOrder + 1 : 0);
-            }}
-            className="absolute top-1/2 -translate-y-1/2 right-15 bg-white/10 p-1 apply-border-sm rounded-lg cursor-pointer shadow-2xl"
-          >
-            <Plus className="w-5 h-5" />
-          </div>
-        </div>
+            {index + 1}
+          </button>
+        ))}
+
       </div>
 
-      <div className="flex-1 overflow-auto scrollbar-none h-[calc(100vh-200px)]">
+      <div className="flex-1  scrollbar-none">
         <Data data={data} dayorder={dayOrder} today={today} />
       </div>
     </div>
   );
-};
+});
 
-const Data = ({
+DayChange.displayName = 'DayChange';
+
+const Data = React.memo(({
   data,
   dayorder,
   today,
 }: {
   data: DaySchedule[];
   dayorder: number;
-  today: number | undefined;
+  today: number;
 }) => {
   const { data: attendanceData, isError } = useAttendance();
   const currentRef = useRef<HTMLDivElement>(null);
@@ -146,130 +166,145 @@ const Data = ({
     }
   }, [today, dayorder]);
 
+
+
+  // Memoize current day classes
+  const currentDayClasses = useMemo(() => {
+    if (!data[dayorder]) return [];
+    return data[dayorder].class.filter(item => item.isClass);
+  }, [data, dayorder]);
+
+
+
   return (
-    <div className="py-5 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 px-2 lg:px-5 overflow-auto scrollbar-none">
-      {data[dayorder].class.map((item) => {
-        const attendance = attendanceData?.find(
+    <div className="flex flex-col gap-4 px-5 py-3 w-full">
+      {currentDayClasses.map((item) => {
+
+        const attendance = attendanceData && Array.isArray(attendanceData) ? attendanceData.find(
           (i) =>
             i.courseCode === item.courseCode &&
             ((item.slot.startsWith("P") && i.courseSlot === "LAB") ||
               !item.slot.startsWith("P"))
-        );
+        ) : undefined;
+
+
+
+
+
         const current =
           today && today !== 0 && dayorder === today - 1
             ? isCurrentClass(item.time)
             : undefined;
+
         return (
           <div
             key={item.time}
             ref={current ? currentRef : undefined}
-            className={`flex flex-col items-center gap-3 rounded-2xl panel min-h-50 shadow-2xl hover-glow-white ${
-              current ? "outline outline-2 outline-[var(--accent)]/40" : ""
-            }`}
-          >
+            className={`w-full flex flex-col p-4 rounded-2xl  transition-all duration-300 shadow-lg ${current
+                ? " b-glow-yellow    scale-[1.02]   "
+                : " "
+              } ${item.courseType?.includes("Theory") && !item.slot.startsWith("P")
+                ? "panel-blue-bg panel "
+                : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
+                  ? "panel-orange-bg "
+                  : "panel"}`}>
             {item.isClass ? (
-              <div className="w-full h-full text-white/70 flex flex-col gap-4">
-                <div className="flex justify-between w-full px-2 min-h-12 items-center border-b border-white/20">
-                  <div className="flex items-center gap-2">
-                    <span className="tag tag-info">
-                      {item.courseType?.charAt(0)}
+              <>
+                <div className="flex justify-between items-center mb-2  pb-2">
+
+                  <div className={`${item.courseType?.includes("Theory") && !item.slot.startsWith("P")
+                    ? " tag tag-blue "
+                    : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
+                      ? " tag-orange tag"
+                      : ""}`}>
+                    <span className="">
+                      {item.courseType?.includes("Theory") && !item.slot.startsWith("P") ? "T" : "P"}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {current && (
-                      <span className="tag tag-info flex gap-2 items-center justify-center bg-white/10 apply-border-sm">
-                        <span className="relative flex h-2 w-2">
-                          <span className="absolute animate-ping inset-0 rounded-full bg-blue-400 opacity-75"></span>
-                          <span className="rounded-full h-1.5 w-1.5 bg-blue-500/90 apply-inner-shadow-sm m-auto"></span>
-                        </span>
-                        <h1>Now</h1>
+
+                  <div className="items-center ">
+
+                    <span className=" text-white  tracking-wider font-bold tag">
+
+                      {item.time}</span>
+                  </div>
+
+
+
+                </div>
+
+                <div className="border-b border-white/20 flex  pb-2 text-center mb-2">
+                  <span className=" font-extrabold truncate w-auto  ">
+                    {item.courseTitle}
+                  </span>
+
+                </div>
+
+                <div className="flex justify-between items-center ">
+                  <div className="text-sm flex      ">
+                    <span className=" tag-space tag ">Room -{" "}
+                      <span className="">
+                        {item.courseRoomNo}
                       </span>
-                    )}
-                    <span className="tag tag-info">{item.time}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-center w-[80%] h-full mx-auto text-green-300 flex-col gap-3">
-                  <h1 className="w-full">{item.courseTitle}</h1>
-                  <h2 className="text-sm text-white/60 flex gap-2 w-full">
-                    <span className="text-white/80">Class Room</span> -
-                    <span>{item.courseRoomNo}</span>
-                  </h2>
-                </div>
-
-                {attendance ? (
-                  <AttendanceData attendance={attendance} />
-                ) : !isError ? (
-                  <div className="w-full min-h-12 flex justify-center items-center animate-pulse">
-                    <span className="tag tag-info">
-                      Getting Attendance data
                     </span>
+
+                    
+
+
                   </div>
-                ) : (
-                  <div className="w-full min-h-12 flex justify-center items-center">
+
+
+
+
+
+
+
+                  {attendance ? (
+                    <AttendanceData attendance={attendance} />
+                  ) : !isError ? (
+                    <span className="tag tag-info">
+                      Loading Attendance...
+                    </span>
+                  ) : (
                     <span className="tag tag-error">
-                      Failed to get Attendance data
+                      Failed to get data
                     </span>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </>
             ) : (
-              <div className="justify-between h-full w-full flex flex-col">
-                <div className="w-full h-12 flex items-center justify-between px-2">
-                  <div>
-                    {current && (
-                      <span className="background-rounded apply-border-sm flex gap-2 items-center justify-center">
-                        <span className="relative flex h-2 w-2">
-                          <span className="absolute animate-ping inset-0 rounded-full bg-blue-400 opacity-75"></span>
-                          <span className="rounded-full h-1.5 w-1.5 bg-blue-500 apply-inner-shadow-sm m-auto"></span>
-                        </span>
-                        <h1>Now</h1>
-                      </span>
-                    )}
-                  </div>
-                  <div className="background-rounded apply-border-sm">
-                    {item.time}
-                  </div>
-                </div>
-                <div className="h-full flex justify-center items-center att-red">
-                  No class
-                </div>
-              </div>
+              <div className="sm:hidden "></div>
             )}
           </div>
         );
-      })}
+      })
+      }
+ <div className="seo-hidden">SRM, SRM KTR, Acadia OS, AcadiaOS, acadiaos srm, Acadia, Acadia SRM, Acadia Asia SRM, SRM Acadia, Student Dashboard, Attendance, Timetable, Calendar, Exam Schedule, GPA Calculator, Marks Calculator, College Timetable, College Attendance Tracker, SRM Students, Academia, academia.srmist, academia.srmist.edu.in, Acadia Design, Acadia Dashboard, College Calendar, SRM Timetable, SRM Attendance, Acadia Portal, SRM Portal, Acadia OS Features, College Management, Student Tools, Academic Planner, Acadia OS SRM KTR, SRM University Tools, Student Performance Tracker, Semester GPA, SRM Academic Dashboard,exam schedule acadia,acadia design </div>
     </div>
   );
-};
+});
 
-const AttendanceData = ({ attendance }: { attendance: AttendanceDetail }) => {
+Data.displayName = 'TimetableData';
+
+
+
+
+const AttendanceData = React.memo(({ attendance }: { attendance: AttendanceDetail }) => {
+  // Memoize attendance percentage calculation
+  const attendancePct = useMemo(() => Number(attendance.courseAttendance), [attendance.courseAttendance]);
+  const isLow = useMemo(() => attendancePct <= 75, [attendancePct]);
+
   return (
-    <div className="flex justify-end w-full px-2 min-h-12 items-center overflow-auto scrollbar-none">
-      <h1
-        className={`px-3 py-1 rounded-full text-sm apply-border-sm bg-black ${
-          Number(attendance.courseAttendance) <= 75
-            ? "text-red-400"
-            : "text-green-400"
-        }`}
-      >
-        {attendance.courseAttendance} %
-      </h1>
-
-      <div className="flex gap-1 bg-white/5 pl-2 pr-1 py-0.5 rounded-full text-sm apply-border-sm items-center ml-2">
-        <h1 className="capitalize">
-          {attendance.courseAttendanceStatus?.status}
-        </h1>
-        <span
-          className={`px-2 py-0.5 rounded-full text-sm apply-border-sm bg-black ${
-            attendance.courseAttendanceStatus?.status === "required"
-              ? "text-red-400"
-              : "text-green-400"
+    <div className="flex items-center gap-3">
+      <span
+        className={`px-3 py-1 rounded-full text-sm bg-black border ${isLow ? "tag tag-error" : "tag tag-success"
           }`}
-        >
-          {attendance.courseAttendanceStatus?.classes}
-        </span>
-      </div>
+      >
+        {attendancePct}%
+      </span>
+
     </div>
   );
-};
+});
+
+AttendanceData.displayName = 'AttendanceData';

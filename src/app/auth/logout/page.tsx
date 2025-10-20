@@ -9,11 +9,11 @@ import Cookies from "js-cookie";
 
 const Page = () => {
   useEffect(() => {
-    const Clear = async () => {
+    const Clear = async (): Promise<void> => {
       const cookie = getCookie();
       if (cookie) {
         await getLogout(cookie);
-        Object.keys(Cookies.get()).forEach((cookieName) => {
+        Object.keys(Cookies.get()).forEach((cookieName: string) => {
           Cookies.remove(cookieName);
         });
       }

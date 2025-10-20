@@ -1,12 +1,8 @@
 import { create } from "zustand";
 import { useSyncExternalStore } from "react";
-import { persist } from "zustand/middleware";
 
 // Sidebar state
-type SidebarState = {
-  isOpen: boolean;
-  setOpen: (open: boolean) => void;
-};
+
 
 // Auth state
 export type UseAuthType = {
@@ -59,11 +55,7 @@ export function useScreen() {
   return { isMobile };
 }
 
-// Sidebar store
-export const useSidebar = create<SidebarState>((set) => ({
-  isOpen: false,
-  setOpen: (open: boolean) => set({ isOpen: open }),
-}));
 
 
-export const useOptionalClasses = create(() => ({}));
+
+

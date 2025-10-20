@@ -1,54 +1,71 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Script from "next/script";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-inter",
+  display: "swap",
+  preload: true,
+});
 
 const description =
-  "Discover a sleek and modern way to manage your academics - no clutter, just clarity.";
+  "Acadia OS is a modern, secure, and user-friendly academic portal designed to provide students with streamlined access to their timetable, attendance, marks, courses, and calendar.";
 
 export const metadata: Metadata = {
   title: "Acadia OS",
   description,
   authors: [{ name: "Jeevan Baabu Murugan" }],
-  keywords: ["SRM", "Academia", "Acadia OS", "Attendance", "Calendar"],
+  keywords: [
+    "SRM",
+    "Acadia OS",
+    "SRM KTR",
+    "Attendance",
+    "Timetable",
+    "Calendar",
+    "Student Dashboard",
+    "academia",
+    "academia.srmist",
+    "srmist",
+    "academia.srmist.edu.in",
+    "acadiaos",
+    "acadiaos srm",
+    "acadia srm",
+    "acadia",
+    "acadia asia srm",
+    "srm acadia",
+    "exam schedule acadia",
+    "acadia design",
+
+  ],
   openGraph: {
     title: "Acadia OS",
     description,
-    url: "",
+    url: "https://acadia-os.vercel.app",
     siteName: "Acadia OS",
-    images: [
-      {
-        url: "/Landing/BigScreen.png",
-        width: 1200,
-        height: 630,
-        alt: "Acadia OS",
-        type: "image/png",
-      },
-    ],
+    images: ["/web-app-manifest-512x512.png"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    site: "",
     title: "Acadia OS",
     description,
-    creator: "",
-    images: [
-      {
-        url: "/Landing/BigScreen.png",
-        width: 1200,
-        height: 630,
-        alt: "Acadia OS",
-        type: "image/png",
-      },
-    ],
+    images: ["/web-app-manifest-512x512.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400","500","600","700","800"],
-  variable: "--font-inter"
-});
 
 export default function RootLayout({
   children,
@@ -57,15 +74,42 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link
+          rel="icon"
+          type="image/png"
+          href="/favicon-96x96.png"
+          sizes="96x96"
+        />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-        <link rel="manifest" href="/site.webmanifest" />
+        <link
+          rel="apple-touch-icon"
+          href="/apple-touch-icon.png"
+          sizes="180x180"
+        />
+       <link rel="manifest" href="/site.webmanifest" />
+       {/* Google Analytics */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-HLC4VJFL1V"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-HLC4VJFL1V');
+            `,
+          }}
+        />
+
+
+        
       </head>
-      <body className={`antialiased ${inter.className}  overflow-y-auto scrollbar-none`}>
-        <div className="container mx-auto px-4 lg:px-6">
-          {children}
-        </div>
+      <body className={`antialiased ${inter.className}`}>
+        <div>{children}</div>
       </body>
     </html>
   );

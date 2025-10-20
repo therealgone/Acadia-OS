@@ -19,81 +19,92 @@ import {
 } from "srm-academia-api";
 import { getCookie } from "@/utils/getCookieClient";
 
-export function useTimetable() {
+// ------------------ ETag-based APIs - OPTIMIZED for static rendering ------------------
+function useETagQuery<T>(key: string, fetchFn: () => Promise<T>) {
   return useQuery({
-    queryKey: ["timetable"],
-    queryFn: async () => {
-      const { data } = await timetable(getCookie());
-      if (data.error) throw new Error(data.error);
-      return data.timetable as DaySchedule[];
-    },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    enabled: !!getCookie(), // Only fetch if user is authenticated
+    queryKey: [key],
+    queryFn: fetchFn,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false, // Prevent unnecessary refetches
+    staleTime: Infinity, // ETag handles freshness
+    gcTime: Infinity,
+    retry: 1, // Reduced retries to minimize server load
+    retryDelay: 5000, // Fixed delay instead of exponential backoff
+    networkMode: 'online', // Only run when online
   });
 }
 
-export function useAttendance() {
-  return useQuery({
-    queryKey: ["attendance"],
-    queryFn: async () => {
-      const { data } = await attendance(getCookie());
+export function useTimetable() {
+  return useETagQuery("timetable", async () => {
+    try {
+      const { data } = await timetable(getCookie());
       if (data.error) throw new Error(data.error);
-      return data.attendance as AttendanceDetail[];
-    },
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    enabled: !!getCookie(), // Only fetch if user is authenticated
+      return data.timetable as DaySchedule[];
+    } catch (error) {
+      console.error('Timetable fetch error:', error);
+      throw error;
+    }
   });
 }
 
 export function useMarks() {
-  return useQuery({
-    queryKey: ["marks"],
-    queryFn: async () => {
+  return useETagQuery("marks", async () => {
+    try {
       const { data } = await marks(getCookie());
       if (data.error) throw new Error(data.error);
       return data.markList as MarkDetail[];
-    },
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    enabled: !!getCookie(), // Only fetch if user is authenticated
+    } catch (error) {
+      console.error('Marks fetch error:', error);
+      throw error;
+    }
   });
 }
 
 export function useUserInfo() {
-  return useQuery({
-    queryKey: ["userInfo"],
-    queryFn: async () => {
-      const { data } = await userInfo(getCookie());
-      if (data.error) throw new Error(data.error);
-      return data.userInfo as UserInfo;
-    },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    enabled: !!getCookie(), // Only fetch if user is authenticated
+  return useETagQuery("userInfo", async () => {
+    const { data } = await userInfo(getCookie());
+    if (data.error) throw new Error(data.error);
+    return data.userInfo as UserInfo;
   });
 }
 
 export function useCourse() {
-  return useQuery({
-    queryKey: ["course"],
-    queryFn: async () => {
-      const { data } = await Course(getCookie());
-      if (data.error) throw new Error(data.error);
-      return data.courseList as CourseDetail[];
-    },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    enabled: !!getCookie(), // Only fetch if user is authenticated
+  return useETagQuery("course", async () => {
+    const { data } = await Course(getCookie());
+    if (data.error) throw new Error(data.error);
+    return data.courseList as CourseDetail[];
   });
 }
 
 export function useCalendar() {
+  return useETagQuery("calendar", async () => {
+    const { data } = await Calendar(getCookie());
+    if (data.error) throw new Error(data.error);
+    return data.calendar as Month[];
+  });
+}
+
+// ------------------ StaleTime-based APIs - OPTIMIZED for static rendering ------------------
+export function useAttendance() {
   return useQuery({
-    queryKey: ["calendar"],
+    queryKey: ["attendance"],
     queryFn: async () => {
-      const { data } = await Calendar(getCookie());
-      if (data.error) throw new Error(data.error);
-      return data.calendar as Month[];
+      try {
+        const { data } = await attendance(getCookie());
+        if (data.error) throw new Error(data.error);
+        return data.attendance as AttendanceDetail[];
+      } catch (error) {
+        console.error('Attendance fetch error:', error);
+        throw error;
+      }
     },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    enabled: !!getCookie(), // Only fetch if user is authenticated
+    staleTime: 1000 * 60 * 60, // 1 hour - increased to reduce server calls
+    gcTime: 1000 * 60 * 60 * 4, // 4 hours - increased garbage collection
+    refetchOnWindowFocus: false,
+    refetchOnMount: false, // Prevent unnecessary refetches
+    retry: 1, // Reduced retries
+    retryDelay: 5000, // Fixed delay
+    networkMode: 'online',
   });
 }
 
@@ -105,6 +116,12 @@ export function useDayOrder() {
       if (data.error) throw new Error(data.error);
       return data as DayOrderResponse;
     },
-    enabled: !!getCookie(), // Only fetch if user is authenticated
+    staleTime: 1000 * 60 * 15, // 15 minutes - reduced for real-time updates
+    gcTime: 1000 * 60 * 30, // 30 minutes - reduced garbage collection
+    refetchOnWindowFocus: false, // Disabled to reduce server calls
+    refetchInterval: false, // Disabled auto refresh to reduce server load
+    retry: 1, // Reduced retries
+    retryDelay: 3000, // Fixed delay
+    networkMode: 'online',
   });
 }

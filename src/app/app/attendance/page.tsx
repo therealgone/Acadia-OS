@@ -1,130 +1,266 @@
 "use client";
 import { useAttendance } from "@/hooks/query";
-import React from "react";
+import React, { useMemo, useCallback, Suspense } from "react";
 import { AttendanceDetail } from "srm-academia-api";
 import { GlobalLoader } from "../components/loader";
 import { computePredict } from "@/utils/attendancePredict";
-import { PredictModal, PredictSelection } from "./PredictModal";
+import { PredictSelection } from "./PredictModal";
+import dynamic from "next/dynamic";
 
-const Page = () => {
+// Lazy load PredictModal for better performance
+const PredictModal = dynamic(() => import("./PredictModal").then(mod => ({ default: mod.PredictModal })), {
+  loading: () => <GlobalLoader className="h-6 w-6 text-blue-400" />,
+  ssr: false,
+});
+
+const Page = React.memo(() => {
   const { data, isPending } = useAttendance();
   const [modalOpen, setModalOpen] = React.useState(false);
   const [selection, setSelection] = React.useState<PredictSelection | null>(null);
 
+  const handleModalOpen = useCallback(() => setModalOpen(true), []);
+  const handleModalClose = useCallback(() => setModalOpen(false), []);
+  const handleSelectionReset = useCallback(() => setSelection(null), []);
+  const handleSelectionApply = useCallback((sel: PredictSelection) => setSelection(sel), []);
+
   if (isPending) return <GlobalLoader className="h-10 w-10 text-blue-400" />;
-  if (!data || data.length === 0)
+
+  if (!data || !Array.isArray(data) || data.length === 0)
     return (
-      <div className="flex h-full w-full justify-center items-center">
-        No data found
+      <div className="flex h-full w-full justify-center items-center text-white/70">
+        No Attendance Data Found
       </div>
     );
 
+
   return (
-    <div className="flex flex-col gap-6 py-4 ">
-      <div className="flex items-center justify-between px-2 lg:px-5">
-        
-        <button className=" items-end justify-end px-3 py-1.5 rounded btn-modern" onClick={() => setModalOpen(true)}>
-          Predict
-        </button>
+    <div className="flex flex-col gap-6 py-4">
+      {/* Header */}
+      <div className="flex flex-row md:flex-row items-center justify-between w-full px-4 lg:px-6 gap-3">
+        {/* Scenario Info */}
+        <div className="order-2 text-center text-sm text-white/70 w-full md:w-auto">
+          {selection ? (
+            <>
+              Scenario:{" "}
+              <span className="font-extrabold tag tag-orange">
+                {selection.scenario}
+              </span>{" "}
+              Total Classes:{" "}
+              <span className="font-bold m-1 tag-warning">
+                {Object.values(selection.classCountsPerCourse).reduce((sum, count) => sum + count, 0)}
+              </span>
+            </>
+          ) : (
+            ""
+          )}
+        </div>
+
+        {/* Left: Reset button */}
+        <div className="order-1">
+          {selection && (
+            <button
+              className="px-3 py-1.5 rounded-full btn transition"
+              onClick={handleSelectionReset}
+            >
+              Reset
+            </button>
+          )}
+        </div>
+
+        {/* Right: Predict button */}
+        <div className="order-3">
+          <button
+            className="px-3 py-1.5 btn text-white font-medium transition rounded-full"
+            onClick={handleModalOpen}
+          >
+            Predict
+          </button>
+        </div>
       </div>
-      <h2 className="text-lg text-white/60 px-2 lg:px-5" style={{fontWeight:500}}>Theory</h2>
-      <Data data={data} category="theory" selection={selection} />
-      <h2 className="text-lg text-white/60 px-2 lg:px-5" style={{fontWeight:500}}>Practical</h2>
-      <Data data={data} category="practical" selection={selection} />
+
+      {/* Sections */}
+      <Suspense fallback={<GlobalLoader className="h-8 w-8 text-blue-400" />}>
+        <Section title="Theory" data={data} category="theory" selection={selection} />
+        <Section title="Practical" data={data} category="practical" selection={selection} />
+      </Suspense>
 
       <PredictModal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onApply={(sel) => setSelection(sel)}
+        onClose={handleModalClose}
+        onApply={handleSelectionApply}
       />
     </div>
   );
-};
+});
+
+Page.displayName = 'AttendancePage';
 
 export default Page;
 
-const Data = ({
+const Section = React.memo(({
+  title,
   data,
   category,
-  selection = null,
+  selection,
 }: {
+  title: string;
   data: AttendanceDetail[];
   category: string;
   selection: PredictSelection | null;
 }) => {
-  const filteredData = data.filter(
-    (i) => i.courseCategory.toLowerCase() === category
+  const filtered = useMemo(() => 
+    data.filter((i) => {
+      if (category === "theory") {
+        // Theory: courseSlot is not "LAB"
+        return i.courseSlot !== "LAB";
+      } else if (category === "practical") {
+        // Practical: courseSlot is "LAB"
+        return i.courseSlot === "LAB";
+      }
+      return false;
+    }),
+    [data, category]
   );
+
   return (
-    <div className="py-5 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-2 lg:px-5">
-      {filteredData.map((item, i) => {
-        const attended = item.courseConducted - item.courseAbsent;
-        const total = item.courseConducted;
-        const r = 75;
-        let futureAttendInc = 0;
-        let futureTotalInc = 0;
-        if (selection) {
-          futureTotalInc = selection.count;
-          if (selection.scenario === "attend") futureAttendInc = selection.count;
-        }
-        const predict = computePredict({
-          attended: attended + futureAttendInc,
-          total: total + futureTotalInc,
-          requiredPercentage: r,
-          windowSize: 10,
-        });
-        return (
-          <div
-            key={i}
-            className="flex flex-col items-center gap-3 rounded-2xl panel min-h-50 shadow-2xl hover-glow-white"
-          >
-            <div className="w-full h-full text-white/70  flex flex-col gap-4 ">
-              <div className="flex justify-between w-full px-3 min-h-12 items-center border-b border-dotted border-[color:var(--border-strong)]/40">
-                <div className="flex gap-1 px-1 py-0.5 rounded-full text-sm">
-                  <h1 className="tag tag-info">
-                    {item.courseConducted}
-                  </h1>
-                  <span className="tag tag-success ">
-                    {item.courseConducted - item.courseAbsent}
-                  </span>
-                </div>
-                {item.courseCode}
-                <span
-                  className={`tag ${
-                    Number(item.courseAttendance) >= 75
-                      ? "tag-success"
-                      : "tag-error"
-                  }`}
-                >
-                  {item.courseAttendance} %
-                </span>
-              </div>
-              <div className=" flex items-center justify-center w-[92%] h-full mx-auto ">
-                {item.courseTitle}
-              </div>
-              <div className="flex justify-between w-full px-3 min-h-12 items-center  ">
-                <h1 className=" tag tag-info">
-                  {item.courseCategory}
-                </h1>
-                <div className="grid grid-cols-3 gap-2 text-xs">
-                  <div className="tag tag-info px-2 py-1 text-center">
-                    <div className="text-[10px] text-[var(--text-muted)]">Pred</div>
-                    <div className="font-medium att-yellow">{predict.currentPct}%</div>
-                  </div>
-                  <div className="tag tag-success px-2 py-1 text-center">
-                    <div className="text-[10px] text-[var(--text-muted)]">Margin</div>
-                    <div className="font-medium att-green">{Math.max(0, predict.mMaxSkipsAllowed)}</div>
-                  </div>
-                  <div className="tag tag-error px-2 py-1 text-center">
-                    <div className="text-[10px] text-[var(--text-muted)]">Req</div>
-                    <div className="font-medium att-red">{predict.xMinConsecutiveToReachR ?? "∞"}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
+    <div className="flex flex-col gap-3 ">
+      <h2 className="text-lg text-white font-semibold px-3 lg:px-6">{title}</h2>
+      <div className="flex flex-col gap-3 px-3 lg:px-6">
+        {filtered.map((item, i) => (
+          <Card key={i} item={item} selection={selection} />
+        ))}
+      </div>
     </div>
   );
-};
+});
+
+Section.displayName = 'AttendanceSection';
+
+const Card = React.memo(({
+  item,
+  selection,
+}: {
+  item: AttendanceDetail;
+  selection: PredictSelection | null;
+}) => {
+  const { attended, total, required } = useMemo(() => ({
+    attended: item.courseConducted - item.courseAbsent,
+    total: item.courseConducted,
+    required: 75,
+  }), [item.courseConducted, item.courseAbsent]);
+
+  // Get the class count for THIS specific course with proper theory/lab distinction
+  const { futureAttendInc, futureTotalInc } = useMemo(() => {
+    if (!selection) return { futureAttendInc: 0, futureTotalInc: 0 };
+
+    // Use the same key generation logic as PredictModal
+    // This should match exactly what PredictModal generates
+    const key = item.courseSlot === "LAB" ? `${item.courseCode}Lab` : `${item.courseCode}Theory`;
+    
+    // Get class count ONLY for this specific component (theory or lab)
+    // Theory and lab are completely separate - no sharing of values
+    const classCount = selection.classCountsPerCourse[key] || 0;
+    
+    // Removed dev logs for performance
+
+    return {
+      futureTotalInc: classCount,
+      futureAttendInc: selection.scenario === "Assume Present" ? classCount : 0,
+    };
+  }, [selection, item.courseCode, item.courseSlot]);
+
+  const predict = useMemo(() => computePredict({
+    attended: attended + futureAttendInc,
+    total: total + futureTotalInc,
+    requiredPercentage: required,
+    windowSize: 10,
+  }), [attended, futureAttendInc, total, futureTotalInc, required]);
+
+  const { attendancePct, isTheory } = useMemo(() => ({
+    attendancePct: Number(item.courseAttendance),
+    isTheory: item.courseSlot !== "LAB",
+  }), [item.courseAttendance, item.courseSlot]);
+
+  return (
+    <div className={`w-full backdrop-blur-sm rounded-2xl transition-all duration-300 
+    ${isTheory
+      ? " panel-blue-bg"
+      : "panel-orange-bg "}`}>
+      <div className="flex flex-col gap-2 p-4">
+        {/* Top Row */}
+        <div className="flex flex-wrap justify-between items-center text-white/80 text-sm">
+          <div className="flex gap-3 items-center">
+            <span className="font-semibold text-white/90">{item.courseCode}</span>
+            <span
+              className={`px-2 py-0.5 text-xs rounded-full ${
+                isTheory
+                  ? " panel-blue-bg"
+                  : "panel-orange-bg "
+              }`}
+            >
+              {item.courseCategory}
+            </span>
+          </div>
+          <div>
+            <span className="tag-orange px-1.5 py-0.5 rounded-full">
+              {attended}/{total}
+            </span>
+          </div>
+          <div>
+            <span
+              className={`ml-2 font-semibold rounded-full px-1.5 py-0.5
+                attendancePct >= 75 ? "tag-success" : "tag-error"
+
+              }`}
+            >
+              {attendancePct}%
+            </span>
+          </div>
+        </div>
+
+        {/* Title */}
+        <div className="text-white/90 font-medium">{item.courseTitle}</div>
+
+        {/* Attendance Bar */}
+        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden mt-1">
+          <div
+            className={`h-full rounded-full transition-all duration-700 ${
+              attendancePct >= 75 ? "bg-green-500" : "bg-red-500"
+            }`}
+            style={{
+              width: `${Math.min(attendancePct, 100)}%`
+            }}
+          ></div>
+        </div>
+              
+        {/* Prediction Info */}
+        <div className="flex justify-between text-xs text-white mt-2 text-center">
+          <div>
+            <p className="text-[10px]">Predicted</p>
+            <span className={`font-extrabold text-blue-500 ${
+              selection ? predict.currentPct >= 75 ? "text-green-500" : "text-red-500" : ""
+            }`}>
+              {selection ? predict.currentPct : "-"}
+            </span>
+          </div>
+          <div>
+            <p className="text-[10px]">Margin</p>
+            <span className="font-semibold text-green-400">
+              {Math.max(0, predict.mMaxSkipsAllowed)}
+            </span>
+          </div>
+          <div>
+            <p className="text-[10px]">Need to Attend</p>
+            <span className="font-semibold text-red-400">
+              {predict.xMinConsecutiveToReachR ?? "∞"}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="seo-hidden">SRM, SRM KTR, Acadia OS, AcadiaOS, acadiaos srm, Acadia, Acadia SRM, Acadia Asia SRM, SRM Acadia, Student Dashboard, Attendance, Timetable, Calendar, Exam Schedule, GPA Calculator, Marks Calculator, College Timetable, College Attendance Tracker, SRM Students, Academia, academia.srmist, academia.srmist.edu.in, Acadia Design, Acadia Dashboard, College Calendar, SRM Timetable, SRM Attendance, Acadia Portal, SRM Portal, Acadia OS Features, College Management, Student Tools, Academic Planner, Acadia OS SRM KTR, SRM University Tools, Student Performance Tracker, Semester GPA, SRM Academic Dashboard,exam schedule acadia,acadia design </div>
+     
+    </div>
+  );
+});
+
+Card.displayName = 'AttendanceCard';
