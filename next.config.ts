@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
         },
       },
     },
+    // ✅ Additional performance optimizations
+    webpackBuildWorker: true,
+    serverComponentsExternalPackages: ['srm-academia-api'],
   },
   images: {
     qualities: [75, 85, 95, 100],

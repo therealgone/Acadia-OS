@@ -23,6 +23,7 @@ function toPct(numerator: number, denominator: number): number {
   return (numerator / denominator) * 100;
 }
 
+// ✅ Optimized rounding function
 function roundPct(value: number): number {
   return Math.round(value * 100) / 100; // two decimals
 }
