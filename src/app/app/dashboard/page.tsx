@@ -21,36 +21,39 @@ import {
   Calculator,
 } from "lucide-react";
 
-// ✅ Utility function to check current time range (same as isCurrentClass)
+// ✅ Optimized utility function to check current time range - CLIENT SIDE ONLY
 const isCurrentClass = (timeRange: string) => {
   const [start, end] = timeRange.split(" - ");
-const parseTimeToDate = (timeStr: string) => {
-  const [time, modifier] = timeStr.split(" ");
-  const [hours, minutes] = time.split(":").map(Number); // <-- use const
-  let hrs = hours;
-  if (modifier === "PM" && hours !== 12) hrs += 12;
-  if (modifier === "AM" && hours === 12) hrs = 0;
-  const now = new Date();
-  return new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    hrs,
-    minutes,
-    0
-  );
-};
+  
+  const parseTimeToDate = (timeStr: string) => {
+    const [time, modifier] = timeStr.split(" ");
+    const [hours, minutes] = time.split(":").map(Number);
+    let hrs = hours;
+    if (modifier === "PM" && hours !== 12) hrs += 12;
+    if (modifier === "AM" && hours === 12) hrs = 0;
+    const now = new Date();
+    return new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      hrs,
+      minutes,
+      0
+    );
+  };
+  
   const now = new Date();
   return now >= parseTimeToDate(start) && now <= parseTimeToDate(end);
 };
 
-const Page = () => {
-  const { data } = useTimetable();
-  const { data: attendanceData } = useAttendance();
-  const { data: marks } = useMarks();
+function Page() {
+  // ✅ Data fetching with error boundaries
+  const { data, isLoading: timetableLoading, error: timetableError } = useTimetable();
+  const { data: attendanceData, isLoading: attendanceLoading, error: attendanceError } = useAttendance();
+  const { data: marks, isLoading: marksLoading, error: marksError } = useMarks();
 
   // ✅ dynamically get current day order from API
-  const { data: dayOrderData } = useDayOrder();
+  const { data: dayOrderData, isLoading: dayOrderLoading, error: dayOrderError } = useDayOrder();
   const [today, setToday] = useState<number>(0);
 
   useEffect(() => {
@@ -63,6 +66,9 @@ const Page = () => {
   }, [dayOrderData]);
 
   const [showlink, setShowlink] = useState(false);
+
+  // ✅ Loading state
+  const isLoading = timetableLoading || attendanceLoading || marksLoading || dayOrderLoading;
 
   // ✅ dynamically get current day’s classes
   const currentDayClasses = useMemo(() => {
@@ -130,6 +136,18 @@ const Page = () => {
       ? ((markstotal.obtained / markstotal.maxMark) * 100).toFixed(2)
       : "0.00";
   }, [markstotal]);
+
+  // ✅ Early return for loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen p-4 md:p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white/70">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   const usefulLinks = [
     {
@@ -224,59 +242,31 @@ const Page = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className=" panel panel-bluegray-bg  p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.15)] flex items-center justify-center">
-                <TrendingUp size={20} />
-              </div>
-              <div>
-                <h3 className="font-semibold">Overall Attendance</h3>
-                <p>All courses combined</p>
-              </div>
-            </div>
+        <div className="gap-6">
+          
 
-            <div className="space-y-3">
-              <div className="pt-3">
-                <div className="w-full rounded-full h-3 overflow-hidden bg-[rgba(255,255,255,0.08)]">
-                  <div className="h-3 transition-all duration-700 ease-out" style={{ width: `${totalAttendancePercentage}%`, backgroundColor: '#10B981' }} />
-                 
-                </div>
-                <p className="text-center text-2xl font-bold mt-2">{totalAttendancePercentage}%</p>
-              </div>
-              <div className="flex  justify-center">
-              
-                <span className="font-extrabold  tag-font">
-                  {(totalAttendance?.courseConducted || 0) - (totalAttendance?.courseAbsent || 0)  } / {totalAttendance?.courseConducted || 0}
-                </span>
-              </div>
-             
-              
-            </div>
-          </div>
-
-          <div className=" panel panel-bluegray-bg p-6">
+          <div className=" panel panel-green-muted-bg p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.15)] flex items-center justify-center">
                 <Award size={20} />
               </div>
-              <div>
+              <div className="  ">
                 <h3 className="font-semibold">Overall Marks</h3>
-                <p>All assessments combined</p>
+               <span className="font-extrabold  tag-font">{markstotal?.obtained || 0} / {markstotal?.maxMark || 0}</span>
               </div>
             </div>
 
             <div className="space-y-3">
                <div className="pt-3">
                 <div className="w-full rounded-full h-3 overflow-hidden bg-[rgba(255,255,255,0.08)]">
-                  <div className="h-3 transition-all duration-700 ease-out" style={{ width: `${marksPercentage}%`,  backgroundColor: '#10B981' }} />
+                  <div className="h-3 transition-all duration-700 ease-out" style={{ width: `${marksPercentage}%`,  backgroundColor: '#00ffaa' }} />
                  
                 </div>
-                <p className="text-center text-2xl font-bold mt-2">{marksPercentage}%</p>
+                <p className="text-center text-2xl font-bold mt-2 ">{marksPercentage}%</p>
               </div>
               <div className="flex justify-center">
                
-                <span className="font-extrabold  tag-font">{markstotal?.obtained || 0} / {markstotal?.maxMark || 0}</span>
+               
               </div>
              
 
@@ -286,7 +276,7 @@ const Page = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link href="/app/dashboard/Mark" className=" panel panel-green-muted-bg p-4">
+          <Link href="/app/dashboard/Mark" className=" panel panel-pruplegrey-bg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.15)] flex items-center justify-center">
@@ -300,7 +290,7 @@ const Page = () => {
             </div>
           </Link>
 
-          <Link href="/app/dashboard/GPA" className=" panel panel-green-muted-bg p-4">
+          <Link href="/app/dashboard/GPA" className=" panel panel-pruplegrey-bg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.15)] flex items-center justify-center">
@@ -358,7 +348,7 @@ const Page = () => {
        <div className="seo-hidden">SRM, SRM KTR, Acadia OS, AcadiaOS, acadiaos srm, Acadia, Acadia SRM, Acadia Asia SRM, SRM Acadia, Student Dashboard, Attendance, Timetable, Calendar, Exam Schedule, GPA Calculator, Marks Calculator, College Timetable, College Attendance Tracker, SRM Students, Academia, academia.srmist, academia.srmist.edu.in, Acadia Design, Acadia Dashboard, College Calendar, SRM Timetable, SRM Attendance, Acadia Portal, SRM Portal, Acadia OS Features, College Management, Student Tools, Academic Planner, Acadia OS SRM KTR, SRM University Tools, Student Performance Tracker, Semester GPA, SRM Academic Dashboard,exam schedule acadia,acadia design </div>
     </div>
   );
-};
+}
 
 export default Page;
 
