@@ -208,8 +208,9 @@ const Card = React.memo(({
           </div>
           <div>
             <span
-              className={`ml-2 font-semibold rounded-full px-1.5 py-0.5 ${
-                attendancePct >= 75 ? "tag-success" : "tag-red"
+              className={`ml-2 font-semibold rounded-full px-1.5 py-0.5
+                attendancePct >= 75 ? "tag-success" : "tag-error"
+
               }`}
             >
               {attendancePct}%

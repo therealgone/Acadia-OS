@@ -19,32 +19,44 @@ import {
 } from "srm-academia-api";
 import { getCookie } from "@/utils/getCookieClient";
 
-// ------------------ ETag-based APIs ------------------
+// ------------------ ETag-based APIs - OPTIMIZED for static rendering ------------------
 function useETagQuery<T>(key: string, fetchFn: () => Promise<T>) {
   return useQuery({
     queryKey: [key],
     queryFn: fetchFn,
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Prevent unnecessary refetches
     staleTime: Infinity, // ETag handles freshness
     gcTime: Infinity,
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retry: 1, // Reduced retries to minimize server load
+    retryDelay: 5000, // Fixed delay instead of exponential backoff
+    networkMode: 'online', // Only run when online
   });
 }
 
 export function useTimetable() {
   return useETagQuery("timetable", async () => {
-    const { data } = await timetable(getCookie());
-    if (data.error) throw new Error(data.error);
-    return data.timetable as DaySchedule[];
+    try {
+      const { data } = await timetable(getCookie());
+      if (data.error) throw new Error(data.error);
+      return data.timetable as DaySchedule[];
+    } catch (error) {
+      console.error('Timetable fetch error:', error);
+      throw error;
+    }
   });
 }
 
 export function useMarks() {
   return useETagQuery("marks", async () => {
-    const { data } = await marks(getCookie());
-    if (data.error) throw new Error(data.error);
-    return data.markList as MarkDetail[];
+    try {
+      const { data } = await marks(getCookie());
+      if (data.error) throw new Error(data.error);
+      return data.markList as MarkDetail[];
+    } catch (error) {
+      console.error('Marks fetch error:', error);
+      throw error;
+    }
   });
 }
 
@@ -72,20 +84,27 @@ export function useCalendar() {
   });
 }
 
-// ------------------ StaleTime-based APIs ------------------
+// ------------------ StaleTime-based APIs - OPTIMIZED for static rendering ------------------
 export function useAttendance() {
   return useQuery({
     queryKey: ["attendance"],
     queryFn: async () => {
-      const { data } = await attendance(getCookie());
-      if (data.error) throw new Error(data.error);
-      return data.attendance as AttendanceDetail[];
+      try {
+        const { data } = await attendance(getCookie());
+        if (data.error) throw new Error(data.error);
+        return data.attendance as AttendanceDetail[];
+      } catch (error) {
+        console.error('Attendance fetch error:', error);
+        throw error;
+      }
     },
-    staleTime: 1000 * 60 * 50, // 50 minutes
-    gcTime: 1000 * 60 * 60 * 2, // 2 hours
+    staleTime: 1000 * 60 * 60, // 1 hour - increased to reduce server calls
+    gcTime: 1000 * 60 * 60 * 4, // 4 hours - increased garbage collection
     refetchOnWindowFocus: false,
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    refetchOnMount: false, // Prevent unnecessary refetches
+    retry: 1, // Reduced retries
+    retryDelay: 5000, // Fixed delay
+    networkMode: 'online',
   });
 }
 
@@ -97,11 +116,12 @@ export function useDayOrder() {
       if (data.error) throw new Error(data.error);
       return data as DayOrderResponse;
     },
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    gcTime: 1000 * 60 * 60, // 1 hour
-    refetchOnWindowFocus: true,
-    refetchInterval: 1000 * 60 * 30, // auto refresh every 30 min
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 1000 * 60 * 15, // 15 minutes - reduced for real-time updates
+    gcTime: 1000 * 60 * 30, // 30 minutes - reduced garbage collection
+    refetchOnWindowFocus: false, // Disabled to reduce server calls
+    refetchInterval: false, // Disabled auto refresh to reduce server load
+    retry: 1, // Reduced retries
+    retryDelay: 3000, // Fixed delay
+    networkMode: 'online',
   });
 }

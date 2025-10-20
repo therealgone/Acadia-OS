@@ -13,14 +13,20 @@ export default React.memo(function Calculation() {
   const [predict, setPredict] = useState<number>(0);
   const [selectedGrade, setSelectedGrade] = useState<string>("");
 
-  useEffect(() => {
+  // ✅ Optimized calculations - CLIENT SIDE ONLY with useMemo
+  const calculations = React.useMemo(() => {
     const req = Number(50 - internal);
     const passmark = Number((req / 40) * 75);
     const predictreq = Math.abs(grade - internal);
     const predictpassmark = Number((predictreq / 40) * 75);
-    setPass(passmark);
-    setPredict(predictpassmark);
+    
+    return { passmark, predictpassmark };
   }, [internal, grade]);
+
+  React.useEffect(() => {
+    setPass(calculations.passmark);
+    setPredict(calculations.predictpassmark);
+  }, [calculations]);
 
   const handleGradeClick = (gradeValue: number, gradeName: string) => {
     setGrade(gradeValue);

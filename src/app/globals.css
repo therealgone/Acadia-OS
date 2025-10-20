@@ -193,7 +193,7 @@ body {
 /* Green */
 .panel-green-muted-bg {
   background: rgba(16, 185, 129, 0.15);
-  border: 1px solid #10B981;
+  border: 1px solid #10B981;   
   box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
   color: #A7F3D0;
 }
@@ -309,6 +309,34 @@ body {
   box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
 }
 
+/*Pruple Gray*/
+
+.panel-pruplegrey-bg {
+  background: rgba(57, 30, 138, 0.12);
+  border: 1px solid #3d1e8a;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+  color: #E2E8F0;
+  backdrop-filter: blur(20px);
+  transition: all 0.25s ease;
+}
+.panel-bluegray-bg:hover {
+  background: rgba(30, 58, 138, 0.2);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+}
+/*Pruple Gray*/
+
+.panel-darkpruple-bg {
+  background: rgba(10, 0, 66, 0.12);
+  border: 1px solid #210682;
+  box-shadow: 0 0 12px rgba(37, 57, 235, 0.2);
+  color: #E2E8F0;
+  backdrop-filter: blur(20px);
+  transition: all 0.25s ease;
+}
+.panel-bluegray-bg:hover {
+  background: rgba(30, 58, 138, 0.2);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+}
 /* Deep Slate */
 .panel-deepslate-bg {
   background: rgba(15, 23, 42, 0.15);
@@ -327,7 +355,7 @@ body {
 .panel-black-bg {
   background: rgba(9, 10, 11, 0.4);
   border: 1px solid #1F1F1F;
-  box-shadow: 0 0 12px rgba(31, 31, 31, 0.3);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
   color: #E5E7EB;
   backdrop-filter: blur(20px);
   transition: all 0.25s ease;
@@ -335,6 +363,19 @@ body {
 .panel-black-bg:hover {
   background: rgba(9, 10, 11, 0.55);
   box-shadow: 0 0 20px rgba(31, 31, 31, 0.45);
+}
+
+.panel-steel-glow-bg {
+  background: rgba(59, 66, 79, 0.15);
+  border: 1px solid #000dff;
+  box-shadow: 0 0 12px rgba(44, 47, 54, 0.25);
+  color: #D1D5DB;
+  backdrop-filter: blur(20px);
+  transition: all 0.25s ease;
+}
+.panel-steel-bg:hover {
+  background: rgba(28, 31, 37, 0.25);
+  box-shadow: 0 0 20px rgba(44, 47, 54, 0.4);
 }
 
 /* Steel */
@@ -466,21 +507,34 @@ body {
 /* Colored tags */
 .tag-success {
   color: #10B981;
-  border-color: rgba(16,185,129,0.4);
+  border-color: rgb(0, 255, 170);
   background: rgba(16,185,129,0.15);
+   box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
 }
 
 .tag-red {
   color: #F59E0B;
   border-color: rgba(245,158,11,0.4);
   background: rgba(245,158,11,0.15);
+   
 }
 
 .tag-error {
   color: #EF4444;
-  border-color: rgba(239,68,68,0.4);
-  background: rgba(239,68,68,0.15);
+  border-color: rgb(255, 0, 0);
+  background: rgba(211, 16, 16, 0.15);
+   box-shadow: 0 0 12px rgba(239, 68, 68, 0.25);
 }
+
+.tag-space {
+  background: rgba(13, 17, 23, 0.15);
+  border: 1px solid #1E3A8A;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+  color: #C9D1D9;
+  
+  
+}
+
 
 .tag-orange {
   color: #FF8C00;

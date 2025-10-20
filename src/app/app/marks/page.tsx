@@ -6,6 +6,7 @@ import { GlobalLoader } from "../components/loader";
 
 const Page = () => {
   const { data, isPending } = useMarks();
+  
 
   if (isPending)
     return (
@@ -65,7 +66,8 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
                 </div>
 
                 {/* Total Marks for mobile */}
-                <div className="px-3 py-1 rounded-full text-sm font-semibold bg-black text-green-400 flex sm:hidden gap-1">
+                
+                <div className={`px-3 py-1 rounded-full text-sm font-semibold ${item.total.obtained > item.total.maxMark /2 ? "panel-green-muted-bg  " : "panel-red-bg " } flex sm:hidden gap-1`}>
                   <span>{item.total.obtained}</span>
                   <span>/</span>
                   <span>{item.total.maxMark}</span>
@@ -91,17 +93,20 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
                 item.marks.map((m, i) => (
                   <div
                     key={i}
-                    className="px-3 py-1 rounded-full text-sm font-medium bg-white/10 backdrop-blur-3xl flex gap-1 sm:gap-2 items-center flex-shrink-0"
+                    className={`px-3 py-1 rounded-full text-sm font-medium tag ${m.obtained >= m.maxMark / 2 ? "tag-success" : "tag-error "}  backdrop-blur-3xl flex gap-1 sm:gap-2 items-center flex-shrink-0`}
                   >
                     <span
-                      className="text-white/70 truncate max-w-[80px]"
+                      className="text-white/50 truncate max-w-[80px]"
                       title={m.exam}
                     >
-                      {m.exam}
+                      {m.exam} :
                     </span>
-                    <span className="text-sky-300">{m.obtained}</span>
-                    <span className="text-amber-300">/</span>
-                    <span className="text-amber-300">{m.maxMark}</span>
+                <span className=" font-bold text-white">{m.obtained}</span>
+<span className="text-pink-500 mx-1">/</span>
+<span className=" text-white font-extrabold">{m.maxMark}</span>
+
+
+
                   </div>
                 ))
               )}

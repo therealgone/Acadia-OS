@@ -27,6 +27,7 @@ function roundPct(value: number): number {
   return Math.round(value * 100) / 100; // two decimals
 }
 
+// ✅ Optimized attendance prediction - CLIENT SIDE ONLY
 export function computePredict(inputs: PredictInputs): PredictResults {
   const A = Math.max(0, Math.floor(inputs.attended || 0));
   const T = Math.max(0, Math.floor(inputs.total || 0));
@@ -35,49 +36,40 @@ export function computePredict(inputs: PredictInputs): PredictResults {
 
   const messages: string[] = [];
 
-  const currentPctRaw = toPct(A, T);
-  const currentPct = roundPct(currentPctRaw);
+  // Pre-calculate common values
+  const currentPctRaw = T > 0 ? (A / T) * 100 : 0;
+  const currentPct = Math.round(currentPctRaw * 100) / 100;
 
-  const pctIfAttendNext = roundPct(toPct(A + 1, T + 1));
-  const pctIfSkipNext = roundPct(toPct(A, T + 1));
+  const pctIfAttendNext = T > 0 ? Math.round(((A + 1) / (T + 1)) * 10000) / 100 : 0;
+  const pctIfSkipNext = T > 0 ? Math.round((A / (T + 1)) * 10000) / 100 : 0;
 
   let xMin: number | null;
   if (R === 100) {
-    // Only possible if A==T
-    if (A === T) {
-      xMin = 0;
-    } else {
-      xMin = null;
-      messages.push(
-        "Impossible to reach 100% because you have already missed classes."
-      );
+    xMin = A === T ? 0 : null;
+    if (A !== T) {
+      messages.push("Impossible to reach 100% because you have already missed classes.");
     }
   } else {
     const numerator = R * T - 100 * A;
     const denom = 100 - R;
-    const value = Math.max(0, numerator / denom);
-    xMin = Math.ceil(value);
+    xMin = Math.ceil(Math.max(0, numerator / denom));
   }
 
   let mMax: number;
   if (R === 0) {
-    // If required is 0, can skip arbitrarily; bound by math with large value
     mMax = Number.MAX_SAFE_INTEGER;
   } else {
     const value = (100 * A - R * T) / R;
-    const floored = Math.floor(Math.max(-1, value));
-    mMax = Math.max(0, floored);
+    mMax = Math.max(0, Math.floor(Math.max(-1, value)));
   }
 
-  // k_min over next N
-  let kMin: number | null;
+  // k_min over next N - OPTIMIZED
   const needed = (R / 100) * (T + N) - A;
   const kVal = Math.ceil(Math.max(0, needed));
-  if (kVal > N) {
-    kMin = null;
+  const kMin = kVal > N ? null : kVal;
+  
+  if (kMin === null) {
     messages.push("Impossible to reach required percentage in this window.");
-  } else {
-    kMin = kVal;
   }
 
   if (T === 0) {

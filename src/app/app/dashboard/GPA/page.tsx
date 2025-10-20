@@ -31,11 +31,14 @@ const INITIAL_COURSES: Course[] = [
   { id: 4, credits: 4, grade: 'O' },
 ];
 
-function calculateGpa(courses: Course[]) {
+// ✅ Optimized GPA calculation - CLIENT SIDE ONLY
+const calculateGpa = (courses: Course[]) => {
   let totalPoints = 0;
   let totalCredits = 0;
 
-  for (const course of courses) {
+  // Use for loop for better performance
+  for (let i = 0; i < courses.length; i++) {
+    const course = courses[i];
     const credit = Number(course.credits);
     if (credit > 0 && GRADE_POINTS[course.grade] > 0) {
       const gradePoint = GRADE_POINTS[course.grade];
@@ -51,7 +54,7 @@ function calculateGpa(courses: Course[]) {
     gpa: gpa.toFixed(2),
     percent: percent.toFixed(0),
   };
-}
+};
 
 const GpaCalculator: React.FC = React.memo(() => {
   const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES);

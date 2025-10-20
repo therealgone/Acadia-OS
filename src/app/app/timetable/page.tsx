@@ -67,13 +67,11 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
           className="
       relative flex items-center justify-between gap-4
       w-[200px] sm:w-[300px] px-4 py-2
-      
-      backdrop-blur-md
-      rounded-xl
-      glow-orange 
-      cursor-pointer
-      transition-all duration-300
-      hover:scale-105
+      panel
+     panel-yellow-bg
+     b-glow-yellow
+    
+     
     "
         >
           {/* Label */}
@@ -96,7 +94,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
       `}
           >
             {isLoading || isFetching ? (
-              <GlobalLoader className="w-4 h-4 text-yellow-400" />
+              <GlobalLoader className="w-4 h-4 " />
             ) : isError ? (
               <div className="flex  items-center gap-1">
 
@@ -108,7 +106,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
                 </button>
               </div>
             ) : today === 0 ? (
-              "Hoilday"
+              <p className="">Hoilday</p>
             ) : (
               today
             )}
@@ -116,7 +114,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
 
           {/* Glow effect */}
           {today !== 0 && !isError && (
-            <span className="absolute -inset-1 rounded-xl  panel-yellow-bg   blur-md text-yellow-500 pointer-events-none"></span>
+            <span className=""></span>
           )}
         </div>
       </div>
@@ -129,7 +127,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
             key={index}
             onClick={() => handleDayOrderClick(index)}
             className={`md:w-12 md:h-12 w-10 h-10 rounded-xl font-bold text-lg transition-all duration-300 
-        ${dayOrder === index ? "panel-red-bg  -translate-y-1.5 " : "panel-default-bg"}
+        ${dayOrder === index ? "panel-red-bg  -translate-y-1.5 " : "panel-pruplegrey-bg"}
       `}
           >
             {index + 1}
@@ -243,8 +241,8 @@ const Data = React.memo(({
                 </div>
 
                 <div className="flex justify-between items-center ">
-                  <div className="text-sm flex  rounded-full px-1 backdrop-blur-3xl space-x-1.5  ">
-                    <span className="tag tag-smoke ">Room -{" "}
+                  <div className="text-sm flex      ">
+                    <span className=" tag-space tag ">Room -{" "}
                       <span className="">
                         {item.courseRoomNo}
                       </span>
