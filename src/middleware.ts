@@ -1,16 +1,19 @@
 import { NextResponse, NextRequest } from "next/server";
-import { getCookie } from "./utils/getCookieServer";
 
 export const runtime = "experimental-edge";
 
 export async function middleware(request: NextRequest) {
-  const cookie = await getCookie();
-  if (!cookie.token)
-    return NextResponse.redirect(new URL("/auth/login", request.url));
-  if (!cookie.user)
-    return NextResponse.redirect(new URL("/auth/logout", request.url));
-
+  // Use request.cookies directly instead of server action
+  const token = request.cookies.get("token")?.value;
+  const user = request.cookies.get("user")?.value;
   
+  if (!token) {
+    return NextResponse.redirect(new URL("/auth/login", request.url));
+  }
+  if (!user) {
+    return NextResponse.redirect(new URL("/auth/logout", request.url));
+  }
+
   return NextResponse.next();
 }
 

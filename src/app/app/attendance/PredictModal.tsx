@@ -32,10 +32,9 @@ export function PredictModal({
 
   const isPending = calendarPending || timetablePending;
 
-  if (!open) return null;
-
-  // ✅ Compute class counts per course using timetable
-  function computeClassCounts(): { counts: Record<string, number>; totalClasses: number } {
+  // ✅ Compute class counts per course using timetable - OPTIMIZED for client-side
+  // Moved useMemo before early return to follow Rules of Hooks
+  const computeClassCounts = React.useMemo(() => {
     if (!calendar || !Array.isArray(calendar)) return { counts: {}, totalClasses: 0 };
     if (!timetable || !Array.isArray(timetable)) return { counts: {}, totalClasses: 0 };
     if (!start || !end) return { counts: {}, totalClasses: 0 };
@@ -46,30 +45,29 @@ export function PredictModal({
       return { counts: {}, totalClasses: 0 };
     }
 
-    // Get all day orders in the selected range
+    // Get all day orders in the selected range - OPTIMIZED
     const dayOrdersInRange: number[] = [];
-    
-    // Extract year from selected date range
     const startYear = s.getFullYear();
     const endYear = e.getFullYear();
     
-    calendar.forEach((month) => {
-      month.days.forEach((day) => {
-        // Parse month name to get month index (0-11)
-        const monthDate = new Date(`${month.month} 1, 2000`);
-        const monthIndex = monthDate.getMonth(); // 0-11
+    // Use for loops instead of forEach for better performance
+    for (let i = 0; i < calendar.length; i++) {
+      const month = calendar[i];
+      for (let j = 0; j < month.days.length; j++) {
+        const day = month.days[j];
         
-        // Try both years if range spans year boundary
+        // Parse month name to get month index (0-11) - CACHED
+        const monthDate = new Date(`${month.month} 1, 2000`);
+        const monthIndex = monthDate.getMonth();
+        
         const yearsToCheck = startYear === endYear ? [startYear] : [startYear, endYear];
         
         for (const year of yearsToCheck) {
-          // Build proper date string
           const paddedMonth = (monthIndex + 1).toString().padStart(2, "0");
           const paddedDay = day.date.toString().padStart(2, "0");
           const fullDateStr = `${year}-${paddedMonth}-${paddedDay}`;
           const dayDate = new Date(fullDateStr);
 
-          // Check if this day is in range and has a valid day order
           if (dayDate >= s && dayDate <= e && day.dayOrder !== "-" && day.dayOrder.trim() !== "") {
             const dayOrderNum = parseInt(day.dayOrder, 10);
             if (!isNaN(dayOrderNum)) {
@@ -77,49 +75,36 @@ export function PredictModal({
             }
           }
         }
-      });
-    });
+      }
+    }
 
-    // Count classes per course from timetable
+    // Count classes per course from timetable - OPTIMIZED
     const classCountsPerCourse: Record<string, number> = {};
 
-    dayOrdersInRange.forEach((dayOrder) => {
-      // Day order is 1-indexed, timetable array is 0-indexed
+    for (let i = 0; i < dayOrdersInRange.length; i++) {
+      const dayOrder = dayOrdersInRange[i];
       const daySchedule = timetable[dayOrder - 1];
-      if (!daySchedule) return;
+      if (!daySchedule) continue;
 
-      daySchedule.class.forEach((classItem) => {
-        if (!classItem.isClass) return;
+      for (let j = 0; j < daySchedule.class.length; j++) {
+        const classItem = daySchedule.class[j];
+        if (!classItem.isClass) continue;
 
         const courseCode = classItem.courseCode;
-        
-        // Use the same logic as attendance data to distinguish theory vs lab
-        // Priority: slot takes precedence over courseType
-        // Theory: slot does NOT start with "P" (regardless of courseType)
-        // Lab: slot starts with "P" (regardless of courseType)
-        const isTheory = !classItem.slot.startsWith("P");
         const isLab = classItem.slot.startsWith("P");
-        
-        // Create key based on the actual course structure
-        // For labs: courseCode + "Lab" 
-        // For theory: courseCode + "Theory"
         const key = isLab ? `${courseCode}Lab` : `${courseCode}Theory`;
         
-        // Debug: Log key generation
-        console.log(`[PredictModal] Course: ${courseCode}, Type: ${classItem.courseType}, Slot: ${classItem.slot}, isTheory: ${isTheory}, isLab: ${isLab}, Key: ${key}`);
-
-
         classCountsPerCourse[key] = (classCountsPerCourse[key] || 0) + 1;
-      });
-    });
+      }
+    }
 
     const totalClasses = Object.values(classCountsPerCourse).reduce((sum, count) => sum + count, 0);
-
-
     return { counts: classCountsPerCourse, totalClasses };
-  }
+  }, [calendar, timetable, start, end]);
 
-  const { counts: classCountsPerCourse, totalClasses } = computeClassCounts();
+  const { counts: classCountsPerCourse, totalClasses } = computeClassCounts;
+
+  if (!open) return null;
 
   const isInvalidRange = (() => {
     if (!start || !end) return true;
