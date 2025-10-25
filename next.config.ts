@@ -15,8 +15,9 @@ const nextConfig: NextConfig = {
     },
     // ✅ Additional performance optimizations
     webpackBuildWorker: true,
-    serverComponentsExternalPackages: ['srm-academia-api'],
   },
+  // Move serverComponentsExternalPackages to the root level
+        serverExternalPackages: ['node-html-parser'],
   images: {
     qualities: [75, 85, 95, 100],
     formats: ['image/webp', 'image/avif'],

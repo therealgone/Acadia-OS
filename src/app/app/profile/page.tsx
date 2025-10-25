@@ -1,7 +1,7 @@
 "use client";
 import { useUserInfo } from "@/hooks/query";
 import React from "react";
-import { UserInfo } from "srm-academia-api";
+import { UserInfo } from "@/SRM-SCRAPPER";
 import { GlobalLoader } from "../components/loader";
 
 import { Github, Linkedin, MessageCircle, LogOut

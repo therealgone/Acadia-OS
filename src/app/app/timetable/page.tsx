@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, Suspense } from "react";
 
 import { useAttendance, useDayOrder, useTimetable } from "@/hooks/query";
-import { AttendanceDetail, DaySchedule } from "srm-academia-api";
+import { AttendanceDetail, DaySchedule } from "@/SRM-SCRAPPER";
 import { GlobalLoader } from "../components/loader";
 import { isCurrentClass } from "@/utils/currentClass";
 const Page = React.memo(() => {

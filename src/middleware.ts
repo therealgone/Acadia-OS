@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
   if (!user) {
-    return NextResponse.redirect(new URL("/auth/logout", request.url));
+      return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   return NextResponse.next();

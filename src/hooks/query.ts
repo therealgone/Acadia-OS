@@ -16,7 +16,7 @@ import {
   CourseDetail,
   Month,
   DayOrderResponse,
-} from "srm-academia-api";
+} from "@/SRM-SCRAPPER";
 import { getCookie } from "@/utils/getCookieClient";
 
 // ------------------ ETag-based APIs - OPTIMIZED for static rendering ------------------

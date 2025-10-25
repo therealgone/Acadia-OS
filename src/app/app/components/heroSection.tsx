@@ -242,7 +242,7 @@ const HeroSection = () => {
                 Meets Design
               </span>
             </motion.h1>
-            <a href="https://www.npmjs.com/package/srm-academia-api"
+            <a href="https://github.com/therealgone/Acadia-os"
             className="flex items-center justify-center p-3">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -253,8 +253,8 @@ const HeroSection = () => {
               <div className="tag-blue tag text-2xl font-bold  flex justify-center gap-2 items-center py-10 mt-3 mb-3 ">
              
                <Package size={18} className="animate-pulse " />
-              
-               <span> Build using srm-academia-api</span>
+               
+               <span> Built with local SRM-SCRAPPER</span>
              
             </div>
              
