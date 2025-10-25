@@ -1,4 +1,4 @@
-import { parse } from 'node-html-parser';
+import * as cheerio from 'cheerio';
 
 // Local type definitions
 interface UserInfo {
@@ -85,13 +85,12 @@ async function parseUserInfoHtml(htmlResponse: string): Promise<UserInfoResponse
       .replace(/\\\\/g, "")
       .replace(/\\'/g, "'");
 
-    // Parse HTML using node-html-parser
-    const root = parse(decodedHtml);
+    // Parse HTML using cheerio
+    const $ = cheerio.load(decodedHtml);
 
     // Helper function to get text content
     const getText = (selector: string): string => {
-      const element = root.querySelector(selector);
-      return element?.text?.trim() || "";
+      return $(selector).text().trim();
     };
 
     // Extract user information

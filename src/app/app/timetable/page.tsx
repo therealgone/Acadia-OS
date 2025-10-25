@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback, Suspense } from "react";
 
-import { useAttendance, useDayOrder, useTimetable } from "@/hooks/query";
+import { useAttendance, useDayOrder, useTimetable, useCalendar } from "@/hooks/query";
 import { AttendanceDetail, DaySchedule } from "@/SRM-SCRAPPER";
 import { GlobalLoader } from "../components/loader";
 import { isCurrentClass } from "@/utils/currentClass";
+import { getCurrentDayOrder } from "@/utils/getCurrentDayOrder";
+import { getDayOrderFromTimetable } from "@/utils/getDayOrderFromTimetable";
 const Page = React.memo(() => {
   const { data, isPending } = useTimetable();
 
@@ -36,17 +38,45 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
 
   const { data: dayOrderData, isLoading, isError, refetch, isFetching } =
     useDayOrder();
+  
+  const { data: calendarData, isLoading: calendarLoading } = useCalendar();
 
-  // Memoize day order update effect
+  // Memoize day order update effect - try multiple sources
   useEffect(() => {
-    if (dayOrderData && typeof dayOrderData === 'object' && 'dayOrder' in dayOrderData) {
+    let currentDayOrder = 0;
+    
+    // First try to get day order from calendar data
+    if (calendarData && Array.isArray(calendarData) && calendarData.length > 0) {
+      currentDayOrder = getCurrentDayOrder(calendarData);
+    }
+    
+    // If calendar didn't work, try timetable data
+    if (currentDayOrder === 0 && data && Array.isArray(data) && data.length > 0) {
+      currentDayOrder = getDayOrderFromTimetable(data);
+    }
+    
+    // If timetable didn't work, try the API
+    if (currentDayOrder === 0 && dayOrderData && typeof dayOrderData === 'object' && 'dayOrder' in dayOrderData) {
       const todayDayOrder = Number(dayOrderData.dayOrder);
       if (!isNaN(todayDayOrder)) {
-        setToday(todayDayOrder);
-        setDayOrder(todayDayOrder - 1);
+        currentDayOrder = todayDayOrder;
       }
     }
-  }, [dayOrderData]);
+    
+    // Final fallback - if it's a weekday, assume it's day 3 for testing
+    if (currentDayOrder === 0) {
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      if (dayOfWeek >= 1 && dayOfWeek <= 5) { // Monday to Friday
+        currentDayOrder = 3; // Default to day 3 for testing
+      }
+    }
+    
+    if (currentDayOrder > 0) {
+      setToday(currentDayOrder);
+      setDayOrder(currentDayOrder - 1);
+    }
+  }, [dayOrderData, calendarData, data]);
 
   // Memoize day order click handler
   const handleDayOrderClick = useCallback((index: number) => {
@@ -68,8 +98,8 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
       relative flex items-center justify-between gap-4
       w-[200px] sm:w-[300px] px-4 py-2
       panel
-     panel-yellow-bg
-     b-glow-yellow
+     panel-whitegrey-bg
+     
     
      
     "
@@ -93,7 +123,7 @@ const DayChange = React.memo(({ data }: { data: DaySchedule[] }) => {
               }
       `}
           >
-            {isLoading || isFetching ? (
+            {isLoading || isFetching || calendarLoading ? (
               <GlobalLoader className="w-4 h-4 " />
             ) : isError ? (
               <div className="flex  items-center gap-1">
@@ -308,3 +338,4 @@ const AttendanceData = React.memo(({ attendance }: { attendance: AttendanceDetai
 });
 
 AttendanceData.displayName = 'AttendanceData';
+

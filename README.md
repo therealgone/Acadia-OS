@@ -19,7 +19,7 @@ Built with great care and attention to UX. Done by Jeevan Baabu Murugan.
 - TanStack Query v5 (+ async-storage persister, devtools)
 - Zustand (small client-side state for auth flow)
 - Lucide / React Icons
-- srm-academia-api (SRM data access)
+- Local SRM-SCRAPPER (SRM data access)
 
 ## Project Structure
 ```text
@@ -58,7 +58,7 @@ acadia-os/
 │  │  ├─ query.ts                   # TanStack Query hooks
 │  │  └─ zustand.ts                 # Auth flow and utilities
 │  ├─ server/
-│  │  └─ action.ts                  # Server actions (srm-academia-api)
+│  │  └─ action.ts                  # Server actions (local SRM-SCRAPPER)
 │  ├─ utils/
 │  │  ├─ attendancePredict.ts       # Attendance math + projections
 │  │  ├─ currentClass.ts            # Time-window check for current class
@@ -76,7 +76,7 @@ acadia-os/
 
 ### Authentication & Security
 - Middleware (`src/middleware.ts`) protects all `/app/**` routes.
-- Server actions (`src/server/action.ts`) delegate to `srm-academia-api` for:
+- Server actions (`src/server/action.ts`) delegate to local `SRM-SCRAPPER` for:
   - User verification, password verification, logout
   - Timetable, Attendance, Marks, Courses, Calendar, Day Order
 - Cookies `token` and `user` set on successful login; cleared on logout.
@@ -157,10 +157,10 @@ This repo includes `vercel.json` and is optimized for Vercel.
 4. Install command: `npm ci` (already set).
 5. Deploy.
 
-No extra env vars are required by the app; data access is via `srm-academia-api`.
+No extra env vars are required by the app; data access is via local `SRM-SCRAPPER`.
 
 ## Notes on Data Access
-This app depends on the `srm-academia-api` package for authenticated data. Ensure your browser manages cookies correctly and that your account has access.
+This app depends on the local `SRM-SCRAPPER` package for authenticated data. Ensure your browser manages cookies correctly and that your account has access.
 
 ## Credits
 - Design and Development: Jeevan Baabu Murugan

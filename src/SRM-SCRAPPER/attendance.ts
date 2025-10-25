@@ -1,4 +1,4 @@
-import { parse } from 'node-html-parser';
+import * as cheerio from 'cheerio';
 
 // Local type definitions
 interface AttendanceStatus {
@@ -107,7 +107,7 @@ async function fetchAttendanceData(cookies: string): Promise<string> {
 async function parseAttendanceHtml(htmlResponse: string): Promise<AttendanceResponse> {
   try {
     // Extract encoded HTML from JavaScript
-    const match = htmlResponse.match(/pageSanitizer\.sanitize\('([\s\S]*)'\);/);
+    const match = htmlResponse.match(/pageSanitizer\.sanitize\('(.*)'\);/s);
     if (!match || !match[1]) {
       return { error: "Failed to extract attendance data", status: 404 };
     }
@@ -122,35 +122,18 @@ async function parseAttendanceHtml(htmlResponse: string): Promise<AttendanceResp
       .replace(/\\\\/g, "")
       .replace(/\\'/g, "'");
 
-    // Parse HTML
-    const root = parse(decodedHtml);
+    // Parse HTML using cheerio
+    const $ = cheerio.load(decodedHtml);
+    const table = $('table[style*="font-size :16px;"][bgcolor="#FAFAD2"]');
 
-    // --- Flexible table detection by header ---
-    const tables = root.querySelectorAll("table");
-    let table = null;
-    for (const t of tables) {
-      const headers = t.querySelectorAll("th").map(h => h.text.trim());
-      if (headers.includes("Course Code") && headers.includes("Attendance")) {
-        table = t;
-        break;
-      }
-    }
-    if (!table) return { error: "Attendance table not found", status: 404 };
-
-    // Helper to flatten nested text
-    const getText = (node: any): string => {
-      if (!node) return "";
-      if (node.nodeType === 3) return node.rawText.trim();
-      return node.childNodes.map(getText).join("").trim();
-    };
-
-    const rows = table.querySelectorAll("tr").slice(1); // skip header
+    const rows = table.find("tr").slice(1).toArray();
     const attendanceDetails: AttendanceDetail[] = rows.map((row) => {
-      const columns = row.querySelectorAll("td");
-      const colText = (idx: number) => getText(columns[idx]);
+      const cols = $(row).find("td");
+      const get = (idx: number) =>
+        cols[idx] ? $(cols[idx]).text().trim() : "";
 
-      const courseConducted = Number(colText(6)) || 0;
-      const courseAbsent = Number(colText(7)) || 0;
+      const courseConducted = Number(get(6)) || 0;
+      const courseAbsent = Number(get(7)) || 0;
 
       const courseAttendanceStatus = calculateAttendanceStatus(courseConducted, courseAbsent);
       const courseAttendance = Number(
@@ -158,11 +141,13 @@ async function parseAttendanceHtml(htmlResponse: string): Promise<AttendanceResp
       );
 
       return {
-        courseCode: colText(0),
-        courseTitle: colText(1),
-        courseCategory: colText(2),
-        courseFaculty: colText(3).split("(")[0].trim(),
-        courseSlot: colText(4),
+        courseCode: cols[0]
+          ? $(cols[0]).contents().first().text().trim()
+          : "",
+        courseTitle: get(1),
+        courseCategory: get(2),
+        courseFaculty: get(3).split("(")[0].trim(),
+        courseSlot: get(4),
         courseConducted,
         courseAbsent,
         courseAttendance,

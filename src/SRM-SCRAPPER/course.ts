@@ -1,4 +1,4 @@
-import { parse } from 'node-html-parser';
+import * as cheerio from 'cheerio';
 
 // Local type definitions
 interface CourseDetail {
@@ -89,7 +89,7 @@ async function fetchCourseData(cookies: string): Promise<string> {
 async function parseCourseHtml(htmlResponse: string): Promise<CourseResponse> {
   try {
     // Extract encoded HTML from JavaScript
-    const match = htmlResponse.match(/pageSanitizer\.sanitize\('([\s\S]*)'\);/);
+    const match = htmlResponse.match(/pageSanitizer\.sanitize\('(.*)'\);/s);
     if (!match || !match[1]) {
       return { error: "Failed to extract course details", status: 404 };
     }
@@ -104,31 +104,26 @@ async function parseCourseHtml(htmlResponse: string): Promise<CourseResponse> {
       .replace(/\\\\/g, "")
       .replace(/\\'/g, "'");
 
-    // Parse HTML using node-html-parser
-    const root = parse(decodedHtml);
+    // Parse HTML using cheerio
+    const $ = cheerio.load(decodedHtml);
 
     // Extract batch information
     let batch = "";
     try {
-      const batchElement = root.querySelector("td:contains('Batch:')");
-      const batchCell = batchElement?.nextElementSibling;
-      const batchFont = batchCell?.querySelector("font");
-      batch = batchFont?.text?.trim() || "";
+      batch = $("td:contains('Batch:')").next("td").find("font").text().trim();
     } catch {
       batch = "";
     }
 
     // Extract course information
-    const courseRows = root.querySelectorAll(".course_tbl tr").slice(1);
-    const courseList: CourseDetail[] = courseRows.map((row) => {
-      const columns = row.querySelectorAll("td");
-      const getText = (index: number) => columns[index]?.text?.trim() || "";
-      const getFormattedText = (index: number) => {
-        const text = getText(index);
-        return text.length === 0 ? "NA" : text;
-      };
+    const courseList: CourseDetail[] = Array.from($(".course_tbl tr").slice(1)).map((row) => {
+      const columns = $(row).find("td");
+      const get = (idx: number) =>
+        columns[idx] ? $(columns[idx]).text().trim() : "";
+      const getFormat = (idx: number) =>
+        get(idx).length === 0 ? "NA" : get(idx);
 
-      const slotRaw = getText(8);
+      const slotRaw = get(8);
       const sortedSlots = slotRaw
         ? slotRaw
             .split("-")
@@ -136,17 +131,17 @@ async function parseCourseHtml(htmlResponse: string): Promise<CourseResponse> {
             .filter(Boolean)
         : [];
 
-      const roomNo = getFormattedText(10).startsWith("AY")
-        ? getFormattedText(9)
-        : getFormattedText(10);
+      const roomNo = getFormat(10).startsWith("AY")
+        ? getFormat(9)
+        : getFormat(10);
 
       return {
-        courseCode: getFormattedText(1),
-        courseTitle: getFormattedText(2),
-        courseCredit: getFormattedText(3),
-        courseCategory: getFormattedText(5),
-        courseType: getFormattedText(6),
-        courseFaculty: getFormattedText(7),
+        courseCode: getFormat(1),
+        courseTitle: getFormat(2),
+        courseCredit: getFormat(3),
+        courseCategory: getFormat(5),
+        courseType: getFormat(6),
+        courseFaculty: getFormat(7),
         courseSlot: sortedSlots,
         courseRoomNo: roomNo,
       };

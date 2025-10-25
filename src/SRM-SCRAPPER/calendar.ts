@@ -1,4 +1,4 @@
-import { parse } from 'node-html-parser';
+import * as cheerio from 'cheerio';
 
 // Local type definitions
 interface CalendarDay {
@@ -101,39 +101,32 @@ async function fetchCalendarData(cookies: string): Promise<string> {
 async function parseCalendarHtml(htmlResponse: string): Promise<CalendarResponse> {
   try {
     // Parse the outer HTML to find the zmlvalue
-    const outerRoot = parse(htmlResponse);
-    const placeholderElement = outerRoot.querySelector("div.zc-pb-embed-placeholder-content");
-    const zmlValue = placeholderElement?.getAttribute("zmlvalue");
+    const $outer = cheerio.load(htmlResponse);
+    const zmlValue = $outer("div.zc-pb-embed-placeholder-content").attr("zmlvalue");
 
     if (!zmlValue) {
       return { error: "Failed to extract calendar details", status: 404 };
     }
 
     // Parse the inner HTML from zmlvalue
-    const innerRoot = parse(zmlValue);
-    const mainTable = innerRoot.querySelector("table[bgcolor='#FAFCFE']");
+    const $inner = cheerio.load(zmlValue);
+    const $mainTable = $inner("table[bgcolor='#FAFCFE']");
     
-    if (!mainTable) {
+    if ($mainTable.length === 0) {
       return { error: "Could not find the main calendar table.", status: 500 };
     }
 
     // Extract months from header row
-    const headerRow = mainTable.querySelector("tr");
-    if (!headerRow) {
-      return { error: "Could not find header row", status: 500 };
-    }
-
-    const headerCells = headerRow.querySelectorAll("th");
+    const $headerRow = $mainTable.find("tr").first();
+    const $ths = $headerRow.find("th");
     const monthsData: CalendarMonth[] = [];
 
     // Extract month names from header cells
     for (let i = 0; ; i++) {
       const monthNameThIndex = i * 5 + 2;
-      if (monthNameThIndex >= headerCells.length) break;
+      if (monthNameThIndex >= $ths.length) break;
       
-      const monthCell = headerCells[monthNameThIndex];
-      const strongElement = monthCell?.querySelector("strong");
-      const monthName = strongElement?.text?.trim();
+      const monthName = $ths.eq(monthNameThIndex).find("strong").text().trim();
       
       if (monthName) {
         monthsData.push({ month: monthName, days: [] });
@@ -143,27 +136,21 @@ async function parseCalendarHtml(htmlResponse: string): Promise<CalendarResponse
     }
 
     // Extract calendar data from data rows
-    const dataRows = mainTable.querySelectorAll("tr").slice(1);
+    const $dataRows = $mainTable.find("tr").slice(1).toArray();
     
-    dataRows.forEach((rowElement) => {
-      const cells = rowElement.querySelectorAll("td");
+    $dataRows.forEach((rowElement) => {
+      const $tds = $inner(rowElement).find("td");
       
       monthsData.forEach((month, monthIndex) => {
         const offset = monthIndex * 5;
-        if (offset + 3 >= cells.length) return;
+        if (offset + 3 >= $tds.length) return;
         
-        const dateCell = cells[offset];
-        const dayCell = cells[offset + 1];
-        const eventCell = cells[offset + 2];
-        const dayOrderCell = cells[offset + 3];
-        
-        const date = dateCell?.text?.trim();
+        const date = $tds.eq(offset).text().trim();
         if (!date) return;
         
-        const day = dayCell?.text?.trim() || "";
-        const eventStrong = eventCell?.querySelector("strong");
-        const event = eventStrong?.text?.trim() || "";
-        const dayOrder = dayOrderCell?.text?.trim() || "";
+        const day = $tds.eq(offset + 1).text().trim();
+        const event = $tds.eq(offset + 2).find("strong").text().trim();
+        const dayOrder = $tds.eq(offset + 3).text().trim();
         
         month.days.push({ date, day, event, dayOrder });
       });

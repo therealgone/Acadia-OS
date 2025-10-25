@@ -1,4 +1,4 @@
-import { parse } from 'node-html-parser';
+import * as cheerio from 'cheerio';
 
 // Local type definitions
 interface Mark {
@@ -72,7 +72,7 @@ async function fetchMarksData(cookies: string): Promise<string> {
 async function parseMarksHtml(htmlResponse: string): Promise<MarksResponse> {
   try {
     // Extract encoded HTML from JavaScript
-    const match = htmlResponse.match(/pageSanitizer\.sanitize\('([\s\S]*)'\);/);
+    const match = htmlResponse.match(/pageSanitizer\.sanitize\('(.*)'\);/s);
     if (!match || !match[1]) {
       console.error("Failed to extract sanitized content from response");
       return { error: "Failed to extract marks data", status: 404 };
@@ -88,49 +88,64 @@ async function parseMarksHtml(htmlResponse: string): Promise<MarksResponse> {
       .replace(/\\\\/g, "")
       .replace(/\\'/g, "'");
 
-    // Parse HTML using node-html-parser
-    const root = parse(decodedHtml);
+    // Parse HTML using cheerio
+    const $ = cheerio.load(decodedHtml);
 
-    // Find the marks table (7th table)
-    const tables = root.querySelectorAll("table");
-    const marksTable = tables[6]; // 7th table (0-indexed)
+    // Find the marks table - try different selectors
+    let table = $("table:nth-child(7)");
     
-    if (!marksTable) {
+    // If 7th table not found, try to find table with marks data
+    if (table.length === 0) {
+      const tables = $("table");
+      
+      // Look for table that contains marks data
+      for (let i = 0; i < tables.length; i++) {
+        const currentTable = tables.eq(i);
+        const hasMarksData = currentTable.find("td").toArray().some(td => {
+          const text = $(td).text();
+          return text.includes("/") && /\d+/.test(text);
+        });
+        
+        if (hasMarksData) {
+          table = currentTable;
+          break;
+        }
+      }
+    }
+    
+    if (table.length === 0) {
       return { error: "Marks table not found", status: 404 };
     }
 
     const marksDetails: MarkDetail[] = [];
-    const tableRows = marksTable.querySelectorAll("tr");
+    const tableRows = table.find("tr");
 
-    tableRows.forEach((row, index) => {
-      if (index === 0) return; // Skip header row
+    tableRows.each((i, row) => {
+      if (i === 0) return; // Skip header row
 
-      const columns = row.querySelectorAll("td");
-      if (columns.length < 3) return;
+      const cols = $(row).find("td");
+      if (cols.length < 3) return;
 
-      const course = columns[0]?.text?.trim() || "";
-      const category = columns[1]?.text?.trim() || "";
+      const course = $(cols[0]).text().trim();
+      const category = $(cols[1]).text().trim();
 
-      const marksTableElement = columns[2]?.querySelector("table");
-      if (!course || !category || !marksTableElement) return;
+      const marksTable = $(cols[2]).find("table");
+      if (!course || !category || marksTable.length === 0) return;
 
       const marks: Mark[] = [];
       const total = { obtained: 0, maxMark: 0 };
 
-      const markCells = marksTableElement.querySelectorAll("td");
-      markCells.forEach((markCell) => {
-        const strongElement = markCell.querySelector("strong");
-        if (!strongElement) return;
-
-        const strongText = strongElement.text?.trim() || "";
+      marksTable.find("td").each((j, markTd) => {
+        const strongText = $(markTd).find("strong").text().trim();
         const [examType, maxMarkStr] = strongText.split("/");
         
         if (!examType || !maxMarkStr) return;
 
-        const obtainedText = markCell.text
-          ?.replace(strongText, "")
-          ?.trim()
-          ?.replace(/^\n+|\n+$/g, "") || "";
+        const obtainedText = $(markTd)
+          .text()
+          .replace(strongText, "")
+          .trim()
+          .replace(/^\n+|\n+$/g, "");
 
         const obtained = Number(obtainedText);
         const maxMark = Number(maxMarkStr.trim());
@@ -141,9 +156,15 @@ async function parseMarksHtml(htmlResponse: string): Promise<MarksResponse> {
             obtained,
             maxMark,
           });
+        }
 
-          total.obtained += obtained;
-          total.maxMark += maxMark;
+        const obtainedMarks = parseFloat(obtainedText);
+        if (!isNaN(obtainedMarks)) {
+          total.obtained += obtainedMarks;
+        }
+        const maxMarks = parseFloat(maxMarkStr);
+        if (!isNaN(maxMarks)) {
+          total.maxMark += maxMarks;
         }
       });
 

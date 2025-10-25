@@ -1,4 +1,4 @@
-import { parse } from 'node-html-parser';
+import * as cheerio from 'cheerio';
 
 // Local type definitions
 interface CourseSlotInfo {
@@ -177,7 +177,7 @@ async function fetchTimetableData(cookies: string): Promise<string> {
 async function parseTimetableHtml(htmlResponse: string): Promise<TimetableResponse> {
   try {
     // Extract encoded HTML from JavaScript
-    const match = htmlResponse.match(/pageSanitizer\.sanitize\('([\s\S]*)'\);/);
+    const match = htmlResponse.match(/pageSanitizer\.sanitize\('(.*)'\);/s);
     if (!match || !match[1]) {
       return { error: "Failed to extract timetable details", status: 404 };
     }
@@ -192,21 +192,26 @@ async function parseTimetableHtml(htmlResponse: string): Promise<TimetableRespon
       .replace(/\\\\/g, "")
       .replace(/\\'/g, "'");
 
-    // Parse HTML using node-html-parser
-    const root = parse(decodedHtml);
+    // Parse HTML using cheerio
+    const $ = cheerio.load(decodedHtml);
 
     // Extract batch information
-    const batchElement = root.querySelector("td:contains('Batch:')");
-    const batch = batchElement?.nextElementSibling?.querySelector("font")?.text?.trim() || "1";
-    const batchNumber = parseInt(batch);
+    const batch = $("td:contains('Batch:')")
+      .next("td")
+      .find("font")
+      .text()
+      .trim();
+    const batchNumber = parseInt(batch) || 1;
 
     // Extract course information
-    const courseRows = root.querySelectorAll(".course_tbl tr").slice(1);
-    const courseList = courseRows.map((row) => {
-      const columns = row.querySelectorAll("td");
-      const getText = (index: number) => columns[index]?.text?.trim() || "";
+    const courseRows = $(".course_tbl tr").slice(1);
+    
+    const courseList = Array.from(courseRows).map((row) => {
+      const columns = $(row).find("td");
+      const get = (idx: number) =>
+        columns[idx] ? $(columns[idx]).text().trim() : "";
       
-      const slotRaw = getText(8);
+      const slotRaw = get(8);
       const sortedSlots = slotRaw
         ? slotRaw
             .split("-")
@@ -215,18 +220,18 @@ async function parseTimetableHtml(htmlResponse: string): Promise<TimetableRespon
         : [];
 
       return {
-        courseCode: getText(1),
-        courseTitle: getText(2),
-        courseCredit: getText(3),
-        courseCategory: getText(5),
-        courseType: getText(6),
-        courseFaculty: getText(7),
+        courseCode: get(1),
+        courseTitle: get(2),
+        courseCredit: get(3),
+        courseCategory: get(5),
+        courseType: get(6),
+        courseFaculty: get(7),
         courseSlot: sortedSlots,
-        courseRoomNo: getText(10).startsWith("AY")
-          ? getText(9).length === 0
+        courseRoomNo: get(10).startsWith("AY")
+          ? get(9).length === 0
             ? "N/A"
-            : getText(9)
-          : getText(10),
+            : get(9)
+          : get(10),
       };
     });
 

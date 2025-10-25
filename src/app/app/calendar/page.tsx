@@ -99,7 +99,7 @@ const Data = ({
                 backdrop-blur-sm border border-white/5 cursor-pointer
                 ${
                   holiday
-                    ? "panel-red-bg"
+                    ? "panel-redlight-bg"
                     : "panel-bluegray-bg"
                 }
                 ${

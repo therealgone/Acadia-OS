@@ -1,4 +1,4 @@
-// Export all types that match the original srm-academia-api package
+// Export all types for the local SRM-SCRAPPER package
 
 // Attendance types
 export interface AttendanceStatus {
@@ -133,7 +133,7 @@ export interface CalendarResponse {
 
 // Day Order types
 export interface DayOrderResponse {
-  dayOrder: string;
+  dayOrder?: string;
   error?: string;
   status: number;
 }

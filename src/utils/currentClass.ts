@@ -33,5 +33,17 @@ const parseTimeRange = (timeRange: string) => {
 export const isCurrentClass = (timeRange: string) => {
   const now = new Date();
   const { start, end } = parseTimeRange(timeRange);
-  return now >= start && now <= end;
+  const isCurrent = now >= start && now <= end;
+  
+  // Only log if it's actually a current class to reduce console spam
+  if (isCurrent) {
+    console.log("Current class detected:", {
+      timeRange,
+      now: now.toLocaleTimeString(),
+      start: start.toLocaleTimeString(),
+      end: end.toLocaleTimeString()
+    });
+  }
+  
+  return isCurrent;
 };

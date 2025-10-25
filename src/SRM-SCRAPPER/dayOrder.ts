@@ -1,4 +1,4 @@
-import { parse } from 'node-html-parser';
+import * as cheerio from 'cheerio';
 
 // Local type definitions
 export interface DayOrderResponse {
@@ -77,7 +77,7 @@ async function fetchDayOrderData(cookies: string): Promise<string> {
 async function parseDayOrderHtml(htmlResponse: string): Promise<DayOrderResponse> {
   try {
     // Extract encoded HTML from JavaScript
-    const match = htmlResponse.match(/pageSanitizer\.sanitize\('([\s\S]*)'\);/);
+    const match = htmlResponse.match(/pageSanitizer\.sanitize\('(.*)'\);/s);
     if (!match || !match[1]) {
       return { error: "Failed to extract day order details", status: 404 };
     }
@@ -92,12 +92,51 @@ async function parseDayOrderHtml(htmlResponse: string): Promise<DayOrderResponse
       .replace(/\\\\/g, "")
       .replace(/\\'/g, "'");
 
-    // Parse HTML using node-html-parser
-    const root = parse(decodedHtml);
+    // Parse HTML using cheerio
+    const $ = cheerio.load(decodedHtml);
 
-    // Extract day order information
-    const dayOrderElement = root.querySelector("td:contains('Day Order:')");
-    const dayOrder = dayOrderElement?.nextElementSibling?.querySelector("font")?.text?.trim() || "0";
+
+    // Extract day order information - try multiple approaches
+    let dayOrder = "0";
+    
+    // Try the original approach
+    const dayOrderFromFont = $("td:contains('Day Order:')")
+      .next("td")
+      .find("font")
+      .text()
+      .trim();
+    
+    if (dayOrderFromFont) {
+      dayOrder = dayOrderFromFont;
+    } else {
+      // Try without font tag
+      const dayOrderFromTd = $("td:contains('Day Order:')")
+        .next("td")
+        .text()
+        .trim();
+      
+      if (dayOrderFromTd) {
+        dayOrder = dayOrderFromTd;
+      } else {
+        // Try finding any cell that contains a number after "Day Order:"
+        const allCells = $("td");
+        for (let i = 0; i < allCells.length; i++) {
+          const cellText = $(allCells[i]).text().trim();
+          if (cellText.includes("Day Order:")) {
+            const nextCell = $(allCells[i + 1]);
+            if (nextCell.length > 0) {
+              const nextCellText = nextCell.text().trim();
+              const numberMatch = nextCellText.match(/\d+/);
+              if (numberMatch) {
+                dayOrder = numberMatch[0];
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    
 
     return { dayOrder, status: 200 };
   } catch (error) {
