@@ -3,11 +3,13 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, Suspense } from "react";
 
 import { useAttendance, useDayOrder, useTimetable, useCalendar } from "@/hooks/query";
-import { AttendanceDetail, DaySchedule } from "@/SRM-SCRAPPER";
+import { AttendanceDetail, DaySchedule  } from "@/SRM-SCRAPPER";
+
 import { GlobalLoader } from "../components/loader";
 import { isCurrentClass } from "@/utils/currentClass";
 import { getCurrentDayOrder } from "@/utils/getCurrentDayOrder";
 import { getDayOrderFromTimetable } from "@/utils/getDayOrderFromTimetable";
+import { attendance } from "@/server/action";
 const Page = React.memo(() => {
   const { data, isPending } = useTimetable();
 
@@ -243,9 +245,9 @@ const Data = React.memo(({
                 <div className="flex justify-between items-center mb-2  pb-2">
 
                   <div className={`${item.courseType?.includes("Theory") && !item.slot.startsWith("P")
-                    ? " tag tag-blue "
+                    ? "  "
                     : item.courseType?.includes("Lab") || item.courseType?.includes("Theory") && item.slot.startsWith("P")
-                      ? " tag-orange tag"
+                      ? " "
                       : ""}`}>
                     <span className="">
                       {item.courseType?.includes("Theory") && !item.slot.startsWith("P") ? "T" : "P"}
@@ -254,7 +256,7 @@ const Data = React.memo(({
 
                   <div className="items-center ">
 
-                    <span className=" text-white  tracking-wider font-bold tag">
+                    <span className=" text-white  tracking-wider font-bold ">
 
                       {item.time}</span>
                   </div>
@@ -272,10 +274,11 @@ const Data = React.memo(({
 
                 <div className="flex justify-between items-center ">
                   <div className="text-sm flex      ">
-                    <span className=" tag-space tag ">Room -{" "}
+                    <span className="  ">Room -{" "}
                       <span className="">
                         {item.courseRoomNo}
                       </span>
+                     
                     </span>
 
                     
@@ -314,15 +317,15 @@ const Data = React.memo(({
   );
 });
 
-Data.displayName = 'TimetableData';
 
 
 
 
-const AttendanceData = React.memo(({ attendance }: { attendance: AttendanceDetail }) => {
+const AttendanceData = React.memo(({ attendance }: { attendance: AttendanceDetail } ) => {
   // Memoize attendance percentage calculation
+ const {courseAttendanceStatus} = useMemo(() => (attendance), [attendance]);
   const attendancePct = useMemo(() => Number(attendance.courseAttendance), [attendance.courseAttendance]);
-  const isLow = useMemo(() => attendancePct <= 75, [attendancePct]);
+  const isLow = useMemo(() => attendancePct < 75, [attendancePct]);
 
   return (
     <div className="flex items-center gap-3">
@@ -330,9 +333,21 @@ const AttendanceData = React.memo(({ attendance }: { attendance: AttendanceDetai
         className={`px-3 py-1 rounded-full text-sm bg-black border ${isLow ? "tag tag-error" : "tag tag-success"
           }`}
       >
-        {attendancePct}%
+        {(attendancePct).toFixed(2)}%
       </span>
-
+        { courseAttendanceStatus.classes >  0 ? ( <> {courseAttendanceStatus.status === "required" ? (
+        <span className="tag tag-error">
+          Required : {courseAttendanceStatus.classes} 
+        </span>
+      ) :
+      courseAttendanceStatus.status === "margin" ? (
+        <span className="tag tag-success">
+          Margin : {courseAttendanceStatus.classes} 
+        </span>
+      )  
+      : ( "") 
+     } </> ) : ( "")}
+      
     </div>
   );
 });
