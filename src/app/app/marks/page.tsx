@@ -48,8 +48,8 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
           <div
             key={idx}
             className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 rounded-3xl hover:scale-[1.02] transition-all duration-200 ${category === "theory"
-                ? "panel-blue-bg"
-                : " panel-orange-bg"
+                ? "panel-blue-bg panel"
+                : " panel-orange-bg panel"
               }`}
           >
             {/* Left: Course Info */}
@@ -58,8 +58,8 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
               <div className="flex justify-between items-center w-full sm:w-auto gap-2">
                 <div
                   className={`px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-3xl whitespace-nowrap ${category === "theory"
-                      ? "tag tag-blue"
-                      : "tag tag-orange"
+                      ? " tag-info"
+                      : " tag-orange"
                     }`}
                 >
                   {course?.courseCode} - {course?.courseType?.charAt(0)}
@@ -67,7 +67,7 @@ const Data = ({ data, category }: { data: MarkDetail[]; category: string }) => {
 
                 {/* Total Marks for mobile */}
                 
-                <div className={`px-3 py-1 rounded-full text-sm font-semibold ${item.total.obtained > item.total.maxMark /2 ? "panel-green-muted-bg  " : "panel-red-bg " } flex sm:hidden gap-1`}>
+                <div className={`px-3 py-1 rounded-full text-sm font-semibold ${item.total.obtained > item.total.maxMark /2 ? "panel-green-muted-bg  " : "panel-red-muted-bg " } flex sm:hidden gap-1`}>
                   <span>{item.total.obtained}</span>
                   <span>/</span>
                   <span>{item.total.maxMark}</span>

@@ -59,7 +59,7 @@ const Page = React.memo(() => {
         <div className="order-1">
           {selection && (
             <button
-              className="px-3 py-1.5 rounded-full btn transition"
+              className="px-3 py-1.5 tag-error rounded-full btn transition"
               onClick={handleSelectionReset}
             >
               Reset
@@ -70,7 +70,7 @@ const Page = React.memo(() => {
         {/* Right: Predict button */}
         <div className="order-3">
           <button
-            className="px-3 py-1.5 btn text-white font-medium transition rounded-full"
+            className="px-3 py-1.5 tag-space text-white font-medium transition btn rounded-full"
             onClick={handleModalOpen}
           >
             Predict
@@ -108,7 +108,7 @@ const Section = React.memo(({
   category: string;
   selection: PredictSelection | null;
 }) => {
-  const filtered = useMemo(() => 
+  const filtered = useMemo(() =>
     data.filter((i) => {
       if (category === "theory") {
         // Theory: courseSlot is not "LAB"
@@ -156,11 +156,11 @@ const Card = React.memo(({
     // Use the same key generation logic as PredictModal
     // This should match exactly what PredictModal generates
     const key = item.courseSlot === "LAB" ? `${item.courseCode}Lab` : `${item.courseCode}Theory`;
-    
+
     // Get class count ONLY for this specific component (theory or lab)
     // Theory and lab are completely separate - no sharing of values
     const classCount = selection.classCountsPerCourse[key] || 0;
-    
+
     // Removed dev logs for performance
 
     return {
@@ -183,63 +183,53 @@ const Card = React.memo(({
 
   return (
     <div className={`w-full backdrop-blur-sm rounded-2xl transition-all duration-300 
+      
     ${isTheory
-      ? " panel-blue-bg"
-      : "panel-orange-bg "}`}>
+        ? " panel-blue-bg"
+        : "panel-orange-bg "}`}>
       <div className="flex flex-col gap-2 p-4">
         {/* Top Row */}
         <div className="flex flex-wrap justify-between items-center text-white/80 text-sm">
           <div className="flex gap-3 items-center">
-            <span className="font-semibold text-white/90">{item.courseCode}</span>
-            <span
-              className={`px-2 py-0.5 text-xs rounded-full ${
-                isTheory
-                  ? " panel-blue-bg"
-                  : "panel-orange-bg "
-              }`}
-            >
-              {item.courseCategory}
-            </span>
+            <span className="font-semibold text-white/60">{item.courseCode}</span>
+
           </div>
-          <div>
-            <span className="tag-orange px-1.5 py-0.5 rounded-full">
+          <div className=" tag-font">
+            <span className=" px-1.5 py-0.5 rounded-full text-white/60">
               {attended}/{total}
             </span>
           </div>
-          <div>
-            <span
-              className={`ml-2 font-semibold rounded-full px-1.5 py-0.5 tag
-              ${ attendancePct >= 75 ? "tag-success" : "tag-error"}
 
-              }`}
-            >
-              {attendancePct}%
-            </span>
-          </div>
+       
         </div>
 
         {/* Title */}
-        <div className="text-white/90 font-medium">{item.courseTitle}</div>
+        <div className=" ">
+          <div className="text-white/90 font-medium">{item.courseTitle}</div>
+          
+        </div>
 
         {/* Attendance Bar */}
-        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden mt-1">
+        <div className="w-full h-4.5    bg-white/10 rounded-full  mt-1">
           <div
-            className={`h-full rounded-full transition-all duration-700 ${
-              attendancePct >= 75 ? "bg-green-500" : "bg-red-500"
-            }`}
+            className={`h-full rounded-full   ${attendancePct >= 75 ? "tag-success tag   " : "tag-error  tag  "
+              }`}
             style={{
               width: `${Math.min(attendancePct, 100)}%`
             }}
-          ></div>
+          >  <div className=" justify-center flex-col flex w-full h-full  items-center">
+              <span className=""> {(attendancePct).toFixed(2)}%</span>
+            </div>
+          </div>
+
         </div>
-              
+
         {/* Prediction Info */}
         <div className="flex justify-between text-xs text-white mt-2 text-center">
           <div>
             <p className="text-[10px]">Predicted</p>
-            <span className={`font-extrabold text-blue-500 ${
-              selection ? predict.currentPct >= 75 ? "text-green-500" : "text-red-500" : ""
-            }`}>
+            <span className={`font-extrabold text-blue-500 ${selection ? predict.currentPct >= 75 ? "text-green-500" : "text-red-500" : ""
+              }`}>
               {selection ? predict.currentPct : "-"}
             </span>
           </div>
@@ -258,7 +248,7 @@ const Card = React.memo(({
         </div>
       </div>
       <div className="seo-hidden">SRM, SRM KTR, Acadia OS, AcadiaOS, acadiaos srm, Acadia, Acadia SRM, Acadia Asia SRM, SRM Acadia, Student Dashboard, Attendance, Timetable, Calendar, Exam Schedule, GPA Calculator, Marks Calculator, College Timetable, College Attendance Tracker, SRM Students, Academia, academia.srmist, academia.srmist.edu.in, Acadia Design, Acadia Dashboard, College Calendar, SRM Timetable, SRM Attendance, Acadia Portal, SRM Portal, Acadia OS Features, College Management, Student Tools, Academic Planner, Acadia OS SRM KTR, SRM University Tools, Student Performance Tracker, Semester GPA, SRM Academic Dashboard,exam schedule acadia,acadia design </div>
-     
+
     </div>
   );
 });
